@@ -97,19 +97,46 @@ setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkg
             Renvs$stack = list(original = RComputingEnv("original", paths, exclude.site=FALSE, src_url=""))
         }
 
-        lded = names(sessionInfo()$loadedOnly)
+
         atched = names(sessionInfo()$otherPkgs)
-        pkgs = c(lded, atched)
-        pkgs = pkgs[! pkgs %in%  dontunload]
-        
+   
+
+        ## detatch attached packages
+        sapply(atched[!atched %in% dontunload], function(x) {
+            pkg = paste("package", x, sep=":")
+            detach(pkg, character.only = TRUE)
+            
+        })
+
+        ## unload imported namespaces
+        ##while loop to deal with interdependencies between loaded namespaces
+        lded = rev(names(sessionInfo()$loadedOnly))
+        lded = lded[!lded %in% dontunload]
+        cnt = 1
+        while(length(lded) && cnt < 1000) {
+            sapply(lded, function(x) {
+                res = tryCatch(unloadNamespace(getNamespace(x)), error = function(e) e)
+                if(!is(res, "error")) {
+                }
+            })
+            lded = rev(names(sessionInfo()$loadedOnly))
+            lded = lded[!lded %in% dontunload]
+            cnt = cnt +1
+        }
+        ## while loop never naturally completed
+        if(cnt == 1000)
+            warning("Unable to unload all namespaces")
+
+        ##deal with all DLLs now that the rest is done.
+        pkgs = unique(c(atched, lded))
+        pkgs = pkgs[! pkgs %in%  dontunload]            
         sapply(pkgs, function(x) {
             dll = getLoadedDLLs()[[x]]
-            unloadNamespace(getNamespace(x))
+            
             if(!is.null(dll))
-                library.dynam.unload(x, dirname(dirname(dll[["path"]])))
+                tryCatch(library.dynam.unload(x, dirname(dirname(dll[["path"]]))), error = function(e) NULL)
+        })
 
-        } )
-    
         
         if(!Renv@exclude.site)
             .libPaths(library_paths(Renv))
