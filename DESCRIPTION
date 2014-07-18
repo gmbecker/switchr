@@ -1,6 +1,7 @@
 Package: switchr
 Type: Package
-Title: Installing, managing, and switching betwen distinct sets of installed packages
+Title: Installing, managing, and switching betwen distinct sets of installed
+    packages
 Version: 0.1.0
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
@@ -10,5 +11,8 @@ Description: switchr provides an abstraction for managing, installing,
     strict, package-version-specific reproducibility of many analyses.
 Imports:
     tools
-Suggests: GRAN, GRANBase, BiocInstaller
+Suggests:
+    GRAN,
+    GRANBase,
+    BiocInstaller
 License: Artistic 2.0
