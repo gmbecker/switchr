@@ -18,6 +18,21 @@ if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 
 } else if(require(BiocInstaller, quietly=TRUE)) {
     bioc = biocinstallRepos()
 } else {
+    
     bioc = NULL
+    p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
+    if (file.exists(p)) {
+        reps <- tools:::.read_repositories(p)
+        if (!"BioCsoft" %in% rownames(reps)) 
+            reps <- NULL
+    }
+    if (is.null(reps)) {
+        p <- file.path(R.home("etc"), "repositories")
+        if(file.exists(p))
+            reps <- tools:::.read_repositories(p)
+    }
+    if(!is.null(reps) && "Biocsoft" %in% rownames(reps)) {
+        bioc = reps[grep("BioC", reps[,"menu_name"]), "URL"]
+    }
 }
 

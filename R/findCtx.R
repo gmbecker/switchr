@@ -3,7 +3,10 @@ findCompEnv = function(url, name, rvers) {
     if(missing(url) && missing(name))
         stop("Must specify either a url or a name for the desired context")
 
-   
+
+    if(length(url) > 1)
+        url = paste(url, collapse = ";")
+    
     man = switchrManifest()
     if(!is.null(rvers))
         man = man[man$rversion == rvers,]
@@ -16,7 +19,7 @@ findCompEnv = function(url, name, rvers) {
         return(NULL)
     else {
         manrow = man[i,]
-        return(RComputingEnv(name = manrow$name, src_url = manrow$url, libpaths = strsplit(manrow$paths, ";")[[1]], exclude.site = manrow$excl.site))
+        return(RComputingEnv(name = manrow$name, src_url = strsplit(manrow$url, ";")[[1]], libpaths = strsplit(manrow$paths, ";")[[1]], exclude.site = manrow$excl.site))
     }
                 
         
@@ -46,6 +49,6 @@ switchrManifest = function() {
 
 updateManifest = function() {
     fils = list.files(switchrBaseDir(), recursive = TRUE, full.names = TRUE, pattern = "lib_info")
-    man = do.call(rbind.data.frame, lapply(fils, function(x) as.data.frame(read.dcf(x))))
+    man = do.call(rbind.data.frame, lapply(fils, function(x) read.table(x, stringsAsFactors = FALSE, header = TRUE)))
     write.table(man, file = file.path(switchrBaseDir(), "manifest.dat"))
 }

@@ -25,3 +25,11 @@ RComputingEnv = function(name, libpaths, exclude.site = TRUE, src_url) {
 
 switchrOpts = new.env()
 
+setClass("RepoSubset", representation(repos = "character",
+                                      pkgs = "character",
+                                      default_name = "character"))
+
+
+RepoSubset = function(repos, pkgs, default_name) {
+    new("RepoSubset", repos = repos, pkgs = pkgs, default_name = default_name)
+}

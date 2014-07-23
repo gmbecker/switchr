@@ -23,7 +23,7 @@ installCompEnv = function(repo_base,
     deps_repos = c(defGRAN, bioc),
     download.dir = tempdir(), ...) {
     ##need to make sure any dependencies that live in the site lib get installed if the environment is intended to be self-sufficient (exclude.site=TRUE)
-    sep = if(grepl("http", repo_base)) "/" else .Platform$file.sep
+    sep = if(any(grepl("http", repo_base))) "/" else .Platform$file.sep
     repo = paste(repo_base, repo_name, sep = sep)
 
     ## if it already exists, we're done. Load it from disk and return.
@@ -59,7 +59,7 @@ installCompEnv = function(repo_base,
     .libPaths(oldlp)
     on.exit(NULL)
     ret = RComputingEnv(name, libpaths = libloc, exclude.site = exclude.site, src_url = repo)
-    write.dcf(data.frame(name = name, url = repo, paths = paste(libloc, collapse=";"), excl.site = exclude.site, rversion = paste(R.version$major, R.version$minor, sep=".")), file = file.path(libloc[1], "lib_info"))
+    write.table(data.frame(name = name, url = paste(repo, collapse = ";"), paths = paste(libloc, collapse=";"), excl.site = exclude.site, rversion = paste(R.version$major, R.version$minor, sep=".")), file = file.path(libloc[1], "lib_info"))
     updateManifest()
     if(switchTo)
         switchTo(ret)
@@ -154,12 +154,38 @@ setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkg
         invisible(Renv)
     })
 
+setMethod("switchTo", "RepoSubset", function(Renv = NULL,
+                                             reverting = FALSE,
+                                             ignoreRVersion = FALSE,
+                                             name,
+                                             doi,
+                                             ...) {
+    if(any(c("pkgs", "repo_name") %in% names(list(...))))
+        stop("Cannot specify pkgs or repo_name when switching to a RepoSubset")
+    ##Renv is a RepoSubset object
+
+    if(missing(name)) {
+        if(!missing(doi))
+            name = doi
+        else
+            name = Renv@default_name
+    }
+        
+    switchTo(Renv@repos, name = name, pkgs = Renv@pkgs, ...)
+})
+          
 ##' @export
 setGeneric("attachedPkgs<-", function(Renv, value) standardGeneric("attachedPkgs<-"))
 setMethod("attachedPkgs<-", "RComputingEnv", function(Renv, value) {
     Renv@attached = value
     Renv
 })
+
+
+
+
+
+
 
 ##' @export
 setGeneric("announce", function(Renv, reverted=FALSE) standardGeneric("announce"))
