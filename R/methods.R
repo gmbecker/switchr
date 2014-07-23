@@ -45,11 +45,11 @@ installCompEnv = function(repo_base,
 
     ## We want to be guaranteed to always get the version in repo, even if it is lower than the same package in one of the deps_repos.
     avail = available.packages(contriburl = contrib.url(c(repo, deps_repos)), filters = c("R_version", "OS_type"))
-    corepkgs = avail[avail[,"Repository"] == contrib.url(repo), "Package"]
-    torem = which(avail[,"Package"] %in% corepkgs & avail[,"Repository"] != contrib.url(repo))
+    corepkgs = avail[avail[,"Repository"] %in% contrib.url(repo), "Package"]
+    torem = which(avail[,"Package"] %in% corepkgs & ! avail[,"Repository"] %in% contrib.url(repo))
     avail = avail[-torem,]
 
-
+    ## second column of download.packages() output is the path to dl'ed file.
     pkgtbs = download.packages(pkgs, repos = unique(c(repo, deps_repos)), destdir = download.dir, available = avail)[,2]
 
     tmprepo = tempRepo(tarballs = pkgtbs)
