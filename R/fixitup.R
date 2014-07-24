@@ -1,3 +1,4 @@
+if(FALSE){
 fixNAMESPACE = function(tarball, dir = tempdir()) {
     #only need to do this if we're in R 3.0.0 + 
     if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "3.0.0") < 0)
@@ -23,14 +24,19 @@ fixNAMESPACE = function(tarball, dir = tempdir()) {
         normalizePath(list.files( pattern=paste(pkgname, "_.*\\.", sep=""), full.names=TRUE))
     }
 }
-
+}
 ##' @importFrom tools write_PACKAGES
 tempRepo = function(tarballs, dir = tempdir()) {
-    tarballs2 = fixNAMESPACE(tarballs, dir = dir)
-    repdir = file.path(tempfile(tmpdir = dir, pattern="repo"), "src", "contrib")
+ #   tarballs2 = fixNAMESPACE(tarballs, dir = dir)
+    tarballs2 = tarballs
+    repbase = tempfile(tmpdir = dir, pattern = "repo")
+
+    repdir = contrib.url(repbase, type = "source")
     dir.create(repdir, recursive = TRUE)
     file.copy(tarballs2, repdir)
     write_PACKAGES(repdir)
-    dirname(dirname(repdir))
+    repbase
 }
-    
+
+
+

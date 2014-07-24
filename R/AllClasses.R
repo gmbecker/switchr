@@ -1,5 +1,7 @@
 
-
+##' RComputingEnv
+##'
+##' An object that represents a "computing environment" (a specific set of libpaths and the packages installed to them)
 ##'@export
 setClass("RComputingEnv", representation(name = "character",
                                          libpaths = "character",
@@ -25,6 +27,10 @@ RComputingEnv = function(name, libpaths, exclude.site = TRUE, src_url) {
 
 switchrOpts = new.env()
 
+##' RepoSubset
+##'
+##' An object that represents a subset of packages available in a repo. When switched to, switchr will default to only installing the
+##' specified packages, rather than all packages in the repository.
 setClass("RepoSubset", representation(repos = "character",
                                       pkgs = "character",
                                       default_name = "character"))

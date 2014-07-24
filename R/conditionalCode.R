@@ -1,7 +1,7 @@
     if(require(GRAN, quietly=TRUE)) {
         message("Found GRAN package installed. Adding it to list of default repositories for dependencies.")
         defGRAN = defaultGRAN()
-        
+
     } else
         defGRAN = NULL
 
@@ -18,12 +18,13 @@ if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 
 } else if(require(BiocInstaller, quietly=TRUE)) {
     bioc = biocinstallRepos()
 } else {
-    
+
     bioc = NULL
+    reps = NULL
     p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
     if (file.exists(p)) {
         reps <- tools:::.read_repositories(p)
-        if (!"BioCsoft" %in% rownames(reps)) 
+        if (!"BioCsoft" %in% rownames(reps))
             reps <- NULL
     }
     if (is.null(reps)) {
@@ -31,8 +32,8 @@ if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 
         if(file.exists(p))
             reps <- tools:::.read_repositories(p)
     }
-    if(!is.null(reps) && "Biocsoft" %in% rownames(reps)) {
-        bioc = reps[grep("BioC", reps[,"menu_name"]), "URL"]
+    if(!is.null(reps) && any(grepl("^bioc", rownames(reps), ignore.case = TRUE))) {
+        bioc = reps[grep("^bioc", reps[,"menu_name"], ignore.case=TRUE), "URL"]
     }
 }
 

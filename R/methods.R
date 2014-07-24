@@ -9,7 +9,8 @@ Renvs= new.env()
 ##' @param pkgs The packages to install from the specified repository. Defaults to all packages in the repo
 ##' @param name The name to associate with the computing environment Defaults to doi if it is non-null, and a hash of the full repository url otehrwise
 ##' @param exclude.site Whether packages installed in the current R_LIBS_SITE location should be counted as installed dependencies 
-##' oc
+##' @note The default is to install *ALL* packages in the specified repository. This is appropriate for reproducibility-based repositories but NOT for
+##' more standard ones like CRAN or BioConductor.
 ##' @export
 ##' @importFrom digest digest
 #compEnvFromRepo = function(repo, pkgs = available.packages(contrib.url(repo))[,"Package"], libloc, name, exclude.site = TRUE, switchTo = FALSE, deps_repos = c(defaultGRAN(), biocinstallRepos()), download.dir = NULL, ...) {
@@ -44,18 +45,22 @@ installCompEnv = function(repo_base,
     on.exit(.libPaths(oldlp))
 
     ## We want to be guaranteed to always get the version in repo, even if it is lower than the same package in one of the deps_repos.
-    avail = available.packages(contriburl = contrib.url(c(repo, deps_repos)), filters = c("R_version", "OS_type"))
+    avail = available.packages(contriburl = contrib.url(c(repo, deps_repos)), filters = c( "OS_type")) ## XXX no Rversion filtering. IS THIS A GOOD IDEA??!?!?!
     corepkgs = avail[avail[,"Repository"] %in% contrib.url(repo), "Package"]
     torem = which(avail[,"Package"] %in% corepkgs & ! avail[,"Repository"] %in% contrib.url(repo))
     avail = avail[-torem,]
 
+##    if(grepl("win", .Plathform$OS.type))
+  ##      pkgtbs =  doWindowsHack(pkgs, libloc, repo = repo, deps_repo = deps_repo, avail = avail)
+  ##  else 
     ## second column of download.packages() output is the path to dl'ed file.
-    pkgtbs = download.packages(pkgs, repos = unique(c(repo, deps_repos)), destdir = download.dir, available = avail)[,2]
-
-    tmprepo = tempRepo(tarballs = pkgtbs)
+  ##      pkgtbs = download.packages(pkgs, repos = unique(c(repo, deps_repos)), destdir = download.dir, available = avail)[,2]
     
-##    install.packages(pkgs, lib = libloc, repos = unique(c(repo, deps_repos)), destdir = download.dir, INSTALL_opts = sprintf("--library=%s", libloc), available = avail, ...)
-    install.packages(pkgs, lib = libloc, repos = paste("file://", normalizePath(tmprepo), sep=""), INSTALL_opts = sprintf("--library=%s", libloc), ...)
+  ##  tmprepo = tempRepo(tarballs = pkgtbs)
+    
+    install.packages(pkgs, lib = libloc, repos = unique(c(repo, deps_repos)), destdir = download.dir, INSTALL_opts = sprintf("--library=%s", libloc), available = avail, ...)
+
+
     .libPaths(oldlp)
     on.exit(NULL)
     ret = RComputingEnv(name, libpaths = libloc, exclude.site = exclude.site, src_url = repo)
@@ -68,6 +73,24 @@ installCompEnv = function(repo_base,
 
         
 ##' switchTo
+##'
+##' Switch to a different computing environment (set of installed R packages and library location paths for new pkg installs)
+##'
+##' If switchr does not now about the specified computing environment, a new one will be created via installCompEnv. This includes
+##' creating a directory under the switchr base directory and installing packages into it. See \code{installCompEnv} for more details.
+##'
+##' @param Renv An object representing the computing environment to switch to (and if necessary install). Currently supported are RComputingEnv objects,
+##' character vectors indicating repository urls, and RepoSubset objects (such as \code{BiocDevel} and \code{BiocRelease}.
+##' @param reverting Indicates whether we are reverting to the environment in use before the current one. Typically not set directly by the user.
+##' @param ignoreRVersion Should the R version in use be ignored when checking for existing computing environments. This is experimental.
+##' @param ... Passed directly to \code{installCompEnv} if an existing computing environment is not found.
+##' @details This function has the side effect of unloading all loaded packages (other than base packages, switchr itself, and switchr's dependencies) and
+##' the associated DLLs. It also changes the library location R will use to search for packages, e.g. when you call \code{library}.
+##'
+##' This means you will have to reinstall packages after switching, which is important and intended (e.g. when switching to using Bioc devel from Bioc release).
+##'
+##'
+##' @return Invisibly returns the RComputingEnv object representing the new computing environment
 ##' @export
 setGeneric("switchTo", function(Renv = NULL, reverting = FALSE, ignoreRVersion = FALSE,  ...) standardGeneric("switchTo"))
 
@@ -174,7 +197,6 @@ setMethod("switchTo", "RepoSubset", function(Renv = NULL,
     switchTo(Renv@repos, name = name, pkgs = Renv@pkgs, ...)
 })
           
-##' @export
 setGeneric("attachedPkgs<-", function(Renv, value) standardGeneric("attachedPkgs<-"))
 setMethod("attachedPkgs<-", "RComputingEnv", function(Renv, value) {
     Renv@attached = value
@@ -187,13 +209,16 @@ setMethod("attachedPkgs<-", "RComputingEnv", function(Renv, value) {
 
 
 
-##' @export
 setGeneric("announce", function(Renv, reverted=FALSE) standardGeneric("announce"))
 
 setMethod("announce", "RComputingEnv", function(Renv, reverted=FALSE) {
     message(sprintf("%s to the '%s' computing environment. %d packages are currently available. Packages installed in your site library ARE %ssuppressed.\n To switch back to your previous environment type switchBack()", ifelse(reverted, "Reverted", "Switched"), Renv@name, nrow(Renv@packages), ifelse(Renv@exclude.site, "", "NOT ")))
 })
 
+##' library_paths
+##'
+##' Accessor for which directories an RComputingEnv is associated with.
+##' @param Renv An RComputingEnv
 ##' @export
 setGeneric("library_paths", function(Renv) standardGeneric("library_paths"))
 
@@ -201,7 +226,6 @@ setMethod("library_paths", "RComputingEnv", function(Renv) {
     Renv@libpaths
 })
 
-##' @export
 setMethod("show", "RComputingEnv", function(object) {
     cat(paste(sprintf("An RComputingEnv object defining the '%s' computing environment", object@name),
               "\n\n\t", sprintf("Primary library location(s): %s", paste(object@libpaths, collapse=";")),
@@ -213,6 +237,9 @@ setMethod("show", "RComputingEnv", function(object) {
 ##' @export
 setGeneric("packages", function(Renv) standardGeneric("packages"))
 setMethod("packages", "RComputingEnv", function(Renv) Renv@packages)
+##' switchBack
+##'
+##' A convenience function to switch back to the previously used computing environment.
 ##' @export
 switchBack = function() {
     if(length(Renvs$stack) < 2) {
@@ -222,6 +249,10 @@ switchBack = function() {
     switchTo(Renvs$stack[[2]], reverting=TRUE)
 }
 
+##' currentCompEnv
+##'
+##' Display the computing environment currently in use. If switchTo has not been called, a new RComputingEnv object
+##' describing the current environment is created.
 ##' @export   
 currentCompEnv = function() {
             if(is.null(Renvs$stack)) {

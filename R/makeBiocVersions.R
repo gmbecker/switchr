@@ -2,7 +2,7 @@ biocReleaseV = "2.14"
 biocDevelV = "3.0"
 
 ##lifted from biocLite.R
-obiocrepos <- NULL
+biocrepos <- NULL
 
 ##' @export
 biocReposForVers = function(version) {
@@ -26,8 +26,14 @@ BiocVers = function(version = biocReleaseV,
     RepoSubset(repos, pkgs = "BiocInstaller", default_name = name)
 }
 
+##' BiocRelease
+##'
+##' An object representing the current Bioc release. Can be passed to switchTo.
 ##' @export
-BiocRelease = BiocVers(biocReleaseV)
+BiocRelease = tryCatch(BiocVers(biocReleaseV), error = function(x) warning("Unable to create the BiocRelease object"))
 
+##' BiocDevel
+##'
+##' An object representing the current Bioc devel version. Can be passed to switchTo.
 ##' @export
-BiocDevel = BiocVers(biocDevelV)
+BiocDevel = tryCatch(BiocVers(biocDevelV), error = function(x) warning("Unable to create the BiocDevel object"))
