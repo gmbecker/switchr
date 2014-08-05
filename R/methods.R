@@ -122,7 +122,8 @@ setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkg
 
 
         atched = names(sessionInfo()$otherPkgs)
-   
+        if(is.null(atched))
+            atched = character()
 
         ## detatch attached packages
         sapply(atched[!atched %in% dontunload], function(x) {
