@@ -1,20 +1,26 @@
 ##' @export
-findCompEnv = function(url, name, rvers) {
-    if(missing(url) && missing(name))
+findCompEnv = function(url = NULL, name = NULL, rvers = NULL) {
+    if(missing(url) && missing(name) || is.null(url) && is.null(name))
         stop("Must specify either a url or a name for the desired context")
 
 
-    if(length(url) > 1)
-        url = paste(url, collapse = ";")
+    
     
     man = switchrManifest()
     if(!is.null(rvers))
         man = man[man$rversion == rvers,]
-    
-    i = which(url == man$url)
-    if(!length(i))
-        i = which(url == man$name)
 
+    i = numeric()
+
+    if(!is.null(name))
+        i = which(url == man$name)
+ 
+    
+    if(!length(i) && !is.null(url) && !is.null(name)) {
+        if(length(url) > 1)
+            url = paste(url, collapse = ";")
+        i = which(url == man$url)
+    }
     if(!length(i))
         return(NULL)
     else {

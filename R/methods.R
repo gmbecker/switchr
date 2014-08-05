@@ -18,14 +18,28 @@ installCompEnv = function(repo_base,
     doi,
     repo_name = if(!missing(doi)) doi else "",
     pkgs = available.packages(contrib.url(repo))[,"Package"],
-    name = if(!missing(doi)) doi else digest(paste(repo_base, repo_name, sep="/")),
+    name,
     exclude.site = TRUE,
     switchTo = FALSE,
     deps_repos = c(defGRAN, bioc),
     download.dir = tempdir(), ...) {
     ##need to make sure any dependencies that live in the site lib get installed if the environment is intended to be self-sufficient (exclude.site=TRUE)
-    sep = if(any(grepl("http", repo_base))) "/" else .Platform$file.sep
-    repo = paste(repo_base, repo_name, sep = sep)
+    sep = if(any(grepl("(http[s]{0,1}|file):", repo_base))) "/" else .Platform$file.sep
+    if(missing(repo_base) || !length(repo_base)) 
+        repo = ""
+    else
+        repo = paste(repo_base, repo_name, sep = sep)
+
+
+    if(missing(name)) {
+        if(!missing(doi))
+            name = doi
+        else if(nchar(repo))
+            name = digest(repo)
+        else
+            stop("No name, doi, or repository identified. Unable to determine library location")
+    }
+       
 
     ## if it already exists, we're done. Load it from disk and return.
     ret = findCompEnv(url = repo, name = name, rvers = paste(R.version$major, R.version$minor, sep="."))
@@ -35,6 +49,7 @@ installCompEnv = function(repo_base,
         return(ret)
     }
     libloc = file.path(switchrBaseDir(), name)
+    
     if(!file.exists(libloc))
         dir.create(libloc, recursive=TRUE)
     oldlp = .libPaths()
@@ -44,22 +59,17 @@ installCompEnv = function(repo_base,
         .libPaths2(unique(c(.Library.site, .Library)))
     on.exit(.libPaths(oldlp))
 
-    ## We want to be guaranteed to always get the version in repo, even if it is lower than the same package in one of the deps_repos.
-    avail = available.packages(contriburl = contrib.url(c(repo, deps_repos)), filters = c( "OS_type")) ## XXX no Rversion filtering. IS THIS A GOOD IDEA??!?!?!
-    corepkgs = avail[avail[,"Repository"] %in% contrib.url(repo), "Package"]
-    torem = which(avail[,"Package"] %in% corepkgs & ! avail[,"Repository"] %in% contrib.url(repo))
-    avail = avail[-torem,]
+    if(nchar(repo)) {
+        ## We want to be guaranteed to always get the version in repo, even if it is lower than the same package in one of the deps_repos.
+        avail = available.packages(contriburl = contrib.url(c(repo, deps_repos)), filters = c( "OS_type")) ## XXX no Rversion filtering. IS THIS A GOOD IDEA??!?!?!
+        corepkgs = avail[avail[,"Repository"] %in% contrib.url(repo), "Package"]
+        torem = which(avail[,"Package"] %in% corepkgs & ! avail[,"Repository"] %in% contrib.url(repo))
+        avail = avail[-torem,]
 
-##    if(grepl("win", .Plathform$OS.type))
-  ##      pkgtbs =  doWindowsHack(pkgs, libloc, repo = repo, deps_repo = deps_repo, avail = avail)
-  ##  else 
-    ## second column of download.packages() output is the path to dl'ed file.
-  ##      pkgtbs = download.packages(pkgs, repos = unique(c(repo, deps_repos)), destdir = download.dir, available = avail)[,2]
-    
-  ##  tmprepo = tempRepo(tarballs = pkgtbs)
-    
-    install.packages(pkgs, lib = libloc, repos = unique(c(repo, deps_repos)), destdir = download.dir, INSTALL_opts = sprintf("--library=%s", libloc), available = avail, ...)
-
+        ## remove 'installed package' caches to make absolutely sure we don't hit the wrong package versions when finding dependencies
+        file.remove(list.files(pattern="libloc_.*.rds", path = tempdir()))
+        install.packages(pkgs, lib = libloc, repos = unique(c(repo, deps_repos)), destdir = download.dir, INSTALL_opts = sprintf("--library=%s", libloc), available = avail, ...)
+    }
 
     .libPaths(oldlp)
     on.exit(NULL)
@@ -98,20 +108,38 @@ setGeneric("switchTo", function(Renv = NULL, reverting = FALSE, ignoreRVersion =
 basepkgs = installed.packages(priority="base")[, "Package"]
 dontunload = c(basepkgs, "switchr", "digest")
 
-setMethod("switchTo", "character", function(Renv, reverting = FALSE, ...) {
+setMethod("switchTo", "character", function(Renv, reverting = FALSE, ignoreRVersion = FALSE, name, ...) {
     if(ignoreRVersion)
         rvers = NULL
     else
         rvers = paste(R.version$major, R.version$minor, sep=".")
-    cenv = findCompEnv(url = Renv, name = Renv, rvers = rvers)
-    if(is.null(cenv))
-       cenv = installCompEnv(repo_base = Renv, ...)
+    isURL = any(grepl("(http[s]{0,1}|file)://", Renv))
+    if(isURL) {
+        if(missing(name))
+            name = digest(Renv)
+        cenv = findCompEnv(url = Renv, name = name, rvers = rvers)
+    } else {
+        cenv = findCompEnv(name = Renv, rvers = rvers)
+    }
+
+    if(is.null(cenv)) {
+        if(isURL)
+            cenv = installCompEnv(repo_base = Renv, ...)
+        else 
+            cenv = installCompEnv(repo_base = NULL, name = Renv, ...)
+    }
     if(!is.null(cenv))
         switchTo(cenv)
     else
         stop("unable to switch to computing environment")
 })
-                                                                           
+
+
+
+
+
+
+
 
 setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkgs = FALSE, ...) {
         if(is.null(Renvs$stack)) {
