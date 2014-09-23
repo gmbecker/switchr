@@ -4,8 +4,7 @@
 \title{Install a new set of packages}
 \usage{
 installCompEnv(repo_base, doi, repo_name = if (!missing(doi)) doi else "",
-  pkgs = available.packages(contrib.url(repo))[, "Package"], name = if
-  (!missing(doi)) doi else digest(paste(repo_base, repo_name, sep = "/")),
+  pkgs = available.packages(contrib.url(repo))[, "Package"], name,
   exclude.site = TRUE, switchTo = FALSE, deps_repos = c(defGRAN, bioc),
   download.dir = tempdir(), ...)
 }

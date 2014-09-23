@@ -27,9 +27,10 @@ installCompEnv = function(repo_base,
     sep = if(any(grepl("(http[s]{0,1}|file):", repo_base))) "/" else .Platform$file.sep
     if(missing(repo_base) || !length(repo_base)) 
         repo = ""
-    else
+    else {
         repo = paste(repo_base, repo_name, sep = sep)
-
+     #   repo = gsub("([^:])//([^/])", "\\1/\\2", repo)
+    }
 
     if(missing(name)) {
         if(!missing(doi))
@@ -105,10 +106,19 @@ installCompEnv = function(repo_base,
 setGeneric("switchTo", function(Renv = NULL, reverting = FALSE, ignoreRVersion = FALSE,  ...) standardGeneric("switchTo"))
 
 
-basepkgs = installed.packages(priority="base")[, "Package"]
-dontunload = c(basepkgs, "switchr", "digest")
-
 setMethod("switchTo", "character", function(Renv, reverting = FALSE, ignoreRVersion = FALSE, name, ...) {
+    if(any(grepl("attached base packages:", Renv))) {
+        ## we have session info output
+        if(!(require("GRAN", quietly=TRUE) || require("GRANBase", quietly=TRUE))) {
+            stop("switchr cannot create a library from sessionInfo() output without the GRANBase (or GRAN) package installed.")
+        }
+        sr = sessionRepo(Renv, ..., stoponfail=FALSE) #XXX need to make sure double use of ... is safe!
+        
+        Renv = if(grepl(sr, "file://")) sr else paste0("file://",sr)
+        Renv = gsub("/src/contrib.*", "", Renv)
+        name = gsub(".*/([^/]*)$", "\\1", Renv)
+        
+    }
     if(ignoreRVersion)
         rvers = NULL
     else
@@ -139,8 +149,6 @@ setMethod("switchTo", "character", function(Renv, reverting = FALSE, ignoreRVers
 
 
 
-
-
 setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkgs = FALSE, ...) {
         if(is.null(Renvs$stack)) {
             paths = .libPaths()
@@ -148,57 +156,17 @@ setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkg
             Renvs$stack = list(original = RComputingEnv("original", paths, exclude.site=FALSE, src_url=""))
         }
 
-
-        atched = names(sessionInfo()$otherPkgs)
-        if(is.null(atched))
-            atched = character()
-
-        ## detatch attached packages
-        sapply(atched[!atched %in% dontunload], function(x) {
-            pkg = paste("package", x, sep=":")
-            detach(pkg, character.only = TRUE)
-            
-        })
-
-        ## unload imported namespaces
-        ##while loop to deal with interdependencies between loaded namespaces
-        lded = rev(names(sessionInfo()$loadedOnly))
-        lded = lded[!lded %in% dontunload]
-        cnt = 1
-        while(length(lded) && cnt < 1000) {
-            sapply(lded, function(x) {
-                res = tryCatch(unloadNamespace(getNamespace(x)), error = function(e) e)
-                if(!is(res, "error")) {
-                }
-            })
-            lded = rev(names(sessionInfo()$loadedOnly))
-            lded = lded[!lded %in% dontunload]
-            cnt = cnt +1
-        }
-        ## while loop never naturally completed
-        if(cnt == 1000)
-            warning("Unable to unload all namespaces")
-
-        ##deal with all DLLs now that the rest is done.
-        pkgs = unique(c(atched, lded))
-        pkgs = pkgs[! pkgs %in%  dontunload]            
-        sapply(pkgs, function(x) {
-            dll = getLoadedDLLs()[[x]]
-            
-            if(!is.null(dll))
-                tryCatch(library.dynam.unload(x, dirname(dirname(dll[["path"]]))), error = function(e) NULL)
-        })
-
+        flushSession()
         
         if(!Renv@exclude.site)
             .libPaths(library_paths(Renv))
         else
             .libPaths2(c(library_paths(Renv), .Library))
 
-        if(!reverting) {
-            attachedPkgs(Renvs$stack[[length(Renvs$stack)]]) = atched
-            Renvs$stack = c(Renv, Renvs$stack)
-       } else
+         if(!reverting) {
+#            attachedPkgs(Renvs$stack[[length(Renvs$stack)]]) = atched
+             Renvs$stack = c(Renv, Renvs$stack)
+        } else
             Renvs$stack = Renvs$stack[-1]
         announce(Renv, reverted = reverting)
         if(reloadPkgs)
@@ -225,7 +193,10 @@ setMethod("switchTo", "RepoSubset", function(Renv = NULL,
         
     switchTo(Renv@repos, name = name, pkgs = Renv@pkgs, ...)
 })
-          
+
+
+
+
 setGeneric("attachedPkgs<-", function(Renv, value) standardGeneric("attachedPkgs<-"))
 setMethod("attachedPkgs<-", "RComputingEnv", function(Renv, value) {
     Renv@attached = value

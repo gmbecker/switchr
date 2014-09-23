@@ -1,6 +1,6 @@
     if(require(GRAN, quietly=TRUE)) {
         message("Found GRAN package installed. Adding it to list of default repositories for dependencies.")
-        defGRAN = defaultGRAN()
+        defGRAN = tryCatch(defaultGRAN(), error=function(e) NULL)
 
     } else
         defGRAN = NULL
