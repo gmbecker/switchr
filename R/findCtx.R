@@ -13,7 +13,7 @@ findCompEnv = function(url = NULL, name = NULL, rvers = NULL) {
     i = numeric()
 
     if(!is.null(name))
-        i = which(url == man$name)
+        i = which(name == man$name)
  
     
     if(!length(i) && !is.null(url) && !is.null(name)) {
