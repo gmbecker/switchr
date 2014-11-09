@@ -1,9 +1,3 @@
-    if(require(GRAN, quietly=TRUE)) {
-        message("Found GRAN package installed. Adding it to list of default repositories for dependencies.")
-        defGRAN = tryCatch(defaultGRAN(), error=function(e) NULL)
-
-    } else
-        defGRAN = NULL
 
 if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 0) {
     message("R before 2.14 detected. Attempting to determine BioC repos by sourcing biocLite.R")

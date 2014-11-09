@@ -1,6 +1,6 @@
 
 basepkgs = installed.packages(priority="base")[, "Package"]
-dontunload = c(basepkgs, "switchr", "digest")
+switchDeps = c(basepkgs, "switchr", "digest", "RCurl", "bitops", "BiocInstaller")
 
 ##' Empty current R session
 ##'
@@ -8,7 +8,7 @@ dontunload = c(basepkgs, "switchr", "digest")
 ##' @export
 ##' 
 
-flushSession = function(dontunload = c("switchr", "digest")) {
+flushSession = function(dontunload = switchDeps) {
     
     dontunload = c(basepkgs, dontunload)
     

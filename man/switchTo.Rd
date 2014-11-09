@@ -3,31 +3,48 @@
 \alias{switchTo}
 \title{switchTo}
 \usage{
-switchTo(Renv = NULL, reverting = FALSE, ignoreRVersion = FALSE, ...)
+switchTo(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,
+  ...)
 }
 \arguments{
-\item{Renv}{An object representing the computing environment to switch to (and if necessary install). Currently supported are RComputingEnv objects,
-character vectors indicating repository urls, and RepoSubset objects (such as \code{BiocDevel} and \code{BiocRelease}.}
+\item{name}{The name associated (or to associate) with the computing
+environment.}
 
-\item{reverting}{Indicates whether we are reverting to the environment in use before the current one. Typically not set directly by the user.}
+\item{seed}{The seed, indicating packages to install into a newly created
+package library
+No effect if the library already exists}
 
-\item{ignoreRVersion}{Should the R version in use be ignored when checking for existing computing environments. This is experimental.}
+\item{reverting}{Indicates whether we are reverting to the environment in
+use before the current one. Typically not set directly by the user.}
 
-\item{...}{Passed directly to \code{installCompEnv} if an existing computing environment is not found.}
+\item{ignoreRVersion}{Should the R version in use be ignored when checking
+for existing computing environments. This is experimental.}
+
+\item{...}{Passed directly to \code{installCompEnv} if an existing
+computing environment is not found.}
 }
 \value{
-Invisibly returns the RComputingEnv object representing the new computing environment
+Invisibly returns the RComputingEnv object representing the new
+computing environment
 }
 \description{
-Switch to a different computing environment (set of installed R packages and library location paths for new pkg installs)
+Switch to a different computing environment (set of installed R packages
+and library location paths for new pkg installs)
 }
 \details{
-If switchr does not now about the specified computing environment, a new one will be created via installCompEnv. This includes
-creating a directory under the switchr base directory and installing packages into it. See \code{installCompEnv} for more details.
+If switchr does not now about the specified computing environment, a new one
+will be created via installCompEnv. This includes
+creating a directory under the switchr base directory and installing
+packages into it. See \code{installCompEnv} for more details.
 
-This function has the side effect of unloading all loaded packages (other than base packages, switchr itself, and switchr's dependencies) and
-the associated DLLs. It also changes the library location R will use to search for packages, e.g. when you call \code{library}.
+This function has the side effect of unloading all loaded
+packages (other than base packages, GRAN or GRANBAse,  switchr itself, and
+switchr's dependencies) and the associated DLLs. It also changes the library
+location R will use to search for packages, e.g. when you call
+\code{library}.
 
-This means you will have to reinstall packages after switching, which is important and intended (e.g. when switching to using Bioc devel from Bioc release).
+This means you will have to reinstall packages after switching, which is
+important and intended (e.g. when switching to using Bioc devel from Bioc
+release).
 }
 

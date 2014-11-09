@@ -1,5 +1,5 @@
 ##' @export
-findCompEnv = function(url = NULL, name = NULL, rvers = NULL) {
+findCompEnv = function(url = NULL, name, rvers = NULL, allMatches = FALSE) {
     if(missing(url) && missing(name) || is.null(url) && is.null(name))
         stop("Must specify either a url or a name for the desired context")
 
@@ -12,20 +12,23 @@ findCompEnv = function(url = NULL, name = NULL, rvers = NULL) {
 
     i = numeric()
 
-    if(!is.null(name))
-        i = which(name == man$name)
- 
-    
-    if(!length(i) && !is.null(url) && !is.null(name)) {
-        if(length(url) > 1)
-            url = paste(url, collapse = ";")
-        i = which(url == man$url)
-    }
+
+    i = which(name == man$name)
     if(!length(i))
         return(NULL)
     else {
         manrow = man[i,]
-        return(RComputingEnv(name = manrow$name, src_url = strsplit(manrow$url, ";")[[1]], libpaths = strsplit(manrow$paths, ";")[[1]], exclude.site = manrow$excl.site))
+        if(allMatches)
+            return(mapply(RComputingEnv, name = manrow$name,
+                          seed = NULL, ## XXX TODO
+                          libpaths = lapply(manrow$paths,
+                              function(x) strsplit(x, ";")[[1]]),
+                          exclude.site = manrow$excl.site))
+        else
+            return(RComputingEnv(name = manrow$name,
+                                 seed = NULL, ## XXX TODO
+                                 libpaths = strsplit(manrow$paths, ";")[[1]],
+                                 exclude.site = manrow$excl.site))
     }
                 
         
@@ -43,6 +46,7 @@ switchrBaseDir = function(value) {
     }
 }
 
+##' @export
 switchrManifest = function() {
     dir = switchrBaseDir()
     manfile = file.path(dir, "manifest.dat")

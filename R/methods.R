@@ -1,206 +1,213 @@
 
 Renvs= new.env()
 
-##' Install a new set of packages
-##'
-##' @param repo_base The repo base url. repo_name (which may be "") will be concatenated to it
-##' @param doi (optional) a DOI to associate with this computing environment (typically the DOI of the work being reproduced)
-##' @param repo_name The name of the repository (on top of repo_base). Defaults to doi if it is specified, and "" otherwise
-##' @param pkgs The packages to install from the specified repository. Defaults to all packages in the repo
-##' @param name The name to associate with the computing environment Defaults to doi if it is non-null, and a hash of the full repository url otehrwise
-##' @param exclude.site Whether packages installed in the current R_LIBS_SITE location should be counted as installed dependencies 
-##' @note The default is to install *ALL* packages in the specified repository. This is appropriate for reproducibility-based repositories but NOT for
-##' more standard ones like CRAN or BioConductor.
-##' @export
-##' @importFrom digest digest
-#compEnvFromRepo = function(repo, pkgs = available.packages(contrib.url(repo))[,"Package"], libloc, name, exclude.site = TRUE, switchTo = FALSE, deps_repos = c(defaultGRAN(), biocinstallRepos()), download.dir = NULL, ...) {
-installCompEnv = function(repo_base,
-    doi,
-    repo_name = if(!missing(doi)) doi else "",
-    pkgs = available.packages(contrib.url(repo))[,"Package"],
-    name,
-    exclude.site = TRUE,
-    switchTo = FALSE,
-    deps_repos = c(defGRAN, bioc),
-    download.dir = tempdir(), ...) {
-    ##need to make sure any dependencies that live in the site lib get installed if the environment is intended to be self-sufficient (exclude.site=TRUE)
-    sep = if(any(grepl("(http[s]{0,1}|file):", repo_base))) "/" else .Platform$file.sep
-    if(missing(repo_base) || !length(repo_base)) 
-        repo = ""
-    else {
-        repo = paste(repo_base, repo_name, sep = sep)
-     #   repo = gsub("([^:])//([^/])", "\\1/\\2", repo)
-    }
-
-    if(missing(name)) {
-        if(!missing(doi))
-            name = doi
-        else if(nchar(repo))
-            name = digest(repo)
-        else
-            stop("No name, doi, or repository identified. Unable to determine library location")
-    }
-       
-
-    ## if it already exists, we're done. Load it from disk and return.
-    ret = findCompEnv(url = repo, name = name, rvers = paste(R.version$major, R.version$minor, sep="."))
-    if(!is.null(ret)) {
-        if(switchTo)
-            switchTo(ret)
-        return(ret)
-    }
-    libloc = file.path(switchrBaseDir(), name)
-    
-    if(!file.exists(libloc))
-        dir.create(libloc, recursive=TRUE)
-    oldlp = .libPaths()
-    if(exclude.site)
-        .libPaths2(unique(.Library))
-    else 
-        .libPaths2(unique(c(.Library.site, .Library)))
-    on.exit(.libPaths(oldlp))
-
-    if(nchar(repo)) {
-        ## We want to be guaranteed to always get the version in repo, even if it is lower than the same package in one of the deps_repos.
-        avail = available.packages(contriburl = contrib.url(c(repo, deps_repos)), filters = c( "OS_type")) ## XXX no Rversion filtering. IS THIS A GOOD IDEA??!?!?!
-        corepkgs = avail[avail[,"Repository"] %in% contrib.url(repo), "Package"]
-        torem = which(avail[,"Package"] %in% corepkgs & ! avail[,"Repository"] %in% contrib.url(repo))
-        avail = avail[-torem,]
-
-        ## remove 'installed package' caches to make absolutely sure we don't hit the wrong package versions when finding dependencies
-        file.remove(list.files(pattern="libloc_.*.rds", path = tempdir()))
-        install.packages(pkgs, lib = libloc, repos = unique(c(repo, deps_repos)), destdir = download.dir, INSTALL_opts = sprintf("--library=%s", libloc), available = avail, ...)
-    }
-
-    .libPaths(oldlp)
-    on.exit(NULL)
-    ret = RComputingEnv(name, libpaths = libloc, exclude.site = exclude.site, src_url = repo)
-    write.table(data.frame(name = name, url = paste(repo, collapse = ";"), paths = paste(libloc, collapse=";"), excl.site = exclude.site, rversion = paste(R.version$major, R.version$minor, sep=".")), file = file.path(libloc[1], "lib_info"))
-    updateManifest()
-    if(switchTo)
-        switchTo(ret)
-    ret
-}
-
         
 ##' switchTo
 ##'
-##' Switch to a different computing environment (set of installed R packages and library location paths for new pkg installs)
+##' Switch to a different computing environment (set of installed R packages
+##' and library location paths for new pkg installs)
 ##'
-##' If switchr does not now about the specified computing environment, a new one will be created via installCompEnv. This includes
-##' creating a directory under the switchr base directory and installing packages into it. See \code{installCompEnv} for more details.
+##' If switchr does not now about the specified computing environment, a new one
+##' will be created via installCompEnv. This includes
+##' creating a directory under the switchr base directory and installing
+##' packages into it. See \code{installCompEnv} for more details.
 ##'
-##' @param Renv An object representing the computing environment to switch to (and if necessary install). Currently supported are RComputingEnv objects,
-##' character vectors indicating repository urls, and RepoSubset objects (such as \code{BiocDevel} and \code{BiocRelease}.
-##' @param reverting Indicates whether we are reverting to the environment in use before the current one. Typically not set directly by the user.
-##' @param ignoreRVersion Should the R version in use be ignored when checking for existing computing environments. This is experimental.
-##' @param ... Passed directly to \code{installCompEnv} if an existing computing environment is not found.
-##' @details This function has the side effect of unloading all loaded packages (other than base packages, switchr itself, and switchr's dependencies) and
-##' the associated DLLs. It also changes the library location R will use to search for packages, e.g. when you call \code{library}.
+##' @param name The name associated (or to associate) with the computing
+##' environment.
+##' @param seed The seed, indicating packages to install into a newly created
+##' package library
+##' No effect if the library already exists
+##' @param reverting Indicates whether we are reverting to the environment in
+##' use before the current one. Typically not set directly by the user.
+##' @param ignoreRVersion Should the R version in use be ignored when checking
+##' for existing computing environments. This is experimental.
+##' @param ... Passed directly to \code{installCompEnv} if an existing
+##' computing environment is not found.
+##' @details This function has the side effect of unloading all loaded
+##' packages (other than base packages, GRAN or GRANBAse,  switchr itself, and
+##' switchr's dependencies) and the associated DLLs. It also changes the library
+##' location R will use to search for packages, e.g. when you call
+##' \code{library}.
 ##'
-##' This means you will have to reinstall packages after switching, which is important and intended (e.g. when switching to using Bioc devel from Bioc release).
+##' This means you will have to reinstall packages after switching, which is
+##' important and intended (e.g. when switching to using Bioc devel from Bioc
+##' release).
 ##'
 ##'
-##' @return Invisibly returns the RComputingEnv object representing the new computing environment
+##' @return Invisibly returns the RComputingEnv object representing the new
+##' computing environment
 ##' @export
-setGeneric("switchTo", function(Renv = NULL, reverting = FALSE, ignoreRVersion = FALSE,  ...) standardGeneric("switchTo"))
+setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,  ...) standardGeneric("switchTo"))
 
 
-setMethod("switchTo", "character", function(Renv, reverting = FALSE, ignoreRVersion = FALSE, name, ...) {
-    if(any(grepl("attached base packages:", Renv))) {
-        ## we have session info output
-        if(!(require("GRAN", quietly=TRUE) || require("GRANBase", quietly=TRUE))) {
-            stop("switchr cannot create a library from sessionInfo() output without the GRANBase (or GRAN) package installed.")
-        }
-        sr = sessionRepo(Renv, ..., stoponfail=FALSE) #XXX need to make sure double use of ... is safe!
-        
-        Renv = if(grepl(sr, "file://")) sr else paste0("file://",sr)
-        Renv = gsub("/src/contrib.*", "", Renv)
-        name = gsub(".*/([^/]*)$", "\\1", Renv)
-        
+setMethod("switchTo", c(name = "character", seed = "character"), function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
+    chtype = getStringType(seed)
+    if(chtype == file) {
+        seed = readLines(seed)
+        chtype = getStringType(seed)
     }
+    
+    if(chtype == "sessioninfo") {
+        ## we have session info output
+        
+        sr = sessionRepo(seed, ..., stoponfail=FALSE) #XXX need to make sure double use of ... is safe!
+
+        
+        seed = if(grepl(sr, "file://")) sr else paste("file://",sr, sep="")
+        seed = gsub("/src/contrib.*", "", seed)
+        chtype = "repourl"
+          
+    } else if (grepl("(repo|contrib)", chtype)) {
+        seed = repoFromString(seed, chtype)
+        chtype = "repourl"
+    }
+
+    if(chtype != "repourl") {
+        man = readManifest(seed)
+        if(!is(man, "SessionManifest"))
+            man = SessionManifest(pkg_versions = data.frame(name = manifest_df(man)$name,
+                                      version = NA), pkg_manifest = man)
+        seed = lazyRepository(man)
+        chtype = "repourl"
+    }
+        
+    
     if(ignoreRVersion)
         rvers = NULL
     else
         rvers = paste(R.version$major, R.version$minor, sep=".")
-    isURL = any(grepl("(http[s]{0,1}|file)://", Renv))
-    if(isURL) {
-        if(missing(name))
-            name = digest(Renv)
-        cenv = findCompEnv(url = Renv, name = name, rvers = rvers)
-    } else {
-        cenv = findCompEnv(name = Renv, rvers = rvers)
-    }
 
-    if(is.null(cenv)) {
-        if(isURL)
-            cenv = installCompEnv(repo_base = Renv, ...)
-        else 
-            cenv = installCompEnv(repo_base = NULL, name = Renv, ...)
-    }
+    cenv = findCompEnv(name = name, rvers = rvers)
+
+    if(is.null(cenv))
+        cenv = makeLibraryCtx(name = name, seed = seed, ...)
+
     if(!is.null(cenv))
-        switchTo(cenv)
+        switchTo(name = name, seed = cenv)
     else
         stop("unable to switch to computing environment")
 })
 
 
+setMethod("switchTo", c("RComputingEnv", "missing"),
+          function(name, seed, reverting, ingoreRVersion, ...)
+          switchTo(seed = name, reverting = reverting, ingoreRVersion = ignoreRVersion, ...)
+      )
+
+
+
+setMethod("switchTo", c("character", "missing"),
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,...) {
+              
+    if(ignoreRVersion)
+        rvers = NULL
+    else
+        rvers = paste(R.version$major, R.version$minor, sep=".")
+
+    cenv = findCompEnv(name = name, rvers = rvers)
+
+    if(is.null(cenv))
+        cenv = makeLibraryCtx(name = name, ...)
+
+
+    if(!is.null(cenv))
+        switchTo(name = name, seed = cenv)
+    else
+        stop("unable to switch to computing environment")
+})
+
+##'@importFrom RCurl url.exists
+##' 
+getStringType = function(str) {
+    if(any(grepl("Platform:", str)))
+        return("sessioninfo")
+    if(length(str) > 1)
+        stop("Char vector of length >1 with non-sessionInfo contents detected")
+
+    if(file.exists(str)) {
+        if( !file.exists(file.path(str, ".")))
+            return("file")
+        else {
+            if(grepl("contrib/{0,1}$", str))
+                return("contribdir")
+
+            if(file.exists(file.path(str,
+                                     "src/contrib/PACKAGES")))
+                return("repodir")
+            else
+                return("manifestdir")
+        }
+                                     
+    }
+    if(url.exists(str)) {
+        if(grepl("contrib/{0,1}$", str))
+            return("contriburl")
+                   
+        if(url.exists(paste(str, "src/contrib/PACKAGES", sep ="")) ||
+           url.exists(paste(str, "bin/windows/contrib/PACKAGES", sep ="")) ||
+           url.exists(paste(str, "bin/macosx/contrib/PACKAGES", sep ="")))
+            return("repourl")
+        else
+            return("manifesturl")
+    }
+    stop("Unidentifiable string:", str)
+}
 
 
 
 
-setMethod("switchTo", "RComputingEnv", function(Renv, reverting=FALSE, reloadPkgs = FALSE, ...) {
+          
+          
+
+
+
+setMethod("switchTo", c(name = "ANY", seed = "RComputingEnv"), function(name, seed, reverting=FALSE, reloadPkgs = FALSE, ...) {
         if(is.null(Renvs$stack)) {
             paths = .libPaths()
             paths = paths[!paths %in% c(.Library.site, .Library)]
-            Renvs$stack = list(original = RComputingEnv("original", paths, exclude.site=FALSE, src_url=""))
+            Renvs$stack = list(original = RComputingEnv("original", paths, exclude.site=FALSE, seed = NULL))
         }
 
         flushSession()
         
-        if(!Renv@exclude.site)
-            .libPaths(library_paths(Renv))
+        if(!seed@exclude.site)
+            .libPaths(library_paths(seed))
         else
-            .libPaths2(c(library_paths(Renv), .Library))
+            .libPaths2(c(library_paths(seed), .Library))
 
          if(!reverting) {
 #            attachedPkgs(Renvs$stack[[length(Renvs$stack)]]) = atched
-             Renvs$stack = c(Renv, Renvs$stack)
+             Renvs$stack = c(seed, Renvs$stack)
         } else
             Renvs$stack = Renvs$stack[-1]
-        announce(Renv, reverted = reverting)
+        announce(seed, reverted = reverting)
         if(reloadPkgs)
-            sapply(Renv@attached, library)
-        invisible(Renv)
+            sapply(seed@attached, library)
+        invisible(seed)
     })
 
-setMethod("switchTo", "RepoSubset", function(Renv = NULL,
+setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, seed = NULL,
                                              reverting = FALSE,
                                              ignoreRVersion = FALSE,
-                                             name,
-                                             doi,
-                                             ...) {
+                            ...) {
     if(any(c("pkgs", "repo_name") %in% names(list(...))))
         stop("Cannot specify pkgs or repo_name when switching to a RepoSubset")
-    ##Renv is a RepoSubset object
+    ##seed is a RepoSubset object
 
     if(missing(name)) {
-        if(!missing(doi))
-            name = doi
-        else
-            name = Renv@default_name
+        name = seed@default_name
     }
         
-    switchTo(Renv@repos, name = name, pkgs = Renv@pkgs, ...)
+    switchTo(seed = seed@repos, name = name, pkgs = seed@pkgs, ...)
 })
 
 
 
 
-setGeneric("attachedPkgs<-", function(Renv, value) standardGeneric("attachedPkgs<-"))
-setMethod("attachedPkgs<-", "RComputingEnv", function(Renv, value) {
-    Renv@attached = value
-    Renv
+setGeneric("attachedPkgs<-", function(seed, value) standardGeneric("attachedPkgs<-"))
+setMethod("attachedPkgs<-", "RComputingEnv", function(seed, value) {
+    seed@attached = value
+    seed
 })
 
 
@@ -209,21 +216,21 @@ setMethod("attachedPkgs<-", "RComputingEnv", function(Renv, value) {
 
 
 
-setGeneric("announce", function(Renv, reverted=FALSE) standardGeneric("announce"))
+setGeneric("announce", function(seed, reverted=FALSE) standardGeneric("announce"))
 
-setMethod("announce", "RComputingEnv", function(Renv, reverted=FALSE) {
-    message(sprintf("%s to the '%s' computing environment. %d packages are currently available. Packages installed in your site library ARE %ssuppressed.\n To switch back to your previous environment type switchBack()", ifelse(reverted, "Reverted", "Switched"), Renv@name, nrow(Renv@packages), ifelse(Renv@exclude.site, "", "NOT ")))
+setMethod("announce", "RComputingEnv", function(seed, reverted=FALSE) {
+    message(sprintf("%s to the '%s' computing environment. %d packages are currently available. Packages installed in your site library ARE %ssuppressed.\n To switch back to your previous environment type switchBack()", ifelse(reverted, "Reverted", "Switched"), seed@name, nrow(seed@packages), ifelse(seed@exclude.site, "", "NOT ")))
 })
 
 ##' library_paths
 ##'
 ##' Accessor for which directories an RComputingEnv is associated with.
-##' @param Renv An RComputingEnv
+##' @param seed An RComputingEnv
 ##' @export
-setGeneric("library_paths", function(Renv) standardGeneric("library_paths"))
+setGeneric("library_paths", function(seed) standardGeneric("library_paths"))
 
-setMethod("library_paths", "RComputingEnv", function(Renv) {
-    Renv@libpaths
+setMethod("library_paths", "RComputingEnv", function(seed) {
+    seed@libpaths
 })
 
 setMethod("show", "RComputingEnv", function(object) {
@@ -235,8 +242,8 @@ setMethod("show", "RComputingEnv", function(object) {
 })
 
 ##' @export
-setGeneric("packages", function(Renv) standardGeneric("packages"))
-setMethod("packages", "RComputingEnv", function(Renv) Renv@packages)
+setGeneric("packages", function(seed) standardGeneric("packages"))
+setMethod("packages", "RComputingEnv", function(seed) seed@packages)
 ##' switchBack
 ##'
 ##' A convenience function to switch back to the previously used computing environment.
@@ -258,7 +265,9 @@ currentCompEnv = function() {
             if(is.null(Renvs$stack)) {
                 lp = .libPaths()
                 lp = lp[!(lp %in% .Library | lp %in% .Library.site)]
-                Renvs$stack = list(original = RComputingEnv("original", lp , exclude.site=FALSE))
+                Renvs$stack = list(original = RComputingEnv("original",
+                                       libpaths = lp , seed = NULL,
+                                       exclude.site=FALSE))
             }
             Renvs$stack[[1]]
         }

@@ -3,10 +3,10 @@
 \alias{library_paths}
 \title{library_paths}
 \usage{
-library_paths(Renv)
+library_paths(seed)
 }
 \arguments{
-\item{Renv}{An RComputingEnv}
+\item{seed}{An RComputingEnv}
 }
 \description{
 Accessor for which directories an RComputingEnv is associated with.
