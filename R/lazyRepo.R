@@ -183,7 +183,7 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
                           url = manrow$url, branch = manrow$branch,
                           subdir = manrow$subdir,
                           scm_auth = scm_auths)
-                      innerFun(src, pkg, version = vers) #without versions for now
+                      innerFun(src, pkg, version = vers, dir = repdir) #without versions for now
                   } else if(pkg %in% avail[,"Package"])
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkg)
                   else

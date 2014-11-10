@@ -34,11 +34,13 @@ iscurrent = rep(FALSE, times=length(vers))
 iscurrent[stillthere[currentpkgs]] = TRUE
 
 baseurl = ifelse(iscurrent, "http://cran.rstudio.com/src/contrib",
-    "http://cran.r-project.org/src/contrib/Archive")
-cranurls = paste(baseurl, names(vers), tarnames, sep = "/")
+    paste("http://cran.r-project.org/src/contrib/Archive", names(vers), sep="/")
+    )
+cranurls = paste(baseurl, tarnames, sep = "/")
 
+library(switchr)
 man = Manifest(name = names(vers), type = "tarball", subdir = ".", branch = NA, url = cranurls,
     dep_repos = character())
 
-switchTo("R2.15.3Lib2")
+switchTo("R2.15.3Lib")
 Install("devtools", man)
