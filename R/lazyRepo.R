@@ -74,36 +74,51 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
               repdir = file.path(rep_path, "src", "contrib")
               dir.create(repdir, recursive = TRUE)
               fakerepo = paste0("file://", normalizePath(repdir))
-              innerFun = function(src, pkgname, version) {
+              innerFun = function(src, pkgname, version, dir) {
                   ## if we only select 1 row we get a character :(
                   if(is.null(dim((avail))))
                       avail = t(as.matrix(avail))
+
                   if(pkgname %in% avail[,"Package"] || pkgname %in% basepkgs) {
                       if(verbose)
-                          message(paste("Package", pkg, "already available from",
+                          message(paste("Package", pkgname, "already available from",
                                         "repository at",
                                         avail[avail[,"Package"] == pkg, "Repository"]))
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
                       return()
                   }
+                  
+                  tball = file.path(dir, paste(pkgname, "_", version,
+                      ".tar.gz", sep=""))
 
-                  if(!is.na(version)) {
-                      pkgfile = locatePkgVersion( src@name, version, manifest = manifest,
-                                       dir = dir)
-                      if(is.null(pkgfile))
-                          stop("Unable to locate the specified version  of package",
-                               src@name)
+                  if(file.exists(tball)) {
+                      if(verbose)
+                          message(sprintf("Package %s (Version %s) already retrieved.",
+                                          pkgname, version))
+                      
+                      pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
+                      desc = untar(tball, files = "DESCRIPTION",
+                          exdir = file.path(tempdir(), pkgname))
+                      dcf = read.dcf(desc)
+                  } else {
+                      if(!is.na(version)) {
+                          pkgfile = locatePkgVersion( src@name, version, manifest = manifest,
+                              dir = dir)
+                          if(is.null(pkgfile))
+                              stop("Unable to locate the specified version  of package",
+                                   src@name)
+                      }
+                      
+                      if(verbose)
+                          message(sprintf("Retrieving package %s from %s (branch %s)",
+                                          pkgname, location(src), branch(branch)))
+                      
+                      pkgdir = makePkgDir(pkgname, src, path = dir,
+                          latest_only = is.na(version), param = param)
+                      
+                      
+                      dcf = read.dcf(file.path(pkgdir, "DESCRIPTION"))
                   }
-                  
-                  if(verbose)
-                      message(sprintf("Retrieving package %s from %s (branch %s)",
-                                      pkgname, location(src), branch(branch)))
-                  
-                  pkgdir = makePkgDir(pkgname, src, path = dir,
-                      latest_only = is.na(version), param = param)
-                  
-                  
-                  dcf = read.dcf(file.path(pkgdir, "DESCRIPTION"))
                   fields = colnames(dcf)
                   .dcfField = function(field, default = NA) {
                       if(field %in% colnames(dcf)) unname(dcf[1, field]) else NA

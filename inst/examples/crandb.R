@@ -23,11 +23,22 @@ vers = fromJSON(DB("/-/release/2.15.3", head=20))
 
 tarnames = paste0(names(vers), "_", vers, ".tar.gz")
 
-cranurls = paste("http://cran.r-project.org/src/contrib/Archive",
-    names(vers), tarnames, sep = "/")
+## some packages haven't been updated since 2.15.3, so they are in CRAN rather
+## than the archive.
+
+avail = available.packages()
+stillthere = which(names(vers) %in% avail[,"Package"])
+currentpkgs = avail[names(vers)[stillthere], "Version"] == vers[stillthere]
+
+iscurrent = rep(FALSE, times=length(vers))
+iscurrent[stillthere[currentpkgs]] = TRUE
+
+baseurl = ifelse(iscurrent, "http://cran.rstudio.com/src/contrib",
+    "http://cran.r-project.org/src/contrib/Archive")
+cranurls = paste(baseurl, names(vers), tarnames, sep = "/")
 
 man = Manifest(name = names(vers), type = "tarball", subdir = ".", branch = NA, url = cranurls,
     dep_repos = character())
 
-switchTo("R2.15.3Lib")
-Install("nlme", man)
+switchTo("R2.15.3Lib2")
+Install("devtools", man)
