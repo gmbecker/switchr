@@ -113,8 +113,11 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
                           message(sprintf("Retrieving package %s from %s (branch %s)",
                                           pkgname, location(src), branch(branch)))
                       
-                      pkgdir = makePkgDir(pkgname, src, path = dir,
+                      success = makePkgDir(pkgname, src, path = dir,
                           latest_only = is.na(version), param = param)
+                      if(!success)
+                          stop("Unable to make package directory")
+                      pkgdir = file.path(path, pkgname)
                       
                       
                       dcf = read.dcf(file.path(pkgdir, "DESCRIPTION"))

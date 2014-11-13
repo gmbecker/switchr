@@ -22,37 +22,37 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
               if(file.exists(name) && file.exists(name, ".svn") && !forceRefresh)
               {
                   lfun(name, "Existing temporary checkout found at this location. Updating")
-        up = updateSVN(file.path(path, name), source,  param = param)
-    } else {
+                  up = updateSVN(file.path(path, name), source,  param = param)
+              } else {
         ## clean up the directory if it was created from some other type of source
-        if(file.exists(name))
-            unlink(name, recursive = TRUE)
-        cmd = paste("svn co", location(source), name, opts)
-        lfun(name, paste("Attempting to create temporary source",
-                                  "directory from SVN repo", location(source),
-                                 "(branch", source@branch, "; cmd", cmd, ")"))
-        out = tryCatch(system_w_init(cmd, param = param), error = function(x) x)
-        if(is(out, "error"))
-        {
-            msg = c(paste("Temporary SVN checkout failed. cmd:", cmd), out$message)
-            logfun(param)(name, msg, type="error", param)
-            return(FALSE)
-        }
-    }
-    rtdir = file.path(path, name)
-
-    ret = !is.null(findPkgDir(rtdir, branch(source), source@subdir, param = param))
-
-    #success log
-    if(ret)
-    {
-        logfun(param)(name,
-               paste("Temporary source directory successfully created:",
-                     ret)
-               )
-    }
-    ret
-})
+                  if(file.exists(name))
+                      unlink(name, recursive = TRUE)
+                  cmd = paste("svn co", location(source), name, opts)
+                  lfun(name, paste("Attempting to create temporary source",
+                                   "directory from SVN repo", location(source),
+                                   "(branch", source@branch, "; cmd", cmd, ")"))
+                  out = tryCatch(system_w_init(cmd, param = param), error = function(x) x)
+                  if(is(out, "error"))
+                  {
+                      msg = c(paste("Temporary SVN checkout failed. cmd:", cmd), out$message)
+                      logfun(param)(name, msg, type="error", param)
+                      return(FALSE)
+                  }
+              }
+              rtdir = file.path(path, name)
+              
+              ret = !is.null(findPkgDir(rtdir, branch(source), source@subdir, param = param))
+              
+                                        #success log
+              if(ret)
+              {
+                  logfun(param)(name,
+                                paste("Temporary source directory successfully created:",
+                                      ret)
+                                )
+              }
+              ret
+          })
 
 
 setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
