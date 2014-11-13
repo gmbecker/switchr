@@ -117,7 +117,7 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
                           latest_only = is.na(version), param = param)
                       if(!success)
                           stop("Unable to make package directory")
-                      pkgdir = file.path(path, pkgname)
+                      pkgdir = file.path(dir, pkgname)
                       
                       
                       dcf = read.dcf(file.path(pkgdir, "DESCRIPTION"))
