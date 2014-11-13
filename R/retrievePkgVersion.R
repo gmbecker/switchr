@@ -18,9 +18,9 @@ locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
     ##1. Already in the parent repository (including the associated notrack directory)
     ##2. In the cran archives
     ##3. By wading backwards in an SCM repository (SVN/git)
-
-
-
+    
+    
+    
     ## round 0: did we already find this package version?
     if(file.exists(dir)) {
         lf = list.files(dir, full.names=TRUE)
@@ -36,7 +36,7 @@ locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
         if(length(fname) && file.exists(fname))
             return(fname)
     }
-
+    
     ## round 2: check the manifest
     fname = findPkgVersionInManifest(name, version, manifest,
         dir = dir, param = param)
@@ -47,7 +47,7 @@ locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
     fname = findPkgVersionInCRAN(name, version, param = param, dir = dir)
     if(length(fname) && file.exists(fname))
         return(fname)
-
+    
     ##round 3b: Look in bioc repo and SVN
     fname = findPkgVersionInBioc(name, version, param = param, dir = dir)
     if(length(fname) && file.exists(fname))
@@ -56,7 +56,7 @@ locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
     
     warning(sprintf("Unable to locate version %s of package %s", version, name))
     NULL
-
+    
 }
 
 if(FALSE) {
@@ -89,23 +89,23 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
     {
         pkg = pkgs[pkgs$Package == name,]
         if(pkg$Version == version){
-           return(download.packages(name, destdir = destpath, )[1,2])
+            return(download.packages(name, destdir = destpath, )[1,2])
         }
     }
-        
-
+    
+    
     tarname = paste0(name, "_", version, ".tar.gz")
     
     cranurl = paste("http://cran.r-project.org/src/contrib/Archive", name, tarname, sep = "/")
-
-  
+    
+    
     if(!file.exists(destpath))
         dir.create(destpath, recursive = TRUE)
     destfile = file.path(destpath, tarname)
     res = tryCatch(download.file(cranurl, destfile), error = function(e) e)
     if(is(res, "error") || res > 0)
         destfile = NULL
-
+    
     destfile
 }
 
@@ -117,10 +117,10 @@ findPkgVersionInManifest = function(name, version, manifest, dir,
     param = SwitchrParam() ) {
     if(!name %in% manifest_df(manifest)$name)
         return(NULL)
-
+    
     ## XXX this is a hack that should be happening elsewhere!!!
     manrow = manifest_df(manifest)[manifest_df(manifest)$name == name,]
-
+    
     if(manrow$type =="github" ||
        manrow$type == "git" && grepl("github", manrow$url)) {
         manrow$type = "svn"
@@ -129,13 +129,13 @@ findPkgVersionInManifest = function(name, version, manifest, dir,
         if(manrow$branch == "master")
             manrow$branch = "trunk"
     }
-
+    
     src = makeSource(name = name, url = manrow$url, type = manrow$type,
         branch = manrow$branch, subdir = manrow$subdir, user = "", password="")
     pkgdir = makePkgDir(name, source = source, path = dir, param = param)
-
-
-
+    
+    
+    
     ## XXX branches aren't handled here!!!!
     findSVNRev(name = name, version = version,
                svn_repo = makeSVNURL(src),   destpath, param = param)
