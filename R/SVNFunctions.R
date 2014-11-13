@@ -1,4 +1,4 @@
-updateSVN = function(dir, source, repo, param)
+updateSVN = function(dir, source,  param)
 {
     oldwd = getwd()
     setwd(dir)
@@ -20,12 +20,11 @@ updateSVN = function(dir, source, repo, param)
                 pwd = paste0("--password=", pwd)
             cmd = paste("svn update", usr, pwd)
         }
-    out = tryCatch(system_w_init(cmd, intern=TRUE, repo = repo),
+    out = tryCatch(system_w_init(cmd, intern=TRUE, param = param),
         error = function(x) x)
     if(is(out, "error"))
     {
-        logfun(param)(basename(dir), "SVN update failed!", type = "both",
-                       repo = repo)
+        logfun(param)(basename(dir), "SVN update failed!", type = "both")
         return(FALSE)
     }
     

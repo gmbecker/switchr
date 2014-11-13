@@ -22,7 +22,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
               if(file.exists(name) && file.exists(name, ".svn") && !forceRefresh)
               {
                   lfun(name, "Existing temporary checkout found at this location. Updating")
-        up = updateSVN(file.path(path, name), source,  param)
+        up = updateSVN(file.path(path, name), source,  param = param)
     } else {
         ## clean up the directory if it was created from some other type of source
         if(file.exists(name))
