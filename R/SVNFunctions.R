@@ -24,7 +24,7 @@ updateSVN = function(dir, source, repo, param)
         error = function(x) x)
     if(is(out, "error"))
     {
-        logfile(param)(basename(dir), "SVN update failed!", type = "both",
+        logfun(param)(basename(dir), "SVN update failed!", type = "both",
                        repo = repo)
         return(FALSE)
     }
