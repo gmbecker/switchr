@@ -1,4 +1,4 @@
-updateSVN = function(dir, source, repo)
+updateSVN = function(dir, source, repo, param)
 {
     oldwd = getwd()
     setwd(dir)
@@ -24,8 +24,8 @@ updateSVN = function(dir, source, repo)
         error = function(x) x)
     if(is(out, "error"))
     {
-        writeGRANLog(basename(dir), "SVN update failed!", type = "both",
-                     repo = repo)
+        logfile(param)(basename(dir), "SVN update failed!", type = "both",
+                       repo = repo)
         return(FALSE)
     }
     
