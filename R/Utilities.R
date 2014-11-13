@@ -6,7 +6,7 @@ checkIsPkgDir = function (dir)
 }
 
 ##' @export
-findPkgDir = function(rootdir, branch, subdir, repo, logfun)
+findPkgDir = function(rootdir, branch, subdir, repo, param)
 {
                    
     ret = NULL
@@ -26,7 +26,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, logfun)
         warning(paste0("The svn repository at ", location(source),
                        " does not appear to have branches. ",
                        "Unable to process this source."))
-        logfun(name, paste("The SVN repository does not appear to have",
+        logfun(param)(name, paste("The SVN repository does not appear to have",
                                  "branches and a non-trunk/non-master branch",
                                  "was selected"), repo = repo, type="both")
         return(NULL)
@@ -37,7 +37,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, logfun)
     ##This is a problem with GRAN logic, not with packages/user activity
     if(!file.exists(ret))
     {
-        logfun(name, paste("Unable to find subdirectory", subdir,
+        logfun(param)(name, paste("Unable to find subdirectory", subdir,
                                  "in branch", branch), repo, type="both")
         warning(paste0("Constructed temporary package directory",ret,
                        " doesn't appear to  exist after svn checkout. ",
@@ -49,7 +49,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, logfun)
     ##we could be more general and allow people to specify subdirectories...
     if(!checkIsPkgDir(ret))
     {
-        logfun(name, paste("Specified branch/subdirectory combination",
+        logfun(param)(name, paste("Specified branch/subdirectory combination",
                                  "does not appear to contain an R package"),
                                  repo, type="both")
         ret = NULL
@@ -105,7 +105,7 @@ makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, .
            )
     if( (type=="git" || type == "github") && is.na(ret@branch))
         ret@branch = "master"
-    else if (type=="svn" && is.na(ret@branch))
+    else if (type=="svn" && (!length(ret@branch) || is.na(ret@branch)))
         ret@branch = "trunk"
     if(is(ret, "GitSource") && prefer_svn) {
         ret2 = tryCatch(as(ret, "SVNSource"), error = function(x) x)

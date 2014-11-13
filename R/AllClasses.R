@@ -55,6 +55,7 @@ setClass("GithubSource", contains = "GitSource")
 setClass("CVSSource", contains = "PkgSource")
 setClass("LocalSource", contains = "PkgSource")
 setClass("CRANSource", contains = "PkgSource")
+setClass("BiocSource", contains = "PkgSource")
 setClass("TarballSource", contains = "PkgSource")
 
 

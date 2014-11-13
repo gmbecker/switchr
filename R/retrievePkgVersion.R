@@ -12,7 +12,7 @@
 ##' @author Gabriel Becker
 ##' @export
 locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
-    dir = if(is.null(repo)) tempdir() else notrack(repo)) {
+    dir = if(is.null(repo)) tempdir() else notrack(repo), repo = NULL) {
     
     ##There are %three places we might find what we need in increasing order of computational cost:
     ##1. Already in the parent repository (including the associated notrack directory)

@@ -141,6 +141,9 @@ setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
 
 
 
+setMethod("makePkgDir", c(name="ANY", source = "BiocSource"),
+          function(name, source, path, latest_only, param, forceRefresh = FALSE) {
+              
 
 #setMethod("makePkgSourceDir", c(source="LocalSource"), function(name, source, path, latest_only = FALSE, repo) {
 setMethod("makePkgDir", c(source="LocalSource"),
