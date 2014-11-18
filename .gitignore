@@ -6,3 +6,10 @@
 
 # R data files from past sessions
 .Rdata
+
+# emacs backup files
+*~
+*#
+
+# sed backups
+*.bak
