@@ -6,7 +6,7 @@
 currentCompEnv()
 }
 \description{
-Display the computing environment currently in use. If switchTo has not been called, a new RComputingEnv object
+Display the computing environment currently in use. If switchTo has not been called, a new SwitchrCtx object
 describing the current environment is created.
 }
 

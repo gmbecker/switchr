@@ -6,9 +6,9 @@
 library_paths(seed)
 }
 \arguments{
-\item{seed}{An RComputingEnv}
+\item{seed}{An SwitchrCtx}
 }
 \description{
-Accessor for which directories an RComputingEnv is associated with.
+Accessor for which directories an SwitchrCtx is associated with.
 }
 

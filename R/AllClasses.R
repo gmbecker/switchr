@@ -2,29 +2,27 @@
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character"))
 
 
-##' RComputingEnv
+##' SwitchrCtx
 ##'
 ##' An object that represents a "computing environment" (a specific set of libpaths and the packages installed to them)
 ##'@export
-setClass("RComputingEnv", representation(name = "character",
+setClass("SwitchrCtx", representation(name = "character",
                                          libpaths = "character",
                                          exclude.site = "logical",
                                          packages = "data.frame",
                                          seed = "ANY"))
 
 ##'@export
-RComputingEnv = function(name, libpaths, exclude.site = TRUE, seed = NULL) {
-    if(exclude.site)
-        pathsToLook = unique(c(libpaths, .Library))
-    else
-        pathsToLook = unique(c(libpaths, .Library.site, .Library))
-
-    pkgs = installed.packages(pathsToLook, noCache=TRUE)[,c("Package", "Version", "LibPath")]
-    pkgs = pkgs[!duplicated(pkgs[,"Package"]),]
-    pkgs = as.data.frame(pkgs, stringsAsFactors = FALSE)
+SwitchrCtx = function(name, libpaths, exclude.site = TRUE, seed = NULL) {
     
-    new("RComputingEnv", name= name, libpaths = libpaths, exclude.site = exclude.site, packages = pkgs, seed = seed)
-
+    ctx = new("SwitchrCtx", name= name, libpaths = libpaths,
+        exclude.site = exclude.site,
+        packages = data.frame(Package = character(),
+            Version = character(),
+            LibPath = character(),
+            stringsAsFactors = FALSE),
+        seed = seed)
+    update_pkgs_list(ctx)
 }
 
 switchrOpts = new.env()

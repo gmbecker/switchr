@@ -3,7 +3,7 @@
 \alias{flushSession}
 \title{Empty current R session}
 \usage{
-flushSession(dontunload = c("switchr", "digest"))
+flushSession(dontunload = switchDeps)
 }
 \arguments{
 \item{dontunload}{Non-base packages to ignore (not detatch/unload)}

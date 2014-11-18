@@ -24,7 +24,7 @@ for existing computing environments. This is experimental.}
 computing environment is not found.}
 }
 \value{
-Invisibly returns the RComputingEnv object representing the new
+Invisibly returns the SwitchrCtx object representing the new
 computing environment
 }
 \description{

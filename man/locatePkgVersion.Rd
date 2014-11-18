@@ -4,7 +4,7 @@
 \title{locatePkgVersion}
 \usage{
 locatePkgVersion(name, version, manifest, param = SwitchrParam(), dir = if
-  (is.null(repo)) tempdir() else notrack(repo))
+  (is.null(repo)) tempdir() else notrack(repo), repo = NULL)
 }
 \arguments{
 \item{name}{package name}

@@ -1,4 +1,3 @@
-
 Renvs= new.env()
 
         
@@ -34,13 +33,16 @@ Renvs= new.env()
 ##' release).
 ##'
 ##'
-##' @return Invisibly returns the RComputingEnv object representing the new
+##' @return Invisibly returns the SwitchrCtx object representing the new
 ##' computing environment
 ##' @export
-setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,  ...) standardGeneric("switchTo"))
+setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
+                                ignoreRVersion = FALSE,  ...)
+           standardGeneric("switchTo"))
 
 
-setMethod("switchTo", c(name = "character", seed = "character"), function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
+setMethod("switchTo", c(name = "character", seed = "character"),
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
     chtype = getStringType(seed)
     if(chtype == file) {
         seed = readLines(seed)
@@ -49,8 +51,8 @@ setMethod("switchTo", c(name = "character", seed = "character"), function(name, 
     
     if(chtype == "sessioninfo") {
         ## we have session info output
-        
-        sr = sessionRepo(seed, ..., stoponfail=FALSE) #XXX need to make sure double use of ... is safe!
+        ##XXX need to make sure double use of ... is safe!
+        sr = sessionRepo(seed, ..., stoponfail=FALSE) 
 
         
         seed = if(grepl(sr, "file://")) sr else paste("file://",sr, sep="")
@@ -83,17 +85,40 @@ setMethod("switchTo", c(name = "character", seed = "character"), function(name, 
         cenv = makeLibraryCtx(name = name, seed = seed, ...)
 
     if(!is.null(cenv))
-        switchTo(name = name, seed = cenv)
+        ##        switchTo(name = name, seed = cenv)
+        switchTo(name = cenv)
     else
         stop("unable to switch to computing environment")
 })
 
 
-setMethod("switchTo", c("RComputingEnv", "missing"),
-          function(name, seed, reverting, ingoreRVersion, ...)
-          switchTo(seed = name, reverting = reverting, ingoreRVersion = ignoreRVersion, ...)
-      )
+setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,...) {
+              
+              if(ignoreRVersion)
+                  rvers = NULL
+              else
+                  rvers = paste(R.version$major, R.version$minor, sep=".")
+              exsting = findCompEnv(name = name, rvers = rvers)
+              if(!is.null(exsting)) {
+                  warning("A switchr context with that name already exists")
+                  switchTo(exsting)
+              }
+              cenv = makeLibraryCtx(name = name, seed = NULL,
+                  exclude.site = seed@exclude.site,
+                  ...)
+              
+              ## copy existing library contents to the new one
+              dirs = list.dirs(file.path(switchrBaseDir(), seed@name), recursive = FALSE)
+            ##  dests = file.path(library_paths(cenv)[1], basename(dirs))
+    ##          dir.create(dests)
+     ##         mapply(file.copy,dirs, dests, recursive=TRUE)
+              file.copy(dirs, library_paths(cenv)[1],
+                        recursive = TRUE, overwrite = FALSE)
 
+              cenv = update_pkgs_list(cenv)
+              switchTo(cenv)
+          })
 
 
 setMethod("switchTo", c("character", "missing"),
@@ -111,13 +136,13 @@ setMethod("switchTo", c("character", "missing"),
 
 
     if(!is.null(cenv))
-        switchTo(name = name, seed = cenv)
+        ##        switchTo(name = name, seed = cenv)
+        switchTo(name = cenv)
     else
         stop("unable to switch to computing environment")
 })
 
-##'@importFrom RCurl url.exists
-##' 
+
 getStringType = function(str) {
     if(any(grepl("Platform:", str)))
         return("sessioninfo")
@@ -153,37 +178,29 @@ getStringType = function(str) {
     stop("Unidentifiable string:", str)
 }
 
-
-
-
-          
-          
-
-
-
-setMethod("switchTo", c(name = "ANY", seed = "RComputingEnv"), function(name, seed, reverting=FALSE, reloadPkgs = FALSE, ...) {
+setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed, reverting=FALSE, reloadPkgs = FALSE, ...) {
         if(is.null(Renvs$stack)) {
             paths = .libPaths()
             paths = paths[!paths %in% c(.Library.site, .Library)]
-            Renvs$stack = list(original = RComputingEnv("original", paths, exclude.site=FALSE, seed = NULL))
+            Renvs$stack = list(original = SwitchrCtx("original", paths, exclude.site=FALSE, seed = NULL))
         }
 
         flushSession()
         
-        if(!seed@exclude.site)
-            .libPaths(library_paths(seed))
+        if(!name@exclude.site)
+            .libPaths(library_paths(name))
         else
-            .libPaths2(c(library_paths(seed), .Library))
+            .libPaths2(c(library_paths(name), .Library))
 
          if(!reverting) {
 #            attachedPkgs(Renvs$stack[[length(Renvs$stack)]]) = atched
-             Renvs$stack = c(seed, Renvs$stack)
+             Renvs$stack = c(name, Renvs$stack)
         } else
             Renvs$stack = Renvs$stack[-1]
-        announce(seed, reverted = reverting)
+        announce(name, reverted = reverting)
         if(reloadPkgs)
-            sapply(seed@attached, library)
-        invisible(seed)
+            sapply(name@attached, library)
+        invisible(name)
     })
 
 setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, seed = NULL,
@@ -205,7 +222,7 @@ setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, s
 
 
 setGeneric("attachedPkgs<-", function(seed, value) standardGeneric("attachedPkgs<-"))
-setMethod("attachedPkgs<-", "RComputingEnv", function(seed, value) {
+setMethod("attachedPkgs<-", "SwitchrCtx", function(seed, value) {
     seed@attached = value
     seed
 })
@@ -218,23 +235,26 @@ setMethod("attachedPkgs<-", "RComputingEnv", function(seed, value) {
 
 setGeneric("announce", function(seed, reverted=FALSE) standardGeneric("announce"))
 
-setMethod("announce", "RComputingEnv", function(seed, reverted=FALSE) {
-    message(sprintf("%s to the '%s' computing environment. %d packages are currently available. Packages installed in your site library ARE %ssuppressed.\n To switch back to your previous environment type switchBack()", ifelse(reverted, "Reverted", "Switched"), seed@name, nrow(seed@packages), ifelse(seed@exclude.site, "", "NOT ")))
+setMethod("announce", "SwitchrCtx", function(seed, reverted=FALSE) {
+    message(sprintf("%s to the '%s' computing environment. %d packages are currently available. Packages installed in your site library ARE %ssuppressed.\n To switch back to your previous environment type switchBack()",
+                    ifelse(reverted, "Reverted", "Switched"),
+                    seed@name, nrow(seed@packages),
+                    ifelse(seed@exclude.site, "", "NOT ")))
 })
 
 ##' library_paths
 ##'
-##' Accessor for which directories an RComputingEnv is associated with.
-##' @param seed An RComputingEnv
+##' Accessor for which directories an SwitchrCtx is associated with.
+##' @param seed An SwitchrCtx
 ##' @export
 setGeneric("library_paths", function(seed) standardGeneric("library_paths"))
 
-setMethod("library_paths", "RComputingEnv", function(seed) {
+setMethod("library_paths", "SwitchrCtx", function(seed) {
     seed@libpaths
 })
 
-setMethod("show", "RComputingEnv", function(object) {
-    cat(paste(sprintf("An RComputingEnv object defining the '%s' computing environment", object@name),
+setMethod("show", "SwitchrCtx", function(object) {
+    cat(paste(sprintf("An SwitchrCtx object defining the '%s' computing environment", object@name),
               "\n\n\t", sprintf("Primary library location(s): %s", paste(object@libpaths, collapse=";")),
               "\n\t", sprintf("Packages: %d packages installed in %d directories (including R's base library)", nrow(object@packages), length(unique(object@packages$LibPath))),
               "\n\t", paste("This environment DOES ", ifelse(object@exclude.site, "NOT ", ""), "combine with the current site library location when loaded.", sep=""),
@@ -243,7 +263,28 @@ setMethod("show", "RComputingEnv", function(object) {
 
 ##' @export
 setGeneric("packages", function(seed) standardGeneric("packages"))
-setMethod("packages", "RComputingEnv", function(seed) seed@packages)
+setMethod("packages", "SwitchrCtx", function(seed) seed@packages)
+
+
+##' @export
+setGeneric("update_pkgs_list", function(seed) standardGeneric("update_pkgs_list"))
+setMethod("update_pkgs_list", "SwitchrCtx", function(seed){
+
+    if(seed@exclude.site)
+        pathsToLook = unique(c(library_paths(seed), .Library))
+    else
+        pathsToLook = unique(c(library_paths(seed), .Library.site, .Library))
+
+    
+    pkgs = installed.packages(pathsToLook,
+        noCache=TRUE)[,c("Package", "Version", "LibPath")]
+    pkgs = pkgs[!duplicated(pkgs[,"Package"]),]
+    pkgs = as.data.frame(pkgs, stringsAsFactors = FALSE)
+
+    seed@packages = pkgs
+    seed
+})
+
 ##' switchBack
 ##'
 ##' A convenience function to switch back to the previously used computing environment.
@@ -258,14 +299,14 @@ switchBack = function() {
 
 ##' currentCompEnv
 ##'
-##' Display the computing environment currently in use. If switchTo has not been called, a new RComputingEnv object
+##' Display the computing environment currently in use. If switchTo has not been called, a new SwitchrCtx object
 ##' describing the current environment is created.
 ##' @export   
 currentCompEnv = function() {
             if(is.null(Renvs$stack)) {
                 lp = .libPaths()
                 lp = lp[!(lp %in% .Library | lp %in% .Library.site)]
-                Renvs$stack = list(original = RComputingEnv("original",
+                Renvs$stack = list(original = SwitchrCtx("original",
                                        libpaths = lp , seed = NULL,
                                        exclude.site=FALSE))
             }

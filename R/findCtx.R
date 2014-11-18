@@ -19,13 +19,13 @@ findCompEnv = function(url = NULL, name, rvers = NULL, allMatches = FALSE) {
     else {
         manrow = man[i,]
         if(allMatches)
-            return(mapply(RComputingEnv, name = manrow$name,
-                          seed = NULL, ## XXX TODO
+            return(mapply(SwitchrCtx, name = manrow$name,
+                          seed = list(NULL), ## XXX TODO
                           libpaths = lapply(manrow$paths,
                               function(x) strsplit(x, ";")[[1]]),
                           exclude.site = manrow$excl.site))
         else
-            return(RComputingEnv(name = manrow$name,
+            return(SwitchrCtx(name = manrow$name,
                                  seed = NULL, ## XXX TODO
                                  libpaths = strsplit(manrow$paths, ";")[[1]],
                                  exclude.site = manrow$excl.site))

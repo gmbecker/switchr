@@ -35,5 +35,5 @@ makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
                 file = file.path(libloc[1], "lib_info")
                 )
     updateManifest()
-    RComputingEnv(name = name, libpaths = libloc, exclude.site = exclude.site, seed = seed)
+    SwitchrCtx(name = name, libpaths = libloc, exclude.site = exclude.site, seed = seed)
 }
