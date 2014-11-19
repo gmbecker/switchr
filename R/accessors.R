@@ -199,3 +199,43 @@ setMethod("addPkg", "SessionManifest",
               versions_df(x) = rbind(versions_df(x), versions)
               x
           })
+
+
+
+
+
+##' library_paths
+##'
+##' Accessor for which directories an SwitchrCtx is associated with.
+##' @param seed An SwitchrCtx
+##' @export
+setGeneric("library_paths", function(seed) standardGeneric("library_paths"))
+
+setMethod("library_paths", "SwitchrCtx", function(seed) {
+    seed@libpaths
+})
+
+
+##' @export
+setGeneric("packages", function(seed) standardGeneric("packages"))
+setMethod("packages", "SwitchrCtx", function(seed) seed@packages)
+
+
+##' @export
+setGeneric("update_pkgs_list", function(seed) standardGeneric("update_pkgs_list"))
+setMethod("update_pkgs_list", "SwitchrCtx", function(seed){
+
+    if(seed@exclude.site)
+        pathsToLook = unique(c(library_paths(seed), .Library))
+    else
+        pathsToLook = unique(c(library_paths(seed), .Library.site, .Library))
+
+    
+    pkgs = installed.packages(pathsToLook,
+        noCache=TRUE)[,c("Package", "Version", "LibPath")]
+    pkgs = pkgs[!duplicated(pkgs[,"Package"]),]
+    pkgs = as.data.frame(pkgs, stringsAsFactors = FALSE)
+
+    seed@packages = pkgs
+    seed
+})

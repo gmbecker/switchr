@@ -31,3 +31,12 @@ if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 
     }
 }
 
+defaultRepos = function() {
+    if(requireNamespace("BiocInstaller", quietly=TRUE))
+        repos = BiocInstaller::biocinstallRepos()
+    else
+        repos = getOption("repos")
+    if(requireNamespace("GRAN", quietly=TRUE))
+        repos = c(GRAN::defaultGRAN(), repos)
+    repos
+}

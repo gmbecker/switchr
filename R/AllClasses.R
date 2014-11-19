@@ -84,7 +84,7 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 
 ##'@export
 ##' @import RCurl
-PkgManifest = function(manifest, dep_repos = c(biocinstallRepos(), defaultGRAN()), ...) {
+PkgManifest = function(manifest = ManifestRow(...), dep_repos = c(biocinstallRepos(), defaultGRAN()), ...) {
     if(is.character(manifest)) {
         if(is.url(manifest)) {
             fil = tempfile()

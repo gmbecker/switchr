@@ -242,47 +242,12 @@ setMethod("announce", "SwitchrCtx", function(seed, reverted=FALSE) {
                     ifelse(seed@exclude.site, "", "NOT ")))
 })
 
-##' library_paths
-##'
-##' Accessor for which directories an SwitchrCtx is associated with.
-##' @param seed An SwitchrCtx
-##' @export
-setGeneric("library_paths", function(seed) standardGeneric("library_paths"))
-
-setMethod("library_paths", "SwitchrCtx", function(seed) {
-    seed@libpaths
-})
-
 setMethod("show", "SwitchrCtx", function(object) {
     cat(paste(sprintf("An SwitchrCtx object defining the '%s' computing environment", object@name),
               "\n\n\t", sprintf("Primary library location(s): %s", paste(object@libpaths, collapse=";")),
               "\n\t", sprintf("Packages: %d packages installed in %d directories (including R's base library)", nrow(object@packages), length(unique(object@packages$LibPath))),
               "\n\t", paste("This environment DOES ", ifelse(object@exclude.site, "NOT ", ""), "combine with the current site library location when loaded.", sep=""),
               "\n\n"))
-})
-
-##' @export
-setGeneric("packages", function(seed) standardGeneric("packages"))
-setMethod("packages", "SwitchrCtx", function(seed) seed@packages)
-
-
-##' @export
-setGeneric("update_pkgs_list", function(seed) standardGeneric("update_pkgs_list"))
-setMethod("update_pkgs_list", "SwitchrCtx", function(seed){
-
-    if(seed@exclude.site)
-        pathsToLook = unique(c(library_paths(seed), .Library))
-    else
-        pathsToLook = unique(c(library_paths(seed), .Library.site, .Library))
-
-    
-    pkgs = installed.packages(pathsToLook,
-        noCache=TRUE)[,c("Package", "Version", "LibPath")]
-    pkgs = pkgs[!duplicated(pkgs[,"Package"]),]
-    pkgs = as.data.frame(pkgs, stringsAsFactors = FALSE)
-
-    seed@packages = pkgs
-    seed
 })
 
 ##' switchBack
