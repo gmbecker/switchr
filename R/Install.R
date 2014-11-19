@@ -17,7 +17,7 @@ setMethod("Install", c(pkgs = "character", repos= "PkgManifest"), function(pkgs,
 
     ghrepo= lazyRepo(pkgs, repos, verbose = verbose)
     avail1 = available.packages(ghrepo)
-    avail2 = available.packages(contrib.url(depRepos(repos)))
+    avail2 = available.packages(contrib.url(dep_repos(repos)))
     new = !avail2[,"Package"] %in% avail1[,"Package"]
     avail = rbind(avail1, avail2[new,])
     oldpkgs = installed.packages()[,"Package"]

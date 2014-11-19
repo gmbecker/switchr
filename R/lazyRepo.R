@@ -69,7 +69,7 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
               pkgsNeeded = pkgs
 
               mandf = manifest(manifest)
-              avail = available.packages(contrib.url(depRepos(manifest)))
+              avail = available.packages(contrib.url(dep_repos(manifest)))
 
               repdir = file.path(rep_path, "src", "contrib")
               dir.create(repdir, recursive = TRUE)

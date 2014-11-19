@@ -1,15 +1,15 @@
 
-##' depRepos
+##' dep_repos
 ##'
 ##' Get repositories to be used to fullfill dependencies beyond packages within the manifest
 ##' @return Character vector with existing repository urls
 ##' 
-##' @rdname depRepos
+##' @rdname dep_repos
 ##' @export
-setGeneric("depRepos", function(x) standardGeneric("depRepos"))
+setGeneric("dep_repos", function(x) standardGeneric("dep_repos"))
 
 
-setMethod("depRepos", "PkgManifest", function(x) x@dependency_repos)
+setMethod("dep_repos", "PkgManifest", function(x) x@dependency_repos)
 
 
 

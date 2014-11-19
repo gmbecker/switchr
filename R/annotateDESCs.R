@@ -1,5 +1,5 @@
 annotateDESCs = function(pkgs, man) {
-    avl = available.packages(contrib.url(depRepos(man)))
+    avl = available.packages(contrib.url(dep_repos(man)))
     sapply(pkgs, .annDESC, mandf = manifest_df(man), avl = avl)
     NULL
 }
