@@ -11,6 +11,10 @@ setMethod("Install", c("character", "character"), function(pkgs, repos, versions
     
 })
 
+setMethod("Install", c(pkgs = "character", repos= "missing"), function(pkgs, repos, verbose, ...) {
+    Install(pkgs, repos = defaultRepos(), verbose = verbose,
+            ...)
+})
 
 
 setMethod("Install", c(pkgs = "character", repos= "PkgManifest"), function(pkgs, repos, verbose, ...) {
