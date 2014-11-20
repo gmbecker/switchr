@@ -61,9 +61,11 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
           if(latest_only) {
               ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
               ## for IndelsOverlay branch
-              
-              zipUrl = paste0(gsub("\\.git", "", location(source)), "/archive/",
-                  branch(source), ".zip")
+
+              reponm = gsub("\\.git", "", location(source))
+              reponm = gsub(".*/([^/]+)/{0,1}$", "\\1", reponm)
+              zipUrl = paste(gsub("\\.git", "", location(source)),
+                  "/archive/", branch(source), ".zip", sep="")
               zipUrl = gsub("git://", "http://", zipUrl, fixed=TRUE)
               zpfile = normalizePath(file.path(path,
                   paste(name, "-", branch(source), ".zip", sep = "")))
@@ -77,7 +79,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
               if(file.exists(destdir))
                   unlink(destdir, recursive=TRUE)
               unzip(zpfile, exdir = path)
-              file.rename(file.path(path, paste(name, branch(source), sep="-")),
+              file.rename(file.path(path, paste(reponm, branch(source), sep="-")),
                           destdir)
 #              uzdir
           } else {

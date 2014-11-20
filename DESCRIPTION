@@ -2,7 +2,7 @@ Package: switchr
 Type: Package
 Title: Installing, managing, and switching betwen distinct sets of installed
     packages
-Version: 0.3.3
+Version: 0.3.4
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Description: switchr provides an abstraction for managing, installing,
