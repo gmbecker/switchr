@@ -12,6 +12,10 @@ setGeneric("dep_repos", function(x) standardGeneric("dep_repos"))
 setMethod("dep_repos", "PkgManifest", function(x) x@dependency_repos)
 
 
+setMethod("dep_repos", "SessionManifest", function(x) manifest(x)@dependency_repos)
+
+
+
 
 ##' manifest
 ##' Extract manifest data.frame associated with the manifest
