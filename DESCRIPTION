@@ -2,13 +2,14 @@ Package: switchr
 Type: Package
 Title: Installing, managing, and switching betwen distinct sets of installed
     packages
-Version: 0.3.6
+Version: 0.3.7
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Description: switchr provides an abstraction for managing, installing,
     and switching between sets of installed R packages. This allows users to
-    maintain multiple computing contexts simultaneously, e.g. to maintain
-    strict, package-version-specific reproducibility of many analyses.
+    maintain multiple package lbiraries simultaneously, e.g. to maintain
+    strict, package-version-specific reproducibility of many analyses, or 
+    work within a devel/release paradigm.
 Imports:
     tools,
     digest,

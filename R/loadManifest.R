@@ -6,6 +6,24 @@
 ##' @return A PkgManifest or SessionManifest object
 ##' @export
 loadManifest = function(fil) {
+    if(url.exists(fil)) {
+
+            
+        newfil = tempfile(pattern = "manifest")
+        download.file(fil, newfil, method = "wget")
+        if(grepl("gist.github.com", fil)) {
+            lnk = grep(".*raw.*manifest\\.rman", readLines(newfil),
+                value = TRUE)
+            lnk = paste("https://gist.github.com",
+                gsub("[^/]*(/.*/manifest\\.rman).*",
+                     "\\1", lnk, ignore.case=TRUE),
+                sep="")
+            newfil = tempfile(pattern = "manifest")
+            download.file(lnk, newfil, method = "wget")
+        }
+            
+        fil = newfil
+    }
     txt = readLines(fil)
     pat = "^#"
     headerInds = grep(pat, txt)
