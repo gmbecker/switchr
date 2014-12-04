@@ -1,5 +1,15 @@
 ##' @importFrom RCurl getURL
+##' rVersionManifest
+##' Create a Pkg manifest which points to tarballs representing the
+##' cohort of packages associated with a particular release of R
 ##'
+##' @param vers The version of R to create a manifest for
+##' @param curr_avail The output from available.packages(). Used to identify
+##' whether the necessary version is in the CRAN archive or normal repository
+##' 
+##' @return A PkgManifest object
+##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
+##'  database. R package version 1.0.0. https://github.com/metacran/crandb
 ##'
 
 ## Eventually replace with crandb but it has lots of deps and seems broken now
