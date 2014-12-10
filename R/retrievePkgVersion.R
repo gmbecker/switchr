@@ -11,7 +11,7 @@
 ##' locate the package
 ##' @author Gabriel Becker
 ##' @export
-locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
+locatePkgVersion = function(name, version, pkg_manifest, param = SwitchrParam(),
     dir = if(is.null(repo)) tempdir() else notrack(repo), repo = NULL) {
     
     ##There are %three places we might find what we need in increasing order of computational cost:
@@ -38,7 +38,7 @@ locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
     }
     
     ## round 2: check the manifest
-    fname = findPkgVersionInManifest(name, version, manifest,
+    fname = findPkgVersionInManifest(name, version, pkg_manifest,
         dir = dir, param = param)
     if(length(fname) && file.exists(fname))
         return(fname)
@@ -59,37 +59,18 @@ locatePkgVersion = function(name, version, manifest, param = SwitchrParam(),
     
 }
 
-if(FALSE) {
-##TODO: make this able to see into sibling GRAN repositories. Right now it
-## will only look in repo itself.
-findPkgVersionInRepo = function(name, version, repo)
-{
-    repdir = repobase(repo)
-
-    tarname = paste0( name, "_", version, ".tar.gz")
-    fname = c(list.files(destination(repo), pattern = tarname,
-        full.names = TRUE, recursive = TRUE),
-        list.files(notrack(repo), pattern = tarname, full.names=TRUE,
-                   recursive = TRUE)
-        )
-    if(!length(fname))
-        fname = NULL
-    else
-        fname = normalizePath2(fname[1])
-    fname
-}
-
-}
-
 findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
 {
     destpath = dir
-    pkgs = as.data.frame(available.packages( fields = c("Package", "Version")))
+    pkgs = as.data.frame(available.packages( fields = c("Package", "Version")), stringsAsFactors = FALSE)
     if(nrow(pkgs) && name %in% pkgs$Package)
     {
         pkg = pkgs[pkgs$Package == name,]
         if(pkg$Version == version){
-            return(download.packages(name, destdir = destpath, )[1,2])
+            res = download.packages(name, destdir = destpath)
+            if(nrow(res) < 1)
+                stop("Package is in CRAN but download failed")
+            return(res[1,2])
         }
     }
     
@@ -113,13 +94,18 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
 ## git other than github not currently supported.
 ## Github allows us to checkout via svn
 
-findPkgVersionInManifest = function(name, version, manifest, dir,
+findPkgVersionInManifest = function(name, version, pkg_manifest, dir,
     param = SwitchrParam() ) {
-    if(!name %in% manifest_df(manifest)$name)
+
+    destpath = dir
+    if(!name %in% manifest_df(pkg_manifest)$name)
         return(NULL)
     
     ## XXX this is a hack that should be happening elsewhere!!!
-    manrow = manifest_df(manifest)[manifest_df(manifest)$name == name,]
+    manrow = manifest_df(pkg_manifest)[manifest_df(pkg_manifest)$name == name,]
+
+    if(tolower(manrow$type) %in% c("cran", "bioc"))
+        return(NULL)
     
     if(manrow$type =="github" ||
        manrow$type == "git" && grepl("github", manrow$url)) {
@@ -132,13 +118,17 @@ findPkgVersionInManifest = function(name, version, manifest, dir,
     
     src = makeSource(name = name, url = manrow$url, type = manrow$type,
         branch = manrow$branch, subdir = manrow$subdir, user = "", password="")
-    pkgdir = makePkgDir(name, source = source, path = dir, param = param)
-    
+    pkgdir = makePkgDir(name, source = src, path = dir, param = param)
+    if(pkgdir)
+        pkgpath = file.path(dir, name)
+    else
+        return(NULL)
     
     
     ## XXX branches aren't handled here!!!!
     findSVNRev(name = name, version = version,
-               svn_repo = makeSVNURL(src),   destpath, param = param)
+               svn_repo = makeSVNURL(src),   pkgpath = pkgpath , param = param)
+    pkgpath
 }
 
 setGeneric("makeSVNURL", function(src) standardGeneric("makeSVNURL"))
@@ -163,11 +153,14 @@ setMethod("makeSVNURL", "GitSource",
 
 
 
+
+
     
 ##' @importFrom BiocInstaller biocinstallRepos biocVersion
 findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 {
-    
+
+    destpath = dir
     ret = .biocTryToDL(name, version, dir = dir)
     if(!is.null(ret$file))
         return(ret$file)
@@ -288,16 +281,18 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="trunk")
     
 
     
-    findSVNRev(name, version, svn_repo = repoloc, destpath, param)
+    findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param)
     
         
 }
 
-findSVNRev = function(name, version, svn_repo, destpath, param) {
+## destpath is the actual package directory, not the general destpath for all pkgs.
+## confusing, should change this.
+findSVNRev = function(name, version, svn_repo, pkgpath, param) {
 
     oldwd = getwd()
     ##setwd(file.path(destpath,  name))
-    setwd(destpath)
+    setwd(pkgpath)
     on.exit(setwd(oldwd))
     system_w_init(paste("svn switch --ignore-ancestry", svn_repo), param = param)
 
@@ -365,11 +360,12 @@ binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
         
 setMethod("gotoVersCommit", c(dir = "character", src = "SVNSource"),
           function(dir, src, version, param = SwitchrParam){
+              
               if(!file.exists(dir))
                   stop("checkout directory does not appear to exist")
           ##    findSVNRev = function(name, version, svn_repo, destpath, repo) {
               ret = findSVNRev(src@name, version = version, svn_repo = makeSVNURL(src),
-                  destpath = dir, param = param)
+                  pkgpath = dir, param = param)
               dir
           })
 

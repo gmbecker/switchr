@@ -42,7 +42,8 @@ setMethod("libManifest", "SwitchrCtx",
               mani = .findThem(mani, known_manifest)
               if(record_versions) {
                   pkg_vers = data.frame(name = instpkgs,
-                      version = instpkginfo[,"Version"])
+                      version = instpkginfo[,"Version"],
+                      stringsAsFactors = FALSE)
                   mani = SessionManifest(manifest = mani,
                       versions = pkg_vers)
               }

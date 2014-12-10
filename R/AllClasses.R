@@ -129,3 +129,13 @@ setClass("parsedSessionInfo", representation(version = "character",
                                              platform="character",
                                              attached = "data.frame",
                                              loaded = "data.frame"))
+
+
+
+##' @export
+##'
+
+setClass("LibraryProfile", representation(autoloads = "character",
+                                          script = "character"))
+
+LibraryProfile = function(...) new("LibraryProfile", ...)

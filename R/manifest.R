@@ -91,7 +91,7 @@ gitregex = "^(git:.*|http{0,1}://(www.){0,1}(github|bitbucket)\\.com.*|.*\\.git)
 ##' @param archive Not currently supported
 ##' @return A PackageManifest object, or a SessionManifest object if the
 ##' manifest directory contains a pkg_versions.dat file.
-##' @importFrom RCurl url.exists
+
 ##' @export
 readManifest = function(uri, local = !url.exists(uri), archive = FALSE) {
     if(archive)

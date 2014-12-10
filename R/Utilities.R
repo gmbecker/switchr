@@ -8,7 +8,9 @@ checkIsPkgDir = function (dir)
 ##' @export
 findPkgDir = function(rootdir, branch, subdir, repo, param)
 {
-                   
+
+    if(!length(subdir))
+        subdir = "."
     ret = NULL
     name = basename(rootdir)
     #does it have the trunk, branches, tags layout?
@@ -98,9 +100,9 @@ makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, .
                password = password,  ...),
            github = new("GithubSource", location = url, user = user,
                password = password, ...),
-        cran = new("CRANSource", location = url, user = "", password = ""),
-        bioc = new("BiocSource", location = url, user = "readonly", password = "readonly"),
-        tarball = new("TarballSource", location = url, user = "", password =""),
+        cran = new("CRANSource", location = url, user = "", password = "", ...),
+        bioc = new("BiocSource", location = url, user = "readonly", password = "readonly", ...),
+        tarball = new("TarballSource", location = url, user = "", password ="", ...),
            stop("unsupported source type")
            )
     if( (type=="git" || type == "github") && is.na(ret@branch))

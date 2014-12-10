@@ -3,9 +3,9 @@ basepkgs = installed.packages(priority="base")[, "Package"]
 
 
 
-setMethod("lazyRepo", c(pkgs = "SessionManifest", manifest = "ANY"),
+setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
           function(pkgs,
-                   manifest,
+                   pkg_manifest,
                    versions,
                    dir = tempdir(),
                    rep_path = file.path(dir, "repo"),
@@ -16,8 +16,8 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", manifest = "ANY"),
 
               
               lazyRepo(pkgs = versions(pkgs)$name,
-                       manifest = pkg_manifest(pkgs),
-                       versions = version(pkgs)$version,
+                       pkg_manifest = manifest(pkgs),
+                       versions = versions_df(pkgs)$version,
                        dir = dir,
                        rep_path = rep_path,
                        get_suggests = get_suggests,
@@ -27,9 +27,9 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", manifest = "ANY"),
           })
 
 
-setMethod("lazyRepo", c(pkgs = "character", manifest = "SessionManifest"),
+setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
           function(pkgs,
-                   manifest,
+                   pkg_manifest,
                    versions,
                    dir = tempdir(),
                    rep_path = file.path(dir, "repo"),
@@ -37,13 +37,13 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "SessionManifest"),
                    verbose = FALSE,
                    scm_auths = list(bioconductor = c("readonly", "readonly"))){
 
-              vers = versions(manifest)$version
-              inds = match(pkgs, versions(manifest)$name)
+              vers = versions_df(pkg_manifest)$version
+              inds = match(pkgs, versions(pkg_manifest)$name)
               inds = inds[!is.na(inds)]
               vers = rep(NA, times = length(pkgs))
-              vers[inds] = version(manifest)$version[inds]
+              vers[inds] = version(pkg_manifest)$version[inds]
               lazyRepo(pkgs = pkgs,
-                       manifest = pkg_manifest(manifest),
+                       pkg_manifest = manifest(pkg_manifest),
                        versions = versions,
                        dir = dir,
                        rep_path = rep_path,
@@ -55,9 +55,9 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "SessionManifest"),
 
 
 
-setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
+setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
           function(pkgs,
-                   manifest,
+                   pkg_manifest,
                    versions = rep(NA, times = length(pkgs)),
                    dir = tempdir(),
                    rep_path = file.path(dir, "repo"),
@@ -68,8 +68,8 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
 
               pkgsNeeded = pkgs
 
-              mandf = manifest(manifest)
-              avail = available.packages(contrib.url(dep_repos(manifest)))
+              mandf = manifest(pkg_manifest)
+              avail = available.packages(contrib.url(dep_repos(pkg_manifest)))
 
               repdir = file.path(rep_path, "src", "contrib")
               dir.create(repdir, recursive = TRUE)
@@ -91,23 +91,37 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
                   tball = file.path(dir, paste(pkgname, "_", version,
                       ".tar.gz", sep=""))
 
+                  tmpdir = tempdir()
+                  pkgdir = file.path(dir, pkgname)               
                   if(file.exists(tball)) {
                       if(verbose)
                           message(sprintf("Package %s (Version %s) already retrieved.",
                                           pkgname, version))
                       
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
-                      desc = untar(tball, files = "DESCRIPTION",
-                          exdir = file.path(tempdir(), pkgname))
-                      dcf = read.dcf(desc)
-                  } else {
-                      if(!is.na(version)) {
-                          pkgfile = locatePkgVersion( src@name, version, manifest = manifest,
-                              dir = dir)
-                          if(is.null(pkgfile))
-                              stop("Unable to locate the specified version  of package",
-                                   src@name)
+                      desc = untar(tball, files = file.path(pkgname,"DESCRIPTION"),
+                          exdir = tmpdir)
+                      dcf = read.dcf(file.path(tmpdir, pkgname, "DESCRIPTION")) 
+                  } else if(!is.na(version)) {
+       
+                      pkgfile = locatePkgVersion( src@name, version, pkg_manifest = pkg_manifest,
+                          dir = dir)
+                      if(is.null(pkgfile))
+                          stop("Unable to locate the specified version  of package",
+                               src@name)
+                      if(file.info(pkgfile)$isdir)
+                          desc = file.path(pkgfile, "DESCRIPTION")
+                      else {
+                          
+                          succ= untar(pkgfile, files = file.path(pkgname,"DESCRIPTION"),
+                              exdir = tempdir())
+                          if(!succ)
+                              desc = file.path(tmpdir, pkgname, "DESCRIPTION")
+                          else
+                              stop("problem extracting DESCRIPTION from tarred package")
                       }
+                      dcf = read.dcf(desc)
+                  }  else {                         
                       
                       if(verbose)
                           message(sprintf("Retrieving package %s from %s (branch %s)",
@@ -117,11 +131,10 @@ setMethod("lazyRepo", c(pkgs = "character", manifest = "PkgManifest"),
                           latest_only = is.na(version), param = param)
                       if(!success)
                           stop("Unable to make package directory")
-                      pkgdir = file.path(dir, pkgname)
-                      
-                      
+
                       dcf = read.dcf(file.path(pkgdir, "DESCRIPTION"))
                   }
+                  
                   fields = colnames(dcf)
                   .dcfField = function(field, default = NA) {
                       if(field %in% colnames(dcf)) unname(dcf[1, field]) else NA

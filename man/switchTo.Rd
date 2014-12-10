@@ -18,7 +18,7 @@ No effect if the library already exists}
 use before the current one. Typically not set directly by the user.}
 
 \item{ignoreRVersion}{Should the R version in use be ignored when checking
-for existing computing environments. This is experimental.}
+for existing computing environmeSnts. This is experimental.}
 
 \item{...}{Passed directly to \code{installCompEnv} if an existing
 computing environment is not found.}

@@ -1,4 +1,3 @@
-##' @importFrom RCurl getURL
 ##' rVersionManifest
 ##' Create a Pkg manifest which points to tarballs representing the
 ##' cohort of packages associated with a particular release of R

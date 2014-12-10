@@ -1,3 +1,16 @@
+
+setMethod("show", "SwitchrCtx", function(object) {
+    cat(paste(sprintf("A SwitchrCtx object defining the '%s' computing environment", object@name),
+              "\n\n\t", sprintf("Primary library location(s): %s", paste(object@libpaths, collapse=";")),
+              "\n\t", sprintf("Packages: %d packages installed in %d directories (including R's base library)",
+                              nrow(object@packages),
+                              length(c(unique(object@packages$LibPath, .Library)))),
+              "\n\t", paste("This environment DOES ", ifelse(object@exclude.site, "NOT ", ""), "combine with the current site library location when loaded.", sep=""),
+              "\n\n"))
+})
+
+
+
 setMethod("show", "PkgManifest",
           function(object) {
               cat("A package manifest (PkgManifest object)\n\n")
@@ -12,6 +25,24 @@ setMethod("show", "PkgManifest",
               cat("\nPackages:\n")
               show(df)
           })
+
+
+setMethod("show", "SessionManifest",
+          function(object) {
+              cat("A seeding manifest (SessionManifest object)\n\n")
+              df = versions_df(object)[,c("name", "version")]
+              rownames(df) = NULL
+              cat(sprintf("Describes a cohort of %d package versions. \n%d packages are listed in the underlying package manifest\n",
+                          nrow(df), nrow(manifest_df(object))))
+              if(nrow(df) > 8) {
+                  df = .sketch_df(df, 4, 4)
+                  
+              }
+              cat("\nPackages:\n")
+              show(df)
+          })
+
+
 
 
 ## Lifted from (old) IRanges

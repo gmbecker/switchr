@@ -33,7 +33,7 @@ setGeneric("makePkgDir",
 ##'
 setGeneric("lazyRepo",
            function(pkgs,
-                    manifest,
+                    pkg_manifest,
                     versions = rep(NA, times = length(pkgs)),
                     dir = tempdir(),
                     rep_path = file.path(dir, "repo"),

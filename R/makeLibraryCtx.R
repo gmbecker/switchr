@@ -21,12 +21,12 @@ makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
 
     if(missing(pkgs) && !missing(seed))
         if(is(seed, "SessionManifest"))
-            Install(seed)
+            install_packages(seed)
         else if(is(seed, "PkgManifest"))
             pkgs = manifest_df(seed)$name
 
     if(!missing(pkgs))
-        Install(pkgs, repos = seed)
+        install_packages(pkgs, repos = seed)
     write.table(data.frame(name = name, url = "", paths = libloc,
                            excl.site = exclude.site,
                            rversion = gsub("R version ([^ ]*).*", "\\1",

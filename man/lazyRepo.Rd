@@ -3,7 +3,7 @@
 \alias{lazyRepo}
 \title{lazyRepo}
 \usage{
-lazyRepo(pkgs, manifest, versions = rep(NA, times = length(pkgs)),
+lazyRepo(pkgs, pkg_manifest, versions = rep(NA, times = length(pkgs)),
   dir = tempdir(), rep_path = file.path(dir, "repo"),
   get_suggests = FALSE, verbose = FALSE, scm_auths = list(bioconductor =
   c("readonly", "readonly")), param = SwitchrParam())

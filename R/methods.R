@@ -19,7 +19,7 @@ Renvs= new.env()
 ##' @param reverting Indicates whether we are reverting to the environment in
 ##' use before the current one. Typically not set directly by the user.
 ##' @param ignoreRVersion Should the R version in use be ignored when checking
-##' for existing computing environments. This is experimental.
+##' for existing computing environmeSnts. This is experimental.
 ##' @param ... Passed directly to \code{installCompEnv} if an existing
 ##' computing environment is not found.
 ##' @details This function has the side effect of unloading all loaded
@@ -68,7 +68,7 @@ setMethod("switchTo", c(name = "character", seed = "character"),
         man = readManifest(seed)
         if(!is(man, "SessionManifest"))
             man = SessionManifest(pkg_versions = data.frame(name = manifest_df(man)$name,
-                                      version = NA), pkg_manifest = man)
+                                      version = NA, stringsAsFactors=FALSE), pkg_manifest = man)
         seed = lazyRepository(man)
         chtype = "repourl"
     }
@@ -235,10 +235,37 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
                   ...)
               
 
-              Install(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
+              install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
               cenv = update_pkgs_list(cenv)
               switchTo(cenv)
           })
+
+
+setMethod("switchTo", c("character", seed = "SessionManifest"),
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
+              
+              if(ignoreRVersion)
+                  rvers = NULL
+              else
+                  rvers = paste(R.version$major, R.version$minor, sep=".")
+              exsting = findCompEnv(name = name, rvers = rvers)
+              if(!is.null(exsting)) {
+                  warning("A switchr context with that name already exists")
+                  switchTo(exsting)
+              }
+              cenv = makeLibraryCtx(name = name, seed = NULL,
+                  ...)
+              
+
+                       
+              install_packages(pkgs = seed, lib = library_paths(cenv)[1])
+              cenv = update_pkgs_list(cenv)
+              switchTo(cenv)
+          })
+
+
+
+
 
 
 setGeneric("attachedPkgs<-", function(seed, value) standardGeneric("attachedPkgs<-"))

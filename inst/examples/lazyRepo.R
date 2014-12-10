@@ -3,6 +3,6 @@ library(switchr)
   ghman = GithubManifest("gmbecker/rpath", "hadley/lazyeval",
       "hadley/dplyr", "rstudio/ggvis")
 
-res = lazyRepo("ggvis", manifest = ghman)
+res = lazyRepo("ggvis", pkg_manifest = ghman)
 
-  Install(c("Rcpp", "ggvis"), ghman)
+  install_packages(c("Rcpp", "ggvis"), ghman)
