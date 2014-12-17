@@ -143,7 +143,8 @@ setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
                   loc = destfile
               }
               untar(loc, exdir = path)
-              file.path(path, name)
+              file.exists(file.path(path, name))
+                 
           })
 
 

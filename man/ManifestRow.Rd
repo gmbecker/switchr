@@ -3,8 +3,9 @@
 \alias{ManifestRow}
 \title{ManifestRow}
 \usage{
-ManifestRow(name = NA, url = NA, type = NA, branch = NA, subdir = ".",
-  extra = NA)
+ManifestRow(name = NA_character_, url = NA_character_,
+  type = NA_character_, branch = NA_character_, subdir = ".",
+  extra = NA_character_)
 }
 \arguments{
 \item{name}{name of the package}

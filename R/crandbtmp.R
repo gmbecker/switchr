@@ -12,7 +12,7 @@
 ##'
 
 ## Eventually replace with crandb but it has lots of deps and seems broken now
-
+##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
     resp = getURL(url)

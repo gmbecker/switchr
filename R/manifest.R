@@ -26,12 +26,12 @@ emptyManifest = data.frame(name = character(),
 ##' installing the package
 ##' @return A valid Package manifest data.frame
 ##' @export
-ManifestRow = function(name = NA,
-    url = NA,
-    type = NA,
-    branch = NA,
+ManifestRow = function(name = NA_character_,
+    url = NA_character_,
+    type = NA_character_,
+    branch = NA_character_,
     subdir = ".",
-    extra = NA
+    extra = NA_character_
     ) {
 
     if(is.na(type) && !is.na(url))
@@ -78,7 +78,7 @@ gitregex = "^(git:.*|http{0,1}://(www.){0,1}(github|bitbucket)\\.com.*|.*\\.git)
     switch(type,
            git = "master",
            svn = "trunk",
-           NA)
+           NA_character_)
 }
            
 
