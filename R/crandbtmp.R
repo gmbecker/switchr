@@ -14,6 +14,9 @@
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
+    if(!require("RJSONIO") && !exists("fromJSON", mode="function"))
+        stop("This function requires the RJSONIO package or another package which provides a 'fromJSON' function")
+    
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
     resp = getURL(url)
     cont = fromJSON(resp)
