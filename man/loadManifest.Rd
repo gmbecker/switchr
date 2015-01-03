@@ -6,7 +6,7 @@
 loadManifest(fil)
 }
 \arguments{
-\item{fil}{The path or URL to the file}
+\item{fil}{The path or URL to the file or a gist containing it}
 }
 \value{
 A PkgManifest or SessionManifest object

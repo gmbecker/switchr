@@ -16,8 +16,8 @@ setGeneric("makePkgDir",
 ##' @param pkgs The packages to install
 ##' @param manifest The manifest to use
 ##' @param version Specific versions of the packages to install. Should be a
-##' vector of the same length as \code{pkgs}. Defaults to NA (any version)
-##' for all packages.
+##' vector of the same length as \code{pkgs} (and in the same order). Defaults
+##' to NA (any version) for all packages.
 ##' @param dir The directory packages should be downloaded/checkedout/built into
 ##' @param rep_path The path of the final repository
 ##' @param get_suggests Whether suggested packages should be included
@@ -26,11 +26,12 @@ setGeneric("makePkgDir",
 ##' the construction process
 ##' @param scm_auths Named list of username/password credentials for checking
 ##' out package sources from one or more sources listed in \code{manifest}
+##' Defaults to readonly access to Bioconductor SVN
 ##'
 ##' @return A path to the populated lazy repository, suitable for 'coercing' to
 ##' a url and installing from.
 ##' @export
-##'
+##' @author Gabriel Becker
 setGeneric("lazyRepo",
            function(pkgs,
                     pkg_manifest,

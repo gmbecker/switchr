@@ -46,6 +46,16 @@ switchrBaseDir = function(value) {
     }
 }
 
+##' switchrManifest
+##'
+##' Generate a manifest of all currently available (existing) swtichr libraries.
+##'
+##' @return A data.frame with information about the located switchr libraries
+##' @note This function reads cached metadata from the current switchr base
+##' directory (~/.switchr by default). This cache is updated whenever
+##' the switchr framework is used to create or destroy a switchr library,
+##' but will not be updated if one is added or removed manually. In
+##' such cases \code{\link{updateManifest}} must be called first
 ##' @export
 switchrManifest = function() {
     dir = switchrBaseDir()
@@ -57,8 +67,14 @@ switchrManifest = function() {
         read.table(file.path(dir, "manifest.dat"), header=TRUE, stringsAsFactors=FALSE)
 }
 
+##' updateManifest
+##'
+##' Update the cached information regarding available switchr libraries.
+##' @return NULL, used for it's side-effect of updating the switchr library
+##' metadata cache.
 updateManifest = function() {
     fils = list.files(switchrBaseDir(), recursive = TRUE, full.names = TRUE, pattern = "lib_info")
     man = do.call(rbind.data.frame, lapply(fils, function(x) read.table(x, stringsAsFactors = FALSE, header = TRUE)))
     write.table(man, file = file.path(switchrBaseDir(), "manifest.dat"))
+    NULL
 }

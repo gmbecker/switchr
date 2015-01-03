@@ -22,6 +22,15 @@ locate the package
 \description{
 Locate and download/build the exact version of a single package.
 }
+\note{
+Locating and attempting to install a non-current version of a single
+will not work in general, due to dependency issues. In most cases a
+Just-in-Time repository should be created and used instead, e.g. via
+\code{\link{install_packages}}
+
+This function is called internally during the construction of Just-in-Time
+repositories and during the installation of specific package versions.
+}
 \author{
 Gabriel Becker
 }

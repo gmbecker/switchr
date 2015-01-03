@@ -1,4 +1,7 @@
+##' removeLib
 ##' Remove a switchr library and update the manifest of existing libraries
+##' @return NULL, called for its side-effect of removing/destroying a switchr
+##' library
 ##' @export
 removeLib = function(name = NULL, repos = NULL, compEnv = NULL, fromStack = FALSE) {
     if(is.null(name) &&

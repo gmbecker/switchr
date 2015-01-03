@@ -1,4 +1,18 @@
-##'@export
+##' libManifest
+##' Create a Session- or PkgManifest for the contents of a switchr
+##' library.
+##' @param lib A SwitchrCtx object. Defaults to the currently active switchr
+##' library.
+##' @param record_versions Should the exact versions of installed packages be
+##' recorded in the manifest (TRUE)
+##' @param known_manifest An existing manifest, used when imputing
+##' location information for packages not
+##' installed via \code{\link{install_packages}}
+##' @param A vector of traditional package repositories. Used when imputing
+##' location information for packages not installed via
+##' \code{\link{install_packages}}
+##' @param \dots{} currently unused
+##' @export
 setGeneric("libManifest", function(lib = currentCompEnv(),
                                    record_versions = TRUE,
                                    known_manifest = Manifest(dep_repos = repos),

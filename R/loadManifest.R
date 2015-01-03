@@ -2,7 +2,7 @@
 ##'
 ##' Load a package or session manifest from a file (local or URL)
 ##'
-##' @param fil The path or URL to the file
+##' @param fil The path or URL to the file or a gist containing it
 ##' @return A PkgManifest or SessionManifest object
 ##' @export
 loadManifest = function(fil) {

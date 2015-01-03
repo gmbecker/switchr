@@ -299,7 +299,8 @@ setMethod("show", "SwitchrCtx", function(object) {
 
 ##' switchBack
 ##'
-##' A convenience function to switch back to the previously used computing environment.
+##' A convenience function to switch back to the previously used computing
+##' environment.
 ##' @export
 switchBack = function() {
     if(length(Renvs$stack) < 2) {
@@ -311,8 +312,9 @@ switchBack = function() {
 
 ##' currentCompEnv
 ##'
-##' Display the computing environment currently in use. If switchTo has not been called, a new SwitchrCtx object
-##' describing the current environment is created.
+##' Display the computing environment currently in use. If switchTo has not been
+##' called, a new SwitchrCtx object describing the current environment is
+##' created.
 ##' @export   
 currentCompEnv = function() {
             if(is.null(Renvs$stack)) {

@@ -25,6 +25,6 @@ installing the package}
 A valid Package manifest data.frame
 }
 \description{
-Create one or more rows of manifest
+Create one or more rows of a manifest data.frame
 }
 

@@ -6,6 +6,7 @@
 switchBack()
 }
 \description{
-A convenience function to switch back to the previously used computing environment.
+A convenience function to switch back to the previously used computing
+environment.
 }
 

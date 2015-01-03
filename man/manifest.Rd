@@ -3,12 +3,12 @@
 \alias{manifest}
 \alias{manifest,PkgManifest-method}
 \title{manifest
-Extract manifest data.frame associated with the manifest}
+Get or set the PkgManifest associated with an object.}
 \usage{
 manifest(x)
 }
 \description{
 manifest
-Extract manifest data.frame associated with the manifest
+Get or set the PkgManifest associated with an object.
 }
 

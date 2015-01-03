@@ -4,6 +4,14 @@ biocDevelV = "3.0"
 ##lifted from biocLite.R
 biocrepos <- NULL
 
+##' biocReposForVers
+##'
+##' Generate the URLs of the repositories associated with
+##' a specific Bioconductor release
+##'
+##' @param version The Bioconductor release to generate URLs for.
+##' @note This function will only work if some version of Bioconductor (>2.9)
+##' was installed when switchr was installed. It will return NULL otherwise.
 ##' @export
 biocReposForVers = function(version) {
     if(is.null(bioc))
@@ -14,6 +22,10 @@ biocReposForVers = function(version) {
 
 
 
+##' BiocVers
+##' A constructor for creating a RepoSubset object for a
+##' specified release of Bioconductor, which includes only the
+##' BiocInstaller package.
 ##' @export
 BiocVers = function(version = biocReleaseV,
     name = paste("BioC", version, sep="_"),

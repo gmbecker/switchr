@@ -1,4 +1,19 @@
 ##' makeLibraryCtx
+##'
+##' Locate or create a specified switchr library
+##'
+##' This function is not intended to be called directly in most cases; switchTo
+##' calls it automatically.
+##' 
+##' @param name The name for the library
+##' @param seed The object to seed the library from
+##' @param pkgs Pkgs to install upon creation. Deprecated, use a seeding object
+##' instead.
+##' @param exclude.site Whether the site library should be excluded when
+##' switching to this library
+##' @param contains Currently unused.
+##' @param rvers Optional R version. If specified, existing libraries much be
+##' associated with the same R version to be considered a match.
 ##' @export
 makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
                    contains, rvers = NULL) {

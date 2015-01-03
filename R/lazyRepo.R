@@ -15,7 +15,7 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
                    param = SwitchrParam()){
 
               
-              lazyRepo(pkgs = versions(pkgs)$name,
+              lazyRepo(pkgs = versions_df(pkgs)$name,
                        pkg_manifest = manifest(pkgs),
                        versions = versions_df(pkgs)$version,
                        dir = dir,
@@ -38,10 +38,10 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
                    scm_auths = list(bioconductor = c("readonly", "readonly"))){
 
               vers = versions_df(pkg_manifest)$version
-              inds = match(pkgs, versions(pkg_manifest)$name)
+              inds = match(pkgs, versions_df(pkg_manifest)$name)
               inds = inds[!is.na(inds)]
               vers = rep(NA, times = length(pkgs))
-              vers[inds] = version(pkg_manifest)$version[inds]
+              vers[inds] = versions_df(pkg_manifest)$version[inds]
               lazyRepo(pkgs = pkgs,
                        pkg_manifest = manifest(pkg_manifest),
                        versions = versions,
@@ -68,7 +68,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
 
               pkgsNeeded = pkgs
 
-              mandf = manifest(pkg_manifest)
+              mandf = manifest_df(pkg_manifest)
               avail = available.packages(contrib.url(dep_repos(pkg_manifest)))
 
               repdir = file.path(rep_path, "src", "contrib")

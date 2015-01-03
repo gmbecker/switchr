@@ -3,31 +3,18 @@
 \name{c,SessionManifest-method}
 \alias{c,PkgManifest-method}
 \alias{c,SessionManifest-method}
-\title{Combine package manifests}
 \usage{
 \S4method{c}{SessionManifest}(x, ..., recursive = FALSE)
 
 \S4method{c}{PkgManifest}(x, ..., recursive = FALSE)
+
+\S4method{c}{PkgManifest}(x, ..., recursive = FALSE)
 }
 \arguments{
-\item{x}{A SessionManifest object}
-
-\item{...}{One or more SessionManifest objects}
-
-\item{x}{A PkgManifest object}
-
-\item{...}{One or more PkgManifest objects}
+\item{...}{objects to be concatenated.}
 
 \item{recursive}{logical.  If \code{recursive = TRUE}, the function
     recursively descends through lists (and pairlists) combining all
     their elements into a vector.}
-}
-\value{
-A SessionManifest object
-
-A PkgManifest object
-}
-\description{
-Combine package manifests
 }
 

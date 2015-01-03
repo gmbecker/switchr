@@ -2,16 +2,21 @@
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character"))
 
 
-##' SwitchrCtx
-##'
-##' An object that represents a "computing environment" (a specific set of libpaths and the packages installed to them)
-##'@export
+
 setClass("SwitchrCtx", representation(name = "character",
                                          libpaths = "character",
                                          exclude.site = "logical",
                                          packages = "data.frame",
                                          seed = "ANY"))
-
+##' SwitchrCtx
+##'
+##' A constructor for class SwitchrCtx, represenging a switchr installed-package library.
+##' @param name The name to associate with the context
+##' @param libpaths The directories where the installed packages are located
+##' @param exlcude.site Should the current site library be included in the
+##' context when it is switched to (TRUE) '
+##' @param seed An object representing the list of packages the switchr context
+##' was seeded with.
 ##'@export
 SwitchrCtx = function(name, libpaths, exclude.site = TRUE, seed = NULL) {
     
@@ -26,22 +31,29 @@ SwitchrCtx = function(name, libpaths, exclude.site = TRUE, seed = NULL) {
 }
 
 switchrOpts = new.env()
-
-##' RepoSubset
-##'
-##' An object that represents a subset of packages available in a repo. When switched to, switchr will default to only installing the
-##' specified packages, rather than all packages in the repository.
 setClass("RepoSubset", representation(repos = "character",
                                       pkgs = "character",
                                       default_name = "character"))
 
 
+##' RepoSubset
+##'
+##' An object that represents a subset of packages available in a repo. When switched to, switchr will default to only installing the
+##' specified packages, rather than all packages in the repository.
+##' @param repos The traditional repositories to select the packages from
+##' @param pkgs The packages included in the subset
+##' @param default_name The default name to use when the RepoSubset is used to
+##' seed a switchr context
 ##' @export
 RepoSubset = function(repos, pkgs, default_name) {
     new("RepoSubset", repos = repos, pkgs = pkgs, default_name = default_name)
 }
 
-
+##' PkgSource
+##' An object representing the source location of a package. This is a virtual
+##' used exlusively through its subclasses, which are used to differentiate the
+##' different types of package source locations.
+##' 
 ##' @export
 setClass("PkgSource", representation(name = "character",location="character",
                                      branch = "character",
@@ -82,7 +94,16 @@ setAs("GitSource", "SVNSource",
 setClass("PkgManifest", representation( manifest = "data.frame",
                                           dependency_repos = "character"))
 
-##'@export
+##' PkgManifest
+##'
+##' Construct a PkgManifest, which can be installed from using \code{\link{install_packages}}
+##' @param manifest  The manifest (data.frame) of packages and their locations
+##' @param dep_repos A list of traditional pkg repositories which can contain dependencies
+##' for the packages listed in \code{manifest}.
+##' @details If a package is found in both the manifest dataf.frame and the dependency
+##' repositories, the version in the manifest will always take precidence within the
+##' switchr framework.
+##' @export
 ##' @import RCurl
 PkgManifest = function(manifest = ManifestRow(...), dep_repos = c(biocinstallRepos(), defaultGRAN()), ...) {
     if(is.character(manifest)) {

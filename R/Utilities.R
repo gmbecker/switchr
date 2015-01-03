@@ -146,7 +146,14 @@ getPkgDir = function(basepath,name,  subdir, scm_type, branch)
 }
 
 
-
+##' normalizePath2
+##'
+##' Attempt to normalize a relative path to an absolute one. Optionally without
+##' resolving symlinks on non-Windows systems
+##' @param path The path to normalize
+##' @param follow.symlinks Should symlinks (other than . and ..)
+##' be resolved to their physical locations? (FALSE)
+##' @return The normalized path.
 ##' @export
 normalizePath2 = function(path, follow.symlinks=FALSE)
     {
@@ -185,6 +192,18 @@ normalizePath2 = function(path, follow.symlinks=FALSE)
 
 ##source an initialization script (e.g. .bashrc) if specified
 ## in sh_init_script(repo)
+##' system_w_init
+##'
+##' Run a system command with an optional intialization script (e.g. a .bashrc
+##' sourced first).
+##' @param cmd The text of the command. Must be length 1.
+##' @param init (optional) a character value indicating the
+##' location of an initialization shell script.
+##' @param \dots{} additional parameters passed directly to \code{\link{system}}.
+##' @param param A SwitchrParam object. The shell initialization
+##' script associated with this object is used when \code{init} is
+##' not specified (length 0).
+##' @return Depends, see \code{\link{system}} for details.
 ##' @export
 system_w_init = function(cmd,
     init = character(), ..., param = SwitchrParam())

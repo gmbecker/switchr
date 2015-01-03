@@ -30,11 +30,11 @@ setMethod("dep_repos<-", "PkgManifest", function(x, value) {
 
 
 ##' manifest
-##' Extract manifest data.frame associated with the manifest
+##' Get or set the PkgManifest associated with an object.
 ##' @aliases manifest,PkgManifest-method
 ##' @export
 setGeneric("manifest", function(x) standardGeneric("manifest"))
-setMethod("manifest", "PkgManifest", function(x) x@manifest)
+##setMethod("manifest", "PkgManifest", function(x) x@manifest)
 
 setGeneric("manifest<-", function(x, value) standardGeneric("manifest<-"))
 
@@ -44,7 +44,7 @@ setMethod("manifest", "SessionManifest",
 
 
 
-
+ 
 setMethod("manifest<-", "SessionManifest",
           function(x, value ) {
               x@pkg_manifest = value
@@ -53,22 +53,28 @@ setMethod("manifest<-", "SessionManifest",
 
 
 
+##setGeneric("versions", function(x) standardGeneric("versions"))
+##setMethod("versions", "SessionManifest",
+##          function(x) x@pkg_versions)
 
-##' @export
-setGeneric("versions", function(x) standardGeneric("versions"))
-setMethod("versions", "SessionManifest",
-          function(x) x@pkg_versions)
-
-##' @export
-setGeneric("versions<-", function(x, value) standardGeneric("versions<-"))
-setMethod("versions<-", "SessionManifest",
-          function(x, value){
-              x@pkg_versions = value
-              x
-              })
+##setGeneric("versions<-", function(x, value) standardGeneric("versions<-"))
+##setMethod("versions<-", "SessionManifest",
+##         function(x, value){
+##              x@pkg_versions = value
+##              x
+##             })
 
 setMethod("manifest", "SessionManifest", function(x) x@pkg_manifest)
 
+
+##' manifest_df
+##'
+##' Get or set the package location manifest (data.frame) associated with an
+##' object
+##'
+##' @rdname manifest_df
+##' @param x The object
+##' @param \dots{} unused.
 ##' @export
 setGeneric("manifest_df", function(x, ...) standardGeneric("manifest_df"))
 
@@ -90,6 +96,9 @@ setMethod("manifest_df", "SessionManifest",
 setMethod("manifest_df", "PkgManifest", function(x) x@manifest)
 
 
+##' @rdname manifest_df
+##' @param value A data.frame of package manifest information.
+##' See \code{\link{ManifestRow}}
 ##' @export
 setGeneric("manifest_df<-", function(x, value) standardGeneric("manifest_df<-"))
 
@@ -106,7 +115,11 @@ setMethod("manifest_df<-", "PkgManifest", function(x, value) {
     x
     })
 
-
+##' versions_df
+##'
+##' Get or set the the versions information in a SessionManifest
+##' @param x An object containing package version information
+##' @rdname versions
 ##' @export
 setGeneric("versions_df", function(x) standardGeneric("versions_df"))
 
@@ -115,7 +128,8 @@ setMethod("versions_df", "SessionManifest",
           function(x) x@pkg_versions)
 
 
-
+##' @rdname versions
+##' @param value A data.frame of package version information.
 ##' @export
 setGeneric("versions_df<-", function(x, value) standardGeneric("versions_df<-"))
 

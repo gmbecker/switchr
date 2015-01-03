@@ -21,6 +21,9 @@ rVersionManifest
 Create a Pkg manifest which points to tarballs representing the
 cohort of packages associated with a particular release of R
 }
+\author{
+Gabriel Becker
+}
 \references{
 "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
  database. R package version 1.0.0. https://github.com/metacran/crandb

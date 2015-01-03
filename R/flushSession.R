@@ -1,10 +1,24 @@
 
 basepkgs = installed.packages(priority="base")[, "Package"]
+##'switchrDeps
+##' The base packages, as well as switchr and its dependencies.
+##' @export
 switchDeps = c(basepkgs, "switchr", "digest", "RCurl", "bitops", "BiocInstaller")
 
-##' Empty current R session
+##' flushSession
+##' Unload currently loaded packages from the current R session
 ##'
 ##' @param dontunload Non-base packages to ignore (not detatch/unload)
+##' @details Attached packages are detached (and unloaded) first. After this is
+##' done, loaded packages, such as those imported by (previously) attached
+##' packages, are unloaded.
+##'
+##' Finally, after all packages have been unloaded, native libraries
+##' loaded by those packages are unloaded (on systems where this is supported).
+##' @return NULL, called for its side-effect of unloading packages
+##' @note Failing to include switchr, any of its dependencies, or any base
+##' packages (available as a vector in the \code{\link{switchDeps}} object)
+##' in \code{dontunload} will result in undefined, likely erroneous behavior. 
 ##' @export
 ##' 
 
@@ -52,5 +66,6 @@ flushSession = function(dontunload = switchDeps) {
         if(!is.null(dll))
             tryCatch(library.dynam.unload(x, dirname(dirname(dll[["path"]]))), error = function(e) NULL)
     })
-    
+
+    NULL
 }

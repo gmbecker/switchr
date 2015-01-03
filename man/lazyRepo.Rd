@@ -14,8 +14,8 @@ lazyRepo(pkgs, pkg_manifest, versions = rep(NA, times = length(pkgs)),
 \item{manifest}{The manifest to use}
 
 \item{version}{Specific versions of the packages to install. Should be a
-vector of the same length as \code{pkgs}. Defaults to NA (any version)
-for all packages.}
+vector of the same length as \code{pkgs} (and in the same order). Defaults
+to NA (any version) for all packages.}
 
 \item{dir}{The directory packages should be downloaded/checkedout/built into}
 
@@ -28,7 +28,8 @@ in the lazy repository. Defaults to FALSE}
 the construction process}
 
 \item{scm_auths}{Named list of username/password credentials for checking
-out package sources from one or more sources listed in \code{manifest}}
+out package sources from one or more sources listed in \code{manifest}
+Defaults to readonly access to Bioconductor SVN}
 }
 \value{
 A path to the populated lazy repository, suitable for 'coercing' to
@@ -38,5 +39,8 @@ a url and installing from.
 Create a lazy repository for installing directly from a package
 manifest. Most users will want to call \code{Install} directly,
 which will call this as needed behind the scenes.
+}
+\author{
+Gabriel Becker
 }
 

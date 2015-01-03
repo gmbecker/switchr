@@ -9,6 +9,13 @@
 ##' @param dir directory to download package into
 ##' @return The full path to the downloaded file , or NULL if unable to
 ##' locate the package
+##' @note Locating and attempting to install a non-current version of a single
+##' will not work in general, due to dependency issues. In most cases a
+##' Just-in-Time repository should be created and used instead, e.g. via
+##' \code{\link{install_packages}}
+##'
+##' This function is called internally during the construction of Just-in-Time
+##' repositories and during the installation of specific package versions.
 ##' @author Gabriel Becker
 ##' @export
 locatePkgVersion = function(name, version, pkg_manifest, param = SwitchrParam(),
