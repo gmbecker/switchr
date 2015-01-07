@@ -1,4 +1,5 @@
-##'cmethods
+##' cmethods
+##' @rdname cmethods
 ##' @export
 setMethod("c", "SessionManifest",
           function(x, ...) {
