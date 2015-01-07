@@ -2,7 +2,8 @@
 % Please edit documentation in R/manifest.R
 \name{Manifest}
 \alias{Manifest}
-\title{Manifest}
+\title{Manifest constructor
+Create a package manifest}
 \usage{
 Manifest(..., dep_repos = c(biocinstallRepos()))
 }
@@ -12,6 +13,7 @@ Manifest(..., dep_repos = c(biocinstallRepos()))
 \item{\dots{}}{Vectors containing package information. Passed to \code{\link{ManifestRow}}}
 }
 \description{
+Manifest constructor
 Create a package manifest
 }
 

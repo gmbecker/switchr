@@ -43,8 +43,10 @@ ManifestRow = function(name = NA_character_,
            stringsAsFactors = FALSE)
 }
 
-##' Manifest
-##'
+
+
+
+##' Manifest constructor
 ##' Create a package manifest
 ##' @param \dots{} Vectors containing package information. Passed to \code{\link{ManifestRow}}
 ##' @param dep_repos The dependency repos for the package.

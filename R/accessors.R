@@ -29,9 +29,6 @@ setMethod("dep_repos<-", "PkgManifest", function(x, value) {
 
 
 
-##' manifest
-##' Get or set the PkgManifest associated with an object.
-##' @aliases manifest,PkgManifest-method
 ##' @export
 setGeneric("manifest", function(x) standardGeneric("manifest"))
 ##setMethod("manifest", "PkgManifest", function(x) x@manifest)
