@@ -233,10 +233,14 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
               }
               cenv = makeLibraryCtx(name = name, seed = NULL,
                   ...)
-              
+              oldlp = .libPaths()
+              .libPaths2(library_paths(cenv))
+              on.exit(.libPaths2(oldlp))
 
               install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
               cenv = update_pkgs_list(cenv)
+              .libPaths2(oldlp)
+              on.exit(NULL)
               switchTo(cenv)
           })
 

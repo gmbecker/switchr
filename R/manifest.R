@@ -51,7 +51,7 @@ ManifestRow = function(name = NA_character_,
 ##' @param \dots{} Vectors containing package information. Passed to \code{\link{ManifestRow}}
 ##' @param dep_repos The dependency repos for the package.
 ##' @export
-Manifest = function(..., dep_repos = c(biocinstallRepos())) {
+Manifest = function(..., dep_repos = defaultRepos()) {
     rows = mapply(ManifestRow, ..., SIMPLIFY=FALSE)
     PkgManifest(manifest = do.call(rbind.data.frame, rows), dep_repos = dep_repos)
 }

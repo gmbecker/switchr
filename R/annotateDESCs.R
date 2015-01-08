@@ -19,7 +19,7 @@ annotateDESCs = function(pkgs, man) {
         branch = "none"
         if(grepl("cran", loc, ignore.case=TRUE))
             type = "cran"
-        else if(grep("bioconductor.org", loc, ingore.case=TRUE))
+        else if(grep("bioconductor.org", loc, ignore.case=TRUE))
             type = "bioc"
         else
             type = "repository"

@@ -64,5 +64,4 @@ exportClasses(parsedSessionInfo)
 exportMethods(c)
 exportMethods(location)
 import(RCurl)
-importFrom(BiocInstaller,biocVersion)
-importFrom(BiocInstaller,biocinstallRepos)
+

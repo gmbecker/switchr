@@ -70,26 +70,32 @@ setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), funct
 
 ## @param man A PkgManifest
 .install_packages = function(pkgs, lazyrepo, man, ...) {
-    
+    if ("lib" %in% list(...))
+        libloc = list(...)["lib.loc"]
+    else
+        libloc = .libPaths()[1]
     avail1 = available.packages(lazyrepo)
     avail2 = available.packages(contrib.url(dep_repos(man)))
     new = !avail2[,"Package"] %in% avail1[,"Package"]
     avail = rbind(avail1, avail2[new,])
-    oldpkgs = installed.packages()[,"Package"]
+    
+    oldpkgs = installed.packages(libloc)[,"Package"]
     oldinfo = lapply(oldpkgs, function(x) file.info(system.file("DESCRIPTION", package = x)))
     
     install.packages(pkgs, available = avail, ...)
 
-    newpkgs  = installed.packages()[,"Package"]
+    newpkgs  = installed.packages(libloc)[,"Package"]
 
     newinds = !newpkgs %in% oldpkgs
-
-    possupdates = newpkgs[!newinds]
-
-    newinfo = lapply(possupdates, function(x) file.info(system.file("DESCRIPTION", package = x)))
-
-    updated = mapply(function(old, new) !identical(old, new), old = oldinfo, new = newinfo)
-    installedpkgs = c(newpkgs[newinds], newpkgs[updated])
+    if(!all(newinds)) {
+        possupdates = newpkgs[!newinds]
+        
+        newinfo = lapply(possupdates, function(x) file.info(system.file("DESCRIPTION", package = x)))
+        
+        updated = mapply(function(old, new) !identical(old, new), old = oldinfo, new = newinfo)
+        installedpkgs = c(newpkgs[newinds], newpkgs[updated])
+    } else
+        installedpkgs = newpkgs
     annotateDESCs(installedpkgs, man)
     installedpkgs
 }
