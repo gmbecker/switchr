@@ -5,7 +5,7 @@
 \title{Manifest constructor
 Create a package manifest}
 \usage{
-Manifest(..., dep_repos = c(biocinstallRepos()))
+Manifest(..., dep_repos = defaultRepos())
 }
 \arguments{
 \item{dep_repos}{The dependency repos for the package.}

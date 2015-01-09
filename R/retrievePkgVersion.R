@@ -166,6 +166,10 @@ setMethod("makeSVNURL", "GitSource",
 ##' @importFrom BiocInstaller biocinstallRepos biocVersion
 findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 {
+    if(!requireNamespace(BiocInstaller)) {
+        warning("Unable to search bioconductor for package version because BiocInstaller is not available")
+        return(NULL)
+    }
 
     destpath = dir
     ret = .biocTryToDL(name, version, dir = dir)
@@ -366,7 +370,7 @@ binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
         ##svn log -q VERSION | grep ^r | awk '{print $1}' | sed -e 's/^r//' 
         
 setMethod("gotoVersCommit", c(dir = "character", src = "SVNSource"),
-          function(dir, src, version, param = SwitchrParam){
+          function(dir, src, version, param = SwitchrParam()){
               
               if(!file.exists(dir))
                   stop("checkout directory does not appear to exist")

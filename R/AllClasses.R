@@ -59,13 +59,29 @@ setClass("PkgSource", representation(name = "character",location="character",
                                      branch = "character",
                                      subdir = "character", user = "character",
                                      password="character"))
+##' @export
+##' @rdname PkgSource-class
 setClass("SVNSource", contains = "PkgSource")
+##' @export
+##' @rdname PkgSource-class
 setClass("GitSource", contains = "PkgSource")
+##' @rdname PkgSource-class
+##' @export
 setClass("GithubSource", contains = "GitSource")
+##' @rdname PkgSource-class
+##' @export
 setClass("CVSSource", contains = "PkgSource")
+##' @rdname PkgSource-class
+##' @export
 setClass("LocalSource", contains = "PkgSource")
+##' @rdname PkgSource-class
+##' @export
 setClass("CRANSource", contains = "PkgSource")
+##' @rdname PkgSource-class
+##' @export
 setClass("BiocSource", contains = "PkgSource")
+##' @rdname PkgSource-class
+##' @export
 setClass("TarballSource", contains = "PkgSource")
 
 

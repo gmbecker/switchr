@@ -4,8 +4,7 @@
 \alias{PkgManifest}
 \title{PkgManifest}
 \usage{
-PkgManifest(manifest = ManifestRow(...), dep_repos = c(biocinstallRepos(),
-  defaultGRAN()), ...)
+PkgManifest(manifest = ManifestRow(...), dep_repos = defaultRepos(), ...)
 }
 \arguments{
 \item{manifest}{The manifest (data.frame) of packages and their locations}

@@ -33,6 +33,7 @@ setMethod("dep_repos<-", "PkgManifest", function(x, value) {
 setGeneric("manifest", function(x) standardGeneric("manifest"))
 ##setMethod("manifest", "PkgManifest", function(x) x@manifest)
 
+##' @export
 setGeneric("manifest<-", function(x, value) standardGeneric("manifest<-"))
 
 
@@ -203,6 +204,16 @@ setMethod("sh_init_script<-", "SwitchrParam", function(x, value) {
 ##' @export
 setGeneric("logfun", function(x) standardGeneric("logfun"))
 setMethod("logfun", "SwitchrParam", function(x) x@logfun)
+
+
+##' @export
+setGeneric("logfun<-", function(x, value) standardGeneric("logfun<-"))
+setMethod("logfun<-", "SwitchrParam", function(x, value) {
+    x@logfun = value
+    x
+    })
+
+
 
 ##' @export
 setGeneric("addPkg", function(x, ..., rows = Manifest(...),
