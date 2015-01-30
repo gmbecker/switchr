@@ -34,7 +34,9 @@ ManifestRow = function(name = NA_character_,
     extra = NA_character_
     ) {
 
-    if(is.na(type) && !is.na(url))
+    if(length(name) == 0)
+        return(emptyManifest)
+    if( is.na(type) && !is.na(url))
         type = .inferType(url)
     if(is.na(branch) && !is.na(type))
         branch = .inferDefaultBranch(branch, type)

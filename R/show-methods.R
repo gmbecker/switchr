@@ -22,8 +22,10 @@ setMethod("show", "PkgManifest",
                   df = .sketch_df(df, 4, 4)
                   
               }
-              cat("\nPackages:\n")
-              show(df)
+              if(nrow(df)) {
+                  cat("\nPackages:\n")
+                  show(df)
+              }
           })
 
 
@@ -38,8 +40,10 @@ setMethod("show", "SessionManifest",
                   df = .sketch_df(df, 4, 4)
                   
               }
-              cat("\nPackages:\n")
-              show(df)
+              if(nrow(df)) {
+                  cat("\nPackage versions:\n")
+                  show(df)
+              }
           })
 
 

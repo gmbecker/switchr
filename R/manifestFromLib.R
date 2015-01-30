@@ -53,8 +53,10 @@ setMethod("libManifest", "SwitchrCtx",
                   subdir = instpkginfo[,"SourceSubdir"],
                   dep_repos  = dep_repos(known_manifest))
 
-              mani = .findThem(mani, known_manifest)
-              if(record_versions) {
+              haveany = nrow(manifest_df(mani)) > 0
+              if(haveany)
+                  mani = .findThem(mani, known_manifest)
+              if(record_versions && nrow(manifest_df(mani))) {
                   pkg_vers = data.frame(name = instpkgs,
                       version = instpkginfo[,"Version"],
                       stringsAsFactors = FALSE)

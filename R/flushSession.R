@@ -3,7 +3,7 @@ basepkgs = installed.packages(priority="base")[, "Package"]
 ##'switchrDeps
 ##' The base packages, as well as switchr and its dependencies.
 ##' @export
-switchDeps = c(basepkgs, "switchr", "digest", "RCurl", "bitops")#, "BiocInstaller")
+switchDeps = c(basepkgs, "switchr", "digest", "RCurl", "bitops", "BiocInstaller", "RJSONIO")
 
 ##' flushSession
 ##' Unload currently loaded packages from the current R session
@@ -20,7 +20,8 @@ switchDeps = c(basepkgs, "switchr", "digest", "RCurl", "bitops")#, "BiocInstalle
 ##' packages (available as a vector in the \code{\link{switchDeps}} object)
 ##' in \code{dontunload} will result in undefined, likely erroneous behavior. 
 ##' @export
-##' 
+##'
+##' @importFrom tools write_PACKAGES
 
 flushSession = function(dontunload = switchDeps) {
     
