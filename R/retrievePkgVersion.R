@@ -381,6 +381,38 @@ setMethod("gotoVersCommit", c(dir = "character", src = "SVNSource"),
           })
 
 
-        
+
+setMethod("gotoVersCommit", c(dir = "character", src= "CRANSource"),
+          function(dir, src, version, param = SwitchrParam()) {
+              if(is.na(version))
+                  return(dir)
+              
+              desc = read.dcf(file.path(dir, "DESCRIPTION"), all=TRUE)
+              if(compareVersion(version, desc$Version) == 0)
+                  return(dir)
+              pkg = findPkgVersionInCRAN(src@name, version, param = param, dir = tempdir())
+              if(is.null(pkg) || !file.exists(pkg))
+                  stop("Unable to find version %s of package %s", version, src@name)
+              untar(pkg, exdir = dirname(dir))
+              dir
+          })
+
+
+setMethod("gotoVersCommit", c(dir = "character", src= "BiocSource"),
+          function(dir, src, version, param = SwitchrParam()) {
+              if(is.na(version))
+                  return(dir)
+              
+              desc = read.dcf(file.path(dir, "DESCRIPTION"), all=TRUE)
+              if(compareVersion(version, desc$Version) == 0)
+                  return(dir)
+              pkg = findPkgVersionInBioc(src@name, version, param = param, dir = tempdir())
+              if(is.null(pkg) || !file.exists(pkg))
+                  stop("Unable to find version %s of package %s", version, src@name)
+              if(!file.info(pkg)$isdir)
+                  untar(pkg, exdir = dirname(dir))
+              dir
+          })
+
 
           

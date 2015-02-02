@@ -5,7 +5,8 @@ setGeneric("makePkgDir",
                     path,
                     latest_only,
                     param = SwitchrParam(),
-                    forceRefresh = FALSE) standardGeneric("makePkgDir"))
+                    forceRefresh = FALSE,
+                    version = NA) standardGeneric("makePkgDir"))
 
 ##' lazyRepo
 ##'

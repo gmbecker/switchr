@@ -134,6 +134,34 @@ setMethod("makePkgDir", c(name = "ANY", source = "ANY"),
     FALSE
 })
 
+setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, source, path, latest_only, param, forceRefresh = FALSE) {
+
+    if(!file.exists(file.path(path, name)))
+        dir.create(file.path(path, name), recursive=TRUE)
+    
+    pkg =  download.packages(name, destdir = path, method = "wget")[,2]
+    untar(pkg,exdir = path)
+    TRUE
+    
+})
+
+
+setMethod("makePkgDir", c(name="ANY", source="BiocSource"), function(name, source, path, latest_only, param, forceRefresh = FALSE) {
+
+    if(!file.exists(file.path(path, name)))
+        dir.create(file.path(path, name), recursive=TRUE)
+
+    pkg =  download.packages(name, destdir = path, method = "wget", repos = BiocInstaller::biocinstallRepos())[,2]
+    untar(pkg,exdir = path)
+    return(TRUE)
+    
+    
+})
+
+
+
+
+
 setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
           function(name, source, path, latest_only, param, forceRefresh = FALSE) {
               loc = location(source)
