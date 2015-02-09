@@ -9,10 +9,11 @@ that were contemporary on the first or last day the specified package
 version resided on CRAN}
 \usage{
 cranPkgVersManifest(pkg, vers, earliest = TRUE,
-  cur_avail = available.packages(), verbose = FALSE)
+  cur_avail = available.packages(), verbose = FALSE,
+  suggests = c("direct", "none"), delay = 1)
 }
 \arguments{
-\item{pkg}{}
+\item{pkg}{The package on which to base the generated manifest}
 
 \item{vers}{The version of \code{pkg} to construct the cohort around. Note
 this must match the the version string exactly, i.e. 1.3.1 and 1.3-1 are
@@ -22,11 +23,19 @@ this must match the the version string exactly, i.e. 1.3.1 and 1.3-1 are
 first (TRUE) or last (FALSE) day the specified package version was
 (the latest version) on CRAN?}
 
+\item{cur_avail}{The output from available.packages(). Used to identify
+whether the necessary version is in the CRAN archive or normal repository}
+
 \item{verbose}{Should debugging information about the recursive traversal of
 package dependencies be printed (defaults to FALSE).}
 
-\item{curr_avail}{The output from available.packages(). Used to identify
-whether the necessary version is in the CRAN archive or normal repository}
+\item{suggests}{Which Suggests'ed packages should be included. Currently
+supported possibilites are direct, indicating Suggestions of \code{pkg}
+should be included, and none, indicating that no Suggests'ed packages
+should be counted.}
+
+\item{delay}{Number of seconds to delay between successive REST calls
+to the crandb database. Defaults to 1 second}
 }
 \value{
 A PkgManifest object

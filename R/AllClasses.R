@@ -13,7 +13,7 @@ setClass("SwitchrCtx", representation(name = "character",
 ##' A constructor for class SwitchrCtx, represenging a switchr installed-package library.
 ##' @param name The name to associate with the context
 ##' @param libpaths The directories where the installed packages are located
-##' @param exlcude.site Should the current site library be included in the
+##' @param exclude.site Should the current site library be included in the
 ##' context when it is switched to (TRUE) '
 ##' @param seed An object representing the list of packages the switchr context
 ##' was seeded with.
@@ -116,6 +116,7 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' @param manifest  The manifest (data.frame) of packages and their locations
 ##' @param dep_repos A list of traditional pkg repositories which can contain dependencies
 ##' for the packages listed in \code{manifest}.
+##' @param \dots Arguments passed to \code{\link{ManifestRow}} if \code{manifest} is not specified
 ##' @details If a package is found in both the manifest dataf.frame and the dependency
 ##' repositories, the version in the manifest will always take precidence within the
 ##' switchr framework.
@@ -123,7 +124,7 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' @import RCurl
 PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), ... ){
     if(is.character(manifest)) {
-        if(is.url(manifest)) {
+        if(url.exists(manifest)) {
             fil = tempfile()
             download.file(manifest, method = "curl", fil)
             manifest  = fil

@@ -1,4 +1,6 @@
 #setMethod("makePkgSourceDir", c(name = "ANY", source = "SVNSource"), function(name, source, path, repo) {
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,SVNSource
 setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
           function(name, source, path, latest_only = FALSE, param,
                    forceRefresh = FALSE) {
@@ -54,6 +56,8 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
               ret
           })
 
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,GithubSource
 
 setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
           function(name, source, path, latest_only = FALSE,  param, forceRefresh = FALSE)
@@ -89,6 +93,9 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
       })
 
 #setMethod("makePkgSourceDir", c(name = "ANY", source = "GitSource"), function(name, source, path,  repo) {
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,GitSource
+
 setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           function(name, source, path, latest_only = FALSE, param, forceRefresh=FALSE)
       {
@@ -127,12 +134,16 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           }
           ret
       })
-                                        #stub for everyone else
+##stub for everyone else
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,ANY
 setMethod("makePkgDir", c(name = "ANY", source = "ANY"),
           function(name, source, path, latest_only, param, forceRefresh = FALSE) {
     warning("Source type not supported yet.")
     FALSE
 })
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,CRANSource
 
 setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, source, path, latest_only, param, forceRefresh = FALSE) {
 
@@ -145,6 +156,8 @@ setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, sourc
     
 })
 
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,BiocSource
 
 setMethod("makePkgDir", c(name="ANY", source="BiocSource"), function(name, source, path, latest_only, param, forceRefresh = FALSE) {
 
@@ -161,6 +174,8 @@ setMethod("makePkgDir", c(name="ANY", source="BiocSource"), function(name, sourc
 
 
 
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,TarballSource
 
 setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
           function(name, source, path, latest_only, param, forceRefresh = FALSE) {
@@ -177,8 +192,12 @@ setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
 
 
 
-#setMethod("makePkgSourceDir", c(source="LocalSource"), function(name, source, path, latest_only = FALSE, repo) {
-setMethod("makePkgDir", c(source="LocalSource"),
+
+
+##'@rdname makePkgDir
+##' @aliases makePkgDir,ANY,LocalSource
+
+setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
           function(name, source, path,  latest_only, param, forceRefresh = FALSE) {
     oldwd = getwd()
     on.exit(setwd(oldwd))

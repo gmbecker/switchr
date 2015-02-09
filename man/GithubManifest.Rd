@@ -9,7 +9,7 @@ GithubManifest(..., pkgrepos = as.character(list(...)))
 \arguments{
 \item{pkgrepos}{Github repositories in the form "<user>/<reponame>"}
 
-\item{\dots{}}{Combined to populate \code{pkgrepos}}
+\item{\dots}{Combined to populate \code{pkgrepos}}
 }
 \description{
 Create a package manifest containing only github packages
@@ -18,7 +18,7 @@ Create a package manifest containing only github packages
 This is a convenience wrapper for \code{\link{Manifest}}. Non-default
 location information (e.g. branches other than master,
 subdirectories within the repository) are not currently supported. Use
-\code{\link{Manifest}} or edit the package manifest after
+\code{\link{makeManifest}} or edit the package manifest after
 creation when those are required.
 }
 

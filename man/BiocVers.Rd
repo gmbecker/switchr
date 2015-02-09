@@ -10,6 +10,14 @@ BiocInstaller package.}
 BiocVers(version = biocReleaseV, name = paste("BioC", version, sep = "_"),
   repos = biocReposForVers(version))
 }
+\arguments{
+\item{version}{The version of Bioconductor}
+
+\item{name}{The default name for switchr libraries created with this object}
+
+\item{repos}{The urls of the Bioconductor repositories. these will be
+modified automatically to match the specified version}
+}
 \description{
 BiocVers
 A constructor for creating a RepoSubset object for a

@@ -11,11 +11,11 @@ SwitchrCtx(name, libpaths, exclude.site = TRUE, seed = NULL)
 
 \item{libpaths}{The directories where the installed packages are located}
 
+\item{exclude.site}{Should the current site library be included in the
+context when it is switched to (TRUE) '}
+
 \item{seed}{An object representing the list of packages the switchr context
 was seeded with.}
-
-\item{exlcude.site}{Should the current site library be included in the
-context when it is switched to (TRUE) '}
 }
 \description{
 A constructor for class SwitchrCtx, represenging a switchr installed-package library.

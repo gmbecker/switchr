@@ -50,10 +50,10 @@ ManifestRow = function(name = NA_character_,
 
 ##' Manifest constructor
 ##' Create a package manifest
-##' @param \dots{} Vectors containing package information. Passed to \code{\link{ManifestRow}}
+##' @param \dots Vectors containing package information. Passed to \code{\link{ManifestRow}}
 ##' @param dep_repos The dependency repos for the package.
 ##' @export
-Manifest = function(..., dep_repos = defaultRepos()) {
+makeManifest = function(..., dep_repos = defaultRepos()) {
     rows = mapply(ManifestRow, ..., SIMPLIFY=FALSE)
     PkgManifest(manifest = do.call(rbind.data.frame, rows), dep_repos = dep_repos)
 }
@@ -66,17 +66,17 @@ Manifest = function(..., dep_repos = defaultRepos()) {
 ##' Create a package manifest containing only github packages
 ##'
 ##' @param pkgrepos Github repositories in the form "<user>/<reponame>"
-##' @param \dots{} Combined to populate \code{pkgrepos}
+##' @param \dots Combined to populate \code{pkgrepos}
 ##' @note This is a convenience wrapper for \code{\link{Manifest}}. Non-default
 ##' location information (e.g. branches other than master,
 ##' subdirectories within the repository) are not currently supported. Use
-##' \code{\link{Manifest}} or edit the package manifest after
+##' \code{\link{makeManifest}} or edit the package manifest after
 ##' creation when those are required.
 ##' @export
 GithubManifest = function( ..., pkgrepos = as.character(list(...))) {
 
     names = gsub(".*/(.*)(.git){0,1}$", "\\1", pkgrepos)
-    res =Manifest(url = paste0("git://github.com/", pkgrepos, ".git"),
+    res = makeManifest(url = paste0("git://github.com/", pkgrepos, ".git"),
              type = "git", branch = "master", name = names)
     as(res, "GithubPkgManifest")
 }
@@ -134,8 +134,8 @@ readManifest = function(uri, local = !url.exists(uri), archive = FALSE) {
     if(file.exists(file.path(dir, "pkg_versions.dat"))) {
         vers = read.table(file.path(dir, "pkg_versions.dat"),
             header = TRUE, sep="\t")
-        SessionManifest(pkg_versions = vers,
-                        pkg_manifest = manifest)
+        SessionManifest(versions = vers,
+                        manifest = manifest)
     } else {
         manifest
     }

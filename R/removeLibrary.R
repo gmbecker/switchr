@@ -1,5 +1,13 @@
 ##' removeLib
 ##' Remove a switchr library and update the manifest of existing libraries
+##' @param name The name of the switchr library to remove
+##' @param repos the url used to seed the library
+##' @param compEnv a SwitchrCtx representing the library to remove
+##' @param fromStack Whether the library should be removed if it
+##' currently appears in the Context stack Defaults to false.
+##'
+##' @note Only one of \code{name}, \code{repos} and \code{compEnv} should be
+##' specified. An error will be thrown otherwise.
 ##' @return NULL, called for its side-effect of removing/destroying a switchr
 ##' library
 ##' @export
@@ -38,7 +46,7 @@ removeLib = function(name = NULL, repos = NULL, compEnv = NULL, fromStack = FALS
             message(paste("Removing computing environment",
                           name, "from the stack."))
             i = which(names(Renvs$stack) == name)
-            Renvs$stack = Renvs$stack[-1]
+            Renvs$stack = Renvs$stack[-i]
         }
     }
     

@@ -9,7 +9,7 @@ if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 
         message("Sourcing remote file failed. This installation will not have a set of default BioC repositories")
         bioc = NULL
     }
-} else if(require(BiocInstaller, quietly=TRUE)) {
+} else if(require("BiocInstaller", quietly=TRUE)) {
     bioc = biocinstallRepos()
 } else {
 

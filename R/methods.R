@@ -1,5 +1,5 @@
 Renvs= new.env()
-
+globalVariables(".lib.loc")
         
 ##' switchTo
 ##'
@@ -36,11 +36,14 @@ Renvs= new.env()
 ##' @return Invisibly returns the SwitchrCtx object representing the new
 ##' computing environment
 ##' @export
+##' @docType methods
+##' @rdname switchTo
 setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
                                 ignoreRVersion = FALSE,  ...)
            standardGeneric("switchTo"))
 
-
+##' @rdname switchTo
+##' @aliases switchTo,character,character
 setMethod("switchTo", c(name = "character", seed = "character"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
     chtype = getStringType(seed)
@@ -91,6 +94,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
         stop("unable to switch to computing environment")
 })
 
+##' @rdname switchTo
+##' @aliases switchTo,character,SwitchrCtx
 
 setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,...) {
@@ -120,6 +125,8 @@ setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
               switchTo(cenv)
           })
 
+##' @rdname switchTo
+##' @aliases switchTo,character,missing
 
 setMethod("switchTo", c("character", "missing"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,...) {
@@ -178,7 +185,10 @@ getStringType = function(str) {
     stop("Unidentifiable string:", str)
 }
 
-setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed, reverting=FALSE, reloadPkgs = FALSE, ...) {
+##' @rdname switchTo
+##' @aliases switchTo,SwitchrCtx,ANY
+
+setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed, reverting=FALSE, ...) {
         if(is.null(Renvs$stack)) {
             paths = .libPaths()
             paths = paths[!paths %in% c(.Library.site, .Library)]
@@ -198,10 +208,12 @@ setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed,
         } else
             Renvs$stack = Renvs$stack[-1]
         announce(name, reverted = reverting)
-        if(reloadPkgs)
-            sapply(name@attached, library)
+
         invisible(name)
     })
+
+##' @rdname switchTo
+##' @aliases switchTo,character,RepoSubset
 
 setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, seed = NULL,
                                              reverting = FALSE,
@@ -218,6 +230,9 @@ setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, s
     switchTo(seed = seed@repos, name = name, pkgs = seed@pkgs, ...)
 })
 
+
+##' @rdname switchTo
+##' @aliases switchTo,character,PkgManifest
 
 setMethod("switchTo", c("character", seed = "PkgManifest"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
@@ -244,6 +259,9 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
               switchTo(cenv)
           })
 
+
+##' @rdname switchTo
+##' @aliases switchTo,character,SessionManifest
 
 setMethod("switchTo", c("character", seed = "SessionManifest"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
@@ -338,5 +356,6 @@ currentCompEnv = function() {
     environment(fun) = environment(.libPaths)
     fun(fulllp)
 }
+
 
     

@@ -8,7 +8,7 @@
 ##' or a PkgManifest or SessionManifest (or a url thereof)
 ##' @param versions An optional data.frame specifying exact versions of the packages to install
 ##' @param verbose Should extra information be printed during the console during installation
-##' @param \dots{} extra parameters passed directly to install.packages
+##' @param \dots extra parameters passed directly to install.packages
 ##'
 ##' @details In addition to installing the specified packages, this function
 ##' annotates the installed DESCRIPTION files with provenance information
@@ -24,29 +24,38 @@
 ##' \code{link{install.packages}} to do the actual installation.
 ##'
 ##' @author Gabriel Becker
+##' @docType methods
+##' @rdname install
 ##' @export
 setGeneric("install_packages", function(pkgs, repos, versions = NULL, verbose = FALSE, ...) standardGeneric("install_packages"))
-
+##'@rdname install
+##' @aliases install_packages,character,character
 setMethod("install_packages", c("character", "character"), function(pkgs, repos, versions, verbose, ...) {
 
     man = PkgManifest(manifest = ManifestRow(), dep_repos = repos)
     if(!is.null(versions))
-        man = SessionManifest(pkg_manifest = man, pkg_versions = version)
+        man = SessionManifest(manifest = man, versions = version)
     install_packages(pkgs, repos = man, verbose = verbose, ...)
     
 })
+##'@rdname install
+##' @aliases install_packages,character,missing
 
 setMethod("install_packages", c(pkgs = "character", repos= "missing"), function(pkgs, repos, verbose, ...) {
     install_packages(pkgs, repos = defaultRepos(), verbose = verbose,
             ...)
 })
 
+##'@rdname install
+##' @aliases install_packages,SessionManifest,ANY
 
 setMethod("install_packages", c(pkgs = "SessionManifest", repos= "ANY"), function(pkgs, repos, verbose, ...) {
     ghrepo = lazyRepo(pkgs)
     .install_packages(pkgs = versions_df(pkgs)$name, lazyrepo = ghrepo, man = manifest(pkgs), ...)
 })
 
+##'@rdname install
+##' @aliases install_packages,character,SessionManifest
 
 setMethod("install_packages", c(pkgs = "character", repos= "SessionManifest"), function(pkgs, repos, verbose, ...) {
     install_packages(pkgs, repos = defaultRepos(), verbose = verbose,
@@ -54,13 +63,15 @@ setMethod("install_packages", c(pkgs = "character", repos= "SessionManifest"), f
     vdf = versions_df(repos)
     rownames(vdf) = vdf$name
     vers = vdf[pkgs, "version"]
-    ghrepo = lazyRepo(pkgs = pkgs, versions = vers, manifest = manifest(repos))
+    ghrepo = lazyRepo(pkgs = pkgs, versions = vers, pkg_manifest = manifest(repos))
     .install_packages(pkgs = pkgs, lazyrepo = ghrepo, man = manifest(repos), ...)
 })
 
 
 
 
+##'@rdname install
+##' @aliases install_packages,character,PkgManifest
 
 setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), function(pkgs, repos, verbose, ...) {
 

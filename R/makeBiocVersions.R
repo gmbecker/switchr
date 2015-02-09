@@ -26,6 +26,10 @@ biocReposForVers = function(version) {
 ##' A constructor for creating a RepoSubset object for a
 ##' specified release of Bioconductor, which includes only the
 ##' BiocInstaller package.
+##' @param version The version of Bioconductor
+##' @param name The default name for switchr libraries created with this object
+##' @param repos The urls of the Bioconductor repositories. these will be
+##' modified automatically to match the specified version
 ##' @export
 BiocVers = function(version = biocReleaseV,
     name = paste("BioC", version, sep="_"),

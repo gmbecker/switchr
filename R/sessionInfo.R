@@ -1,3 +1,6 @@
+##' Parse text output from printing SessionInfo objects
+##' @param strings The text
+##' @export
 parseSessionInfoString = function(string)
 {
     Rvers = getRVersion(string)

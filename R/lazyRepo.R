@@ -2,7 +2,8 @@
 basepkgs = installed.packages(priority="base")[, "Package"]
 
 
-
+##' @rdname lazyRepo
+##' @aliases lazyRepo,SessionManifest,ANY
 setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
           function(pkgs,
                    pkg_manifest,
@@ -26,6 +27,8 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
                        param = param)
           })
 
+##' @rdname lazyRepo
+##' @aliases lazyRepo,character,SessionManifest
 
 setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
           function(pkgs,
@@ -54,6 +57,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
           })
 
 
+##' @rdname lazyRepo
+##' @aliases lazyRepo,character,PkgManifest
 
 setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
           function(pkgs,

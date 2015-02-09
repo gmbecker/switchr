@@ -35,17 +35,23 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 ##' that were contemporary on the first or last day the specified package
 ##' version resided on CRAN
 ##'
-##' @param pkg 
+##' @param pkg The package on which to base the generated manifest
 ##' @param vers The version of \code{pkg} to construct the cohort around. Note
 ##' this must match the the version string exactly, i.e. 1.3.1 and 1.3-1 are
 ##' *not* equivalent.
 ##' @param earliest Should the package dependencies be contemporary with the
 ##' first (TRUE) or last (FALSE) day the specified package version was
 ##' (the latest version) on CRAN?
-##' @param curr_avail The output from available.packages(). Used to identify
+##' @param cur_avail The output from available.packages(). Used to identify
 ##' whether the necessary version is in the CRAN archive or normal repository
 ##' @param verbose Should debugging information about the recursive traversal of
 ##' package dependencies be printed (defaults to FALSE).
+##' @param suggests Which Suggests'ed packages should be included. Currently
+##' supported possibilites are direct, indicating Suggestions of \code{pkg}
+##' should be included, and none, indicating that no Suggests'ed packages
+##' should be counted.
+##' @param delay Number of seconds to delay between successive REST calls
+##' to the crandb database. Defaults to 1 second
 ##' @return A PkgManifest object
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb

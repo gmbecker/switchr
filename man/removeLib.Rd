@@ -7,6 +7,16 @@ Remove a switchr library and update the manifest of existing libraries}
 \usage{
 removeLib(name = NULL, repos = NULL, compEnv = NULL, fromStack = FALSE)
 }
+\arguments{
+\item{name}{The name of the switchr library to remove}
+
+\item{repos}{the url used to seed the library}
+
+\item{compEnv}{a SwitchrCtx representing the library to remove}
+
+\item{fromStack}{Whether the library should be removed if it
+currently appears in the Context stack Defaults to false.}
+}
 \value{
 NULL, called for its side-effect of removing/destroying a switchr
 library
@@ -14,5 +24,9 @@ library
 \description{
 removeLib
 Remove a switchr library and update the manifest of existing libraries
+}
+\note{
+Only one of \code{name}, \code{repos} and \code{compEnv} should be
+specified. An error will be thrown otherwise.
 }
 

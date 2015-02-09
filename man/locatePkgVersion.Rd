@@ -5,12 +5,17 @@
 \title{locatePkgVersion}
 \usage{
 locatePkgVersion(name, version, pkg_manifest, param = SwitchrParam(),
-  dir = if (is.null(repo)) tempdir() else notrack(repo), repo = NULL)
+  dir = notrack(repo), repo = NULL)
 }
 \arguments{
 \item{name}{package name}
 
 \item{version}{package version string}
+
+\item{pkg_manifest}{A manifest containing locations to search for the
+package}
+
+\item{param}{A SwitchrParam object}
 
 \item{dir}{directory to download package into}
 

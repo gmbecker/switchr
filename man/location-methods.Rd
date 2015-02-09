@@ -12,7 +12,7 @@ location(repo)
 \S4method{location}{PkgSource}(repo)
 }
 \arguments{
-\item{repo}{a GRANRepository object}
+\item{repo}{An object associated with a path}
 }
 \value{
 a character containing the associated path

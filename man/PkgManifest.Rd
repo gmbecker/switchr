@@ -11,6 +11,8 @@ PkgManifest(manifest = ManifestRow(...), dep_repos = defaultRepos(), ...)
 
 \item{dep_repos}{A list of traditional pkg repositories which can contain dependencies
 for the packages listed in \code{manifest}.}
+
+\item{\dots}{Arguments passed to \code{\link{ManifestRow}} if \code{manifest} is not specified}
 }
 \description{
 Construct a PkgManifest, which can be installed from using \code{\link{install_packages}}

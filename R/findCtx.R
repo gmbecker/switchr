@@ -1,17 +1,11 @@
-##' @export
 findCompEnv = function(url = NULL, name, rvers = NULL, allMatches = FALSE) {
     if(missing(url) && missing(name) || is.null(url) && is.null(name))
         stop("Must specify either a url or a name for the desired context")
-
-
-    
-    
     man = switchrManifest()
     if(!is.null(rvers))
         man = man[man$rversion == rvers,]
 
     i = numeric()
-
 
     i = which(name == man$name)
     if(!length(i))
@@ -30,8 +24,6 @@ findCompEnv = function(url = NULL, name, rvers = NULL, allMatches = FALSE) {
                                  libpaths = strsplit(manrow$paths, ";")[[1]],
                                  exclude.site = manrow$excl.site))
     }
-                
-        
 }
             
 

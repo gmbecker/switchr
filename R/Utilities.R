@@ -1,3 +1,5 @@
+##'Check if a directory contains package sources
+##' @param dir The directory
 ##' @export
 checkIsPkgDir = function (dir)
 {
@@ -5,6 +7,13 @@ checkIsPkgDir = function (dir)
     any(grepl("^DESCRIPTION$", fils))
 }
 
+##'Find a package directory within an SCM checkout
+##' @param rootdir The directory of the checkout
+##' @param branch The branch to navigate to
+##' @param subdir The subdirectory to navigate to
+##' @param repo a GRANRepository
+##' @param a SwitchrParam
+##' @return A path to the Package sources
 ##' @export
 findPkgDir = function(rootdir, branch, subdir, repo, param)
 {
@@ -81,6 +90,17 @@ makePwdFun = function(scm_auth, url)
        
     }
 
+##' Create a PkgSource object for a package
+##' @param url The url of the package sources
+##' @param type The source type.
+##' @param user A function which, when called, returns the username to use when
+##' when checking the soources out
+##' @param password A function which returns the password to use when checking
+##' out the sources
+##' @param scm_auth A list of username-password pairs, named with regular
+##' expressions to match against url when constructing the
+##' defaults for \code{user} and \code{password}
+##' @param prefer_svn Currently unused.
 ##' @export
 makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, ...) {
     type = tolower(type)
@@ -117,6 +137,18 @@ makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, .
     ret
 }
 
+##' Construct pockage directory path
+##' @param basepath The parent directory for the package directory
+##' @param name The name of the package
+##' @param subdir The subdirectory within a package source that
+##' the actual package root directory will reside in.
+##' @param scm_type Tye type of scm the package sources will be
+##' checked out from
+##' @param branch The branch from which the package will be retrieved.
+##' @return A path
+##' @note Unlike \code{\link{findPkgDir}} this does not look for existing
+##' package source directories. It only constructs the path.
+##' 
 ##' @export
 getPkgDir = function(basepath,name,  subdir, scm_type, branch)
 {
@@ -199,7 +231,7 @@ normalizePath2 = function(path, follow.symlinks=FALSE)
 ##' @param cmd The text of the command. Must be length 1.
 ##' @param init (optional) a character value indicating the
 ##' location of an initialization shell script.
-##' @param \dots{} additional parameters passed directly to \code{\link{system}}.
+##' @param \dots additional parameters passed directly to \code{\link{system}}.
 ##' @param param A SwitchrParam object. The shell initialization
 ##' script associated with this object is used when \code{init} is
 ##' not specified (length 0).
@@ -250,7 +282,7 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
 highestBiocVers = function(repos = biocinstallRepos()[-length(biocinstallRepos())] ) {
-    if(!requireNamespace(BiocInstaller))
+    if(!requireNamespace("BiocInstaller"))
         stop("Unable to determine bioc versions without BiocInstaller installed")
     majvers = length(highestVs)
 ##    if(highestVs[majvers] > 0)
@@ -262,3 +294,20 @@ highestBiocVers = function(repos = biocinstallRepos()[-length(biocinstallRepos()
     af = gsub(".*/[0-9][^/]*(/.*)", "\\1", repos)
     paste0(bef, vers, af)
 }
+
+
+#system(..., intern=TRUE) throws an error if the the command fails,
+#and has attr(out, "status") > 0 if the called program returns non-zero status.
+##' Identify error states from R or external programs
+##' @param out An R object representing output
+##' @return TRUE if out is an error object, or has an attribute called "status" which is > 0
+##' @export
+errorOrNonZero = function(out)
+{
+    if(is(out, "error") ||
+       (!is.null(attr(out, "status")) && attr(out, "status") > 0))
+        TRUE
+    else
+        FALSE
+}
+

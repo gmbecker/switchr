@@ -5,6 +5,9 @@
 ##'
 ##' @param name package name
 ##' @param version package version string
+##' @param pkg_manifest A manifest containing locations to search for the
+##' package
+##' @param param A SwitchrParam object
 ##' @param repo (optional) GRANRepository object to search
 ##' @param dir directory to download package into
 ##' @return The full path to the downloaded file , or NULL if unable to
@@ -19,7 +22,7 @@
 ##' @author Gabriel Becker
 ##' @export
 locatePkgVersion = function(name, version, pkg_manifest, param = SwitchrParam(),
-    dir = if(is.null(repo)) tempdir() else notrack(repo), repo = NULL) {
+    dir = notrack(repo), repo = NULL) {
     
     ##There are %three places we might find what we need in increasing order of computational cost:
     ##1. Already in the parent repository (including the associated notrack directory)
@@ -37,12 +40,11 @@ locatePkgVersion = function(name, version, pkg_manifest, param = SwitchrParam(),
             return(fname)
     }
     
-    ##round 1: check the repo
-    if(!is.null(repo)) { 
-        fname = findPkgVersionInRepo(name, version, param = param)
-        if(length(fname) && file.exists(fname))
-            return(fname)
-    }
+    ##round 1: check the repo 
+    fname = findPkgVersionInRepo(repo, name, version, param = param)
+    if(length(fname) && file.exists(fname))
+        return(fname)
+
     
     ## round 2: check the manifest
     fname = findPkgVersionInManifest(name, version, pkg_manifest,
@@ -96,6 +98,38 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
     
     destfile
 }
+
+
+##' findPkgVersionInRepo
+##' @param repo The repository
+##' @param name The name of the package
+##' @param version The version of the package to find
+##' @param param A SwitchrParam object
+##' @param dir The directory to download the located package tarball into
+##' @return A path to the downloaded tarball, or NULL
+##' @docType methods
+##' @rdname findPkgVersionInRepo
+##' @export
+setGeneric("findPkgVersionInRepo", function(repo, name, version, param, dir) standardGeneric("findPkgVersionInRepo"))
+##' @rdname findPkgVersionInRepo
+##' @aliases findPkgVersionInRepo,character
+setMethod("findPkgVersionInRepo", "character",
+          function(repo, name, version, param, dir) {
+              url = paste(repo, paste0(name,"_", version,".tar.gz"), sep="/")
+              if(url.exists(url)) {
+                  dest = file.path(dir, basename(url))
+                  res = download.file(url, method="curl", destfile = dest)
+                  if(res==0L)
+                      return(dest)
+              }
+          NULL
+          })
+
+
+##' @rdname findPkgVersionInRepo
+##' @aliases findPkgVersionInRepo,NULL
+setMethod("findPkgVersionInRepo", "NULL",
+          function(repo, name, version, param, dir) NULL)
 
 
 ## git other than github not currently supported.
@@ -166,7 +200,7 @@ setMethod("makeSVNURL", "GitSource",
 ##' @importFrom BiocInstaller biocinstallRepos biocVersion
 findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 {
-    if(!requireNamespace(BiocInstaller)) {
+    if(!requireNamespace("BiocInstaller")) {
         warning("Unable to search bioconductor for package version because BiocInstaller is not available")
         return(NULL)
     }
@@ -368,7 +402,9 @@ binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
                                         #-1 is second is later, 1 if first is later
         
         ##svn log -q VERSION | grep ^r | awk '{print $1}' | sed -e 's/^r//' 
-        
+
+##' @rdname gotoVersCommit
+##' @aliases gotoVersCommit,character,SVNSource
 setMethod("gotoVersCommit", c(dir = "character", src = "SVNSource"),
           function(dir, src, version, param = SwitchrParam()){
               
@@ -381,6 +417,8 @@ setMethod("gotoVersCommit", c(dir = "character", src = "SVNSource"),
           })
 
 
+##' @rdname gotoVersCommit
+##' @aliases gotoVersCommit,character,CRANSource
 
 setMethod("gotoVersCommit", c(dir = "character", src= "CRANSource"),
           function(dir, src, version, param = SwitchrParam()) {
@@ -397,6 +435,8 @@ setMethod("gotoVersCommit", c(dir = "character", src= "CRANSource"),
               dir
           })
 
+##' @rdname gotoVersCommit
+##' @aliases gotoVersCommit,character,BiocSource
 
 setMethod("gotoVersCommit", c(dir = "character", src= "BiocSource"),
           function(dir, src, version, param = SwitchrParam()) {

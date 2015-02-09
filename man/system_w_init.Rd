@@ -16,7 +16,7 @@ location of an initialization shell script.}
 script associated with this object is used when \code{init} is
 not specified (length 0).}
 
-\item{\dots{}}{additional parameters passed directly to \code{\link{system}}.}
+\item{\dots}{additional parameters passed directly to \code{\link{system}}.}
 }
 \value{
 Depends, see \code{\link{system}} for details.
