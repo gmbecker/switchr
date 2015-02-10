@@ -293,14 +293,15 @@ setMethod("logfun<-", "SwitchrParam", function(x, value) {
 ##' a SessionManifest, ignored otherwise
 ##' @docType methods
 setGeneric("addPkg", function(x, ..., rows = makeManifest(...),
-                              versions = data.frame(name = character(),
+                              versions = data.frame(name = manifest_df(rows)$name,
+                                  version = NA_character_,
                                   stringsAsFactors=FALSE))
            standardGeneric("addPkg")
            )
 ##' @rdname addPkg
 ##' @aliases addPkg,PkgManifest
 setMethod("addPkg", "PkgManifest",
-          function(x, ..., rows, versions) {
+          function(x, ..., rows= makeManifest(...), versions) {
               manifest_df(x) = rbind(manifest_df(x), manifest_df(rows))
               dep_repos = unique(c(dep_repos(x), dep_repos(rows)))
               x

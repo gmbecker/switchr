@@ -35,7 +35,7 @@ setMethod("show", "SessionManifest",
               df = versions_df(object)[,c("name", "version")]
               rownames(df) = NULL
               cat(sprintf("Describes a cohort of %d package versions. \n%d packages are listed in the underlying package manifest\n",
-                          nrow(df), nrow(manifest_df(object))))
+                          nrow(df), nrow(manifest_df(object, session_only=FALSE))))
               if(nrow(df) > 8) {
                   df = .sketch_df(df, 4, 4)
                   
