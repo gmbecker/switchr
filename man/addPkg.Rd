@@ -10,13 +10,15 @@
 \title{Add a package to an object associated with a manifest}
 \usage{
 addPkg(x, ..., rows = makeManifest(...), versions = data.frame(name =
-  character(), stringsAsFactors = FALSE))
+  manifest_df(rows)$name, version = NA_character_, stringsAsFactors = FALSE))
 
 \S4method{addPkg}{PkgManifest}(x, ..., rows = makeManifest(...),
-  versions = data.frame(name = character(), stringsAsFactors = FALSE))
+  versions = data.frame(name = manifest_df(rows)$name, version =
+  NA_character_, stringsAsFactors = FALSE))
 
 \S4method{addPkg}{SessionManifest}(x, ..., rows = makeManifest(...),
-  versions = data.frame(name = character(), stringsAsFactors = FALSE))
+  versions = data.frame(name = manifest_df(rows)$name, version =
+  NA_character_, stringsAsFactors = FALSE))
 }
 \arguments{
 \item{x}{A manifest or manifest-associate objec tto add the pkg 2}

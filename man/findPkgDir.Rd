@@ -13,9 +13,9 @@ findPkgDir(rootdir, branch, subdir, repo, param)
 
 \item{subdir}{The subdirectory to navigate to}
 
-\item{repo}{a GRANRepository}
+\item{repo}{a GRANRepository object}
 
-\item{a}{SwitchrParam}
+\item{param}{a SwitchrParam object}
 }
 \value{
 A path to the Package sources

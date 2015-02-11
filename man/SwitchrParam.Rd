@@ -2,6 +2,7 @@
 % Please edit documentation in R/SwitchrParam.R
 \name{SwitchrParam}
 \alias{SwitchrParam}
+\alias{SwitchrParam-class}
 \title{SwitchrParam
 A contstructor for a SwitchrParam object representing a number of common
 parameters understood by the switchr framework}

@@ -1,5 +1,5 @@
 ##' Parse text output from printing SessionInfo objects
-##' @param strings The text
+##' @param string The text output from sessionInfo()
 ##' @export
 parseSessionInfoString = function(string)
 {

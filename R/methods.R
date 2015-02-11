@@ -70,9 +70,9 @@ setMethod("switchTo", c(name = "character", seed = "character"),
     if(chtype != "repourl") {
         man = readManifest(seed)
         if(!is(man, "SessionManifest"))
-            man = SessionManifest(pkg_versions = data.frame(name = manifest_df(man)$name,
-                                      version = NA, stringsAsFactors=FALSE), pkg_manifest = man)
-        seed = lazyRepository(man)
+            man = SessionManifest(versions = data.frame(name = manifest_df(man)$name,
+                                      version = NA, stringsAsFactors=FALSE), manifest = man)
+        seed = lazyRepo(man)
         chtype = "repourl"
     }
         
@@ -93,6 +93,17 @@ setMethod("switchTo", c(name = "character", seed = "character"),
     else
         stop("unable to switch to computing environment")
 })
+
+repoFromString = function(str, type) {
+    switch(type,
+           repodir = paste("file://", str, sep=""),
+           contribdir = paste("file://",
+               gsub("/(src|bin/windows|bin/macosx).*", "", str),
+               sep=""),
+           reporul = str,
+           contriburl = gsub("/(src|bin/windows|bin/macosx).*", "", str))
+}
+           
 
 ##' @rdname switchTo
 ##' @aliases switchTo,character,SwitchrCtx

@@ -67,7 +67,7 @@ makeManifest = function(..., dep_repos = defaultRepos()) {
 ##'
 ##' @param pkgrepos Github repositories in the form "<user>/<reponame>"
 ##' @param \dots Combined to populate \code{pkgrepos}
-##' @note This is a convenience wrapper for \code{\link{Manifest}}. Non-default
+##' @note This is a convenience wrapper for \code{\link{makeManifest}}. Non-default
 ##' location information (e.g. branches other than master,
 ##' subdirectories within the repository) are not currently supported. Use
 ##' \code{\link{makeManifest}} or edit the package manifest after

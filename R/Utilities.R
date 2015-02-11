@@ -11,8 +11,8 @@ checkIsPkgDir = function (dir)
 ##' @param rootdir The directory of the checkout
 ##' @param branch The branch to navigate to
 ##' @param subdir The subdirectory to navigate to
-##' @param repo a GRANRepository
-##' @param a SwitchrParam
+##' @param repo a GRANRepository object
+##' @param param a SwitchrParam object
 ##' @return A path to the Package sources
 ##' @export
 findPkgDir = function(rootdir, branch, subdir, repo, param)
@@ -101,6 +101,7 @@ makePwdFun = function(scm_auth, url)
 ##' expressions to match against url when constructing the
 ##' defaults for \code{user} and \code{password}
 ##' @param prefer_svn Currently unused.
+##' @param \dots Passed directly to constructors for PkgSource superclasses
 ##' @export
 makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, ...) {
     type = tolower(type)

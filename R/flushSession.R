@@ -3,7 +3,7 @@ basepkgs = installed.packages(priority="base")[, "Package"]
 ##'switchrDeps
 ##' The base packages, as well as switchr and its dependencies.
 ##' @export
-switchDeps = c(basepkgs, "switchr", "digest", "RCurl", "bitops", "BiocInstaller", "RJSONIO")
+switchDeps = c(basepkgs, "switchr", "RCurl", "bitops", "BiocInstaller", "RJSONIO")
 
 ##' flushSession
 ##' Unload currently loaded packages from the current R session

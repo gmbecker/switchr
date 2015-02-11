@@ -15,7 +15,7 @@ GithubManifest(..., pkgrepos = as.character(list(...)))
 Create a package manifest containing only github packages
 }
 \note{
-This is a convenience wrapper for \code{\link{Manifest}}. Non-default
+This is a convenience wrapper for \code{\link{makeManifest}}. Non-default
 location information (e.g. branches other than master,
 subdirectories within the repository) are not currently supported. Use
 \code{\link{makeManifest}} or edit the package manifest after

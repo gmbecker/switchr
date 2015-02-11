@@ -22,6 +22,8 @@ expressions to match against url when constructing the
 defaults for \code{user} and \code{password}}
 
 \item{prefer_svn}{Currently unused.}
+
+\item{\dots}{Passed directly to constructors for PkgSource superclasses}
 }
 \description{
 Create a PkgSource object for a package

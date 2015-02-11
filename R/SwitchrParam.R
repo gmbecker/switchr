@@ -7,6 +7,7 @@
 ##'
 ##' @return A SwitchrParam object.
 ##' @author Gabriel Becker
+##' @aliases SwitchrParam-class
 ##' @export
 SwitchrParam = function(logfun = function(...) NULL, shell_init= character())
     new("SwitchrParam", logfun = logfun, shell_init = shell_init)

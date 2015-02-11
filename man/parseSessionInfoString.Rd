@@ -7,7 +7,7 @@
 parseSessionInfoString(string)
 }
 \arguments{
-\item{strings}{The text}
+\item{string}{The text output from sessionInfo()}
 }
 \description{
 Parse text output from printing SessionInfo objects

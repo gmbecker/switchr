@@ -12,7 +12,6 @@ Description: switchr provides an abstraction for managing, installing,
     work within a devel/release paradigm.
 Imports:
     tools,
-    digest,
     RCurl,
     BiocInstaller
 Suggests:

@@ -331,7 +331,7 @@ setMethod("addPkg", "SessionManifest",
 setGeneric("library_paths", function(seed) standardGeneric("library_paths"))
 
 ##' @rdname library_paths
-##' @aliases library_paths, SwitchrCtx
+##' @aliases library_paths,SwitchrCtx
 setMethod("library_paths", "SwitchrCtx", function(seed) {
     seed@libpaths
 })

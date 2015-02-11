@@ -2,6 +2,7 @@
 % Please edit documentation in R/AllClasses.R
 \name{SwitchrCtx}
 \alias{SwitchrCtx}
+\alias{SwitchrCtx-class}
 \title{SwitchrCtx}
 \usage{
 SwitchrCtx(name, libpaths, exclude.site = TRUE, seed = NULL)

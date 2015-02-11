@@ -2,6 +2,7 @@
 % Please edit documentation in R/AllClasses.R
 \name{PkgManifest}
 \alias{PkgManifest}
+\alias{PkgManifest-class}
 \title{PkgManifest}
 \usage{
 PkgManifest(manifest = ManifestRow(...), dep_repos = defaultRepos(), ...)

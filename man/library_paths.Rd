@@ -2,9 +2,8 @@
 % Please edit documentation in R/accessors.R
 \docType{methods}
 \name{library_paths}
-\alias{SwitchrCtx}
 \alias{library_paths}
-\alias{library_paths,}
+\alias{library_paths,SwitchrCtx}
 \alias{library_paths,SwitchrCtx-method}
 \title{library_paths}
 \usage{

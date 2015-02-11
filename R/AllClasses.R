@@ -17,6 +17,7 @@ setClass("SwitchrCtx", representation(name = "character",
 ##' context when it is switched to (TRUE) '
 ##' @param seed An object representing the list of packages the switchr context
 ##' was seeded with.
+##' @aliases SwitchrCtx-class
 ##'@export
 SwitchrCtx = function(name, libpaths, exclude.site = TRUE, seed = NULL) {
     
@@ -44,6 +45,7 @@ setClass("RepoSubset", representation(repos = "character",
 ##' @param pkgs The packages included in the subset
 ##' @param default_name The default name to use when the RepoSubset is used to
 ##' seed a switchr context
+##' @aliases RepoSubset-class
 ##' @export
 RepoSubset = function(repos, pkgs, default_name) {
     new("RepoSubset", repos = repos, pkgs = pkgs, default_name = default_name)
@@ -121,6 +123,7 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' repositories, the version in the manifest will always take precidence within the
 ##' switchr framework.
 ##' @export
+##' @aliases PkgManifest-class
 ##' @import RCurl
 PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), ... ){
     if(is.character(manifest)) {
@@ -156,13 +159,25 @@ manifestBaseCols = c("name", "url", "type", "subdir", "branch", "extra")
 setClass("SessionManifest", representation(pkg_versions = "data.frame",
                                            pkg_manifest = "PkgManifest"))
 
+##' SessionManifest
+##'
+##' A manifest which includes both a PkgManifest containing package source
+##' information, and a data.frame defining a filter with exact versions
+##' of some or all packages
+##' @param manifest A PkgManifest
+##' @param versions A data.frame with 2 columns: name and version.
+##' @return A SessionManifest object
+##' @aliases SessionManifest-class
 ##' @export
 SessionManifest = function(manifest, versions) {
     new("SessionManifest", pkg_versions = versions, pkg_manifest = manifest)
 }
 
 
-##'@export
+##' Parsed sessionInfo output
+##'
+##' An object representing the information in printed sessionInfo() output
+##' @export
 setClass("parsedSessionInfo", representation(version = "character",
                                              platform="character",
                                              attached = "data.frame",
@@ -170,9 +185,10 @@ setClass("parsedSessionInfo", representation(version = "character",
 
 
 
-##' @export
+##' LibraryProfile (experimental)
+##' Currently unused/under heavy development.
 ##'
-
+##' An object
 setClass("LibraryProfile", representation(autoloads = "character",
                                           script = "character"))
 

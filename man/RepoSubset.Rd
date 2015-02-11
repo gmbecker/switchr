@@ -2,6 +2,7 @@
 % Please edit documentation in R/AllClasses.R
 \name{RepoSubset}
 \alias{RepoSubset}
+\alias{RepoSubset-class}
 \title{RepoSubset}
 \usage{
 RepoSubset(repos, pkgs, default_name)
