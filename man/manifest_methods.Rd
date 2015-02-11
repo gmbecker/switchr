@@ -6,8 +6,8 @@
 \alias{manifest,SessionManifest}
 \alias{manifest,SessionManifest-method}
 \alias{manifest<-}
+\alias{manifest<-,SessionManifest}
 \alias{manifest<-,SessionManifest-method}
-\alias{ssionManifest}
 \title{Get or set the manifest associated with an object}
 \usage{
 manifest(x)

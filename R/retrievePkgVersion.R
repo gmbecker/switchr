@@ -197,7 +197,7 @@ setMethod("makeSVNURL", "GitSource",
 
 
     
-##' @importFrom BiocInstaller biocinstallRepos biocVersion
+## @importFrom BiocInstaller biocinstallRepos biocVersion
 findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 {
     if(!requireNamespace("BiocInstaller")) {
@@ -243,10 +243,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 .biocTryToDL = function(name, version, param, dir, verbose = FALSE) {
     
     destpath = dir
-    ##    urls = contrib.url(biocinstallRepos())
-    ##    urls = urls[-length(urls)]
     urls = contrib.url(highestBiocVers())
-#    biocVers = as.character(biocVersion())
     biocVers = biocVersFromRepo(urls)
     
     pkgAvail = TRUE

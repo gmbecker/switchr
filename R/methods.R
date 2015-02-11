@@ -1,6 +1,7 @@
 Renvs= new.env()
-globalVariables(".lib.loc")
-        
+##this doesn't seem to work anyway...
+#if(getRversion() >= "2.15.1") globalVariables(".lib.loc")
+
 ##' switchTo
 ##'
 ##' Switch to a different computing environment (set of installed R packages
@@ -361,7 +362,6 @@ currentCompEnv = function() {
         }
 
 
-##scary and bad!!!!
 .libPaths2 = function(fulllp) {
     fun = function(x) .lib.loc <<- unique(x)
     environment(fun) = environment(.libPaths)

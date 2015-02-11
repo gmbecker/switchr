@@ -8,10 +8,10 @@
 \alias{manifest_df,SessionManifest}
 \alias{manifest_df,SessionManifest-method}
 \alias{manifest_df<-}
+\alias{manifest_df<-,PkgManifest}
 \alias{manifest_df<-,PkgManifest-method}
+\alias{manifest_df<-,SessionManifest}
 \alias{manifest_df<-,SessionManifest-method}
-\alias{manifest_df<-PkgManifest}
-\alias{manifest_df<-SessionManifest}
 \title{manifest_df}
 \usage{
 manifest_df(x, ...)
@@ -29,12 +29,12 @@ manifest_df(x) <- value
 \arguments{
 \item{x}{The object}
 
+\item{...}{unused.}
+
 \item{session_only}{Only return manifest rows associated with}
 
 \item{value}{A data.frame of package manifest information.
 See \code{\link{ManifestRow}}}
-
-\item{\dots}{unused.}
 }
 \description{
 Get or set the package location manifest (data.frame) associated with an

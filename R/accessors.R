@@ -65,7 +65,7 @@ setMethod("manifest", "SessionManifest",
 
 
 ##' @rdname manifest_methods
-##' @aliases manifest<- ssionManifest
+##' @aliases manifest<-,SessionManifest
  
 setMethod("manifest<-", "SessionManifest",
           function(x, value ) {
@@ -85,7 +85,7 @@ setMethod("manifest<-", "SessionManifest",
 ##'
 ##' @rdname manifest_df
 ##' @param x The object
-##' @param \dots unused.
+##' @param ... unused.
 ##' @docType methods
 ##' @export
 setGeneric("manifest_df", function(x, ...) standardGeneric("manifest_df"))
@@ -120,7 +120,7 @@ setMethod("manifest_df", "PkgManifest", function(x) x@manifest)
 setGeneric("manifest_df<-", function(x, value) standardGeneric("manifest_df<-"))
 
 
-##' @aliases manifest_df<-SessionManifest
+##' @aliases manifest_df<-,SessionManifest
 ##' @rdname manifest_df
 
 setMethod("manifest_df<-", "SessionManifest", function(x, value) {
@@ -128,7 +128,7 @@ setMethod("manifest_df<-", "SessionManifest", function(x, value) {
     x
     })
 
-##' @aliases manifest_df<-PkgManifest
+##' @aliases manifest_df<-,PkgManifest
 ##' @rdname manifest_df
 
 setMethod("manifest_df<-", "PkgManifest", function(x, value) {
@@ -376,5 +376,9 @@ setMethod("update_pkgs_list", "SwitchrCtx", function(seed){
 ##' @return the path where retrieved package versions should be. If \code{repo}
 ##' is NULL, a notrack directory is constructed within a temp directory.
 ##' @export
+##' @docType methods
+##' @rdname notrack
 setGeneric("notrack", function(repo) standardGeneric("notrack"))
+##' @rdname notrack
+##' @aliases notrack,NULL
 setMethod("notrack", "NULL", function(repo) file.path(tempdir(), "notrack"))
