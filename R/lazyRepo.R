@@ -167,8 +167,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       row["LinkingTo"],
                       if(get_suggests) row["Suggests"] else NULL)
                   rawdeps = rawdeps[!is.na(rawdeps)]
-                  newreqs = unlist(sapply(rawdeps,
-                      tools:::.extract_dependency_package_names))
+                  newreqs = unlist(sapply(rawdeps, extract_dep_pkg_names))
                   newreqs = unique(newreqs[!newreqs %in% c(avail[,"Package"],
                       pkgsNeeded, basepkgs)])
                   

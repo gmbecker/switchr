@@ -4,7 +4,7 @@ updateGit = function(dir, source, param)
     on.exit(setwd(oldwd))
     setwd(dir)
     cmd = paste("git checkout", branch(source), "; git pull origin", branch(source))
-    out = tryCatch(system_w_init(cmd, intern=TRUE, param),
+    out = tryCatch(system_w_init(cmd, intern=TRUE, param=param),
         error = function(x) x)
     if(errorOrNonZero(out))
     {
