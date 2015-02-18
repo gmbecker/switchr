@@ -2,7 +2,7 @@ Package: switchr
 Type: Package
 Title: Installing, managing, and switching betwen distinct sets of installed
     packages
-Version: 0.5.1
+Version: 0.5.2
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Copyright: Genentech Inc
@@ -18,6 +18,7 @@ Suggests:
     GRAN,
     GRANBase,
     BiocInstaller,
-    crandb,
-    RJSONIO
+    RJSONIO,
+    knitr
+VignetteBuilder: knitr 
 License: Artistic-2.0

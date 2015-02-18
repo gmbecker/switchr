@@ -27,7 +27,13 @@ findCompEnv = function(url = NULL, name, rvers = NULL, allMatches = FALSE) {
 }
             
 
-
+##' Get or set the base directory for switchr libraries
+##'
+##' @param value A new value for the base directory
+##' @details If \code{value} is missing, the current base directory
+##' is returned. Otherwise the \code{value} is set as the default directory
+##' and returned.
+##' @export
 switchrBaseDir = function(value) {
     if(missing(value))
         if(is.null(switchrOpts$basedir)) "~/.switchr" else switchrOpts$basedir

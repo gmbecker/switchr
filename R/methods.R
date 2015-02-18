@@ -324,7 +324,7 @@ setMethod("announce", "SwitchrCtx", function(seed, reverted=FALSE) {
 })
 
 setMethod("show", "SwitchrCtx", function(object) {
-    cat(paste(sprintf("An SwitchrCtx object defining the '%s' computing environment", object@name),
+    message(paste(sprintf("An SwitchrCtx object defining the '%s' computing environment", object@name),
               "\n\n\t", sprintf("Primary library location(s): %s", paste(object@libpaths, collapse=";")),
               "\n\t", sprintf("Packages: %d packages installed in %d directories (including R's base library)", nrow(object@packages), length(unique(object@packages$LibPath))),
               "\n\t", paste("This environment DOES ", ifelse(object@exclude.site, "NOT ", ""), "combine with the current site library location when loaded.", sep=""),
