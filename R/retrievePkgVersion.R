@@ -360,7 +360,7 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
 binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
 {
     cmd = paste("svn diff --revision", paste(currev, maxrev, sep=":"), "DESCRIPTION")
-    revs = tryCatch(system(cmd, intern=TRUE), error=function(x) x)
+    revs = tryCatch(system_w_init(cmd, intern=TRUE, param = param), error=function(x) x)
     
     revVersions = grep(".*[Vv]ersion:", revs, value=TRUE)
     if(is(revs, "error"))

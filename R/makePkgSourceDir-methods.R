@@ -87,7 +87,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
                           destdir)
 #              uzdir
           } else {
-              source = as(source, "SVNSource", strict = TRUE)
+              source = as(source, "GitSource", strict = TRUE)
               makePkgDir(name, source, path, latest_only, param = param, forceRefresh)
           }
       })
