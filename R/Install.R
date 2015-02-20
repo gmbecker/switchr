@@ -33,17 +33,20 @@ setGeneric("install_packages", function(pkgs, repos, versions = NULL, verbose = 
 setMethod("install_packages", c("character", "character"), function(pkgs, repos, versions, verbose, ...) {
 
     man = PkgManifest(manifest = ManifestRow(), dep_repos = repos)
-    if(!is.null(versions))
-        man = SessionManifest(manifest = man, versions = version)
+    if(!is.null(versions)) {
+        manifest_df(man) = ManifestRow(name = versions$name)
+        man = .findThem(man, PkgManifest(dep_repos = repos))
+        man = SessionManifest(manifest = man, versions = versions)
+    }
     install_packages(pkgs, repos = man, verbose = verbose, ...)
     
 })
 ##'@rdname install
 ##' @aliases install_packages,character,missing
 
-setMethod("install_packages", c(pkgs = "character", repos= "missing"), function(pkgs, repos, verbose, ...) {
+setMethod("install_packages", c(pkgs = "character", repos= "missing"), function(pkgs, repos, versions = NULL, verbose, ...) {
     install_packages(pkgs, repos = defaultRepos(), verbose = verbose,
-            ...)
+                     versions = versions, ...)
 })
 
 ##'@rdname install
@@ -58,8 +61,7 @@ setMethod("install_packages", c(pkgs = "SessionManifest", repos= "ANY"), functio
 ##' @aliases install_packages,character,SessionManifest
 
 setMethod("install_packages", c(pkgs = "character", repos= "SessionManifest"), function(pkgs, repos, verbose, ...) {
-    install_packages(pkgs, repos = defaultRepos(), verbose = verbose,
-            ...)
+
     vdf = versions_df(repos)
     rownames(vdf) = vdf$name
     vers = vdf[pkgs, "version"]

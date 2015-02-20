@@ -83,7 +83,7 @@ setMethod("libManifest", "SwitchrCtx",
         inds = which(!is.na(known_inds))
         known_inds = known_inds[!is.na(known_inds)]
         # gross :-/
-        df[nas,][inds,] = manifest_df(known)[known_inds,]
+        df[nas[inds],] = manifest_df(known)[known_inds,]
         pkgs = pkgs[-inds]
     }
     if(length(pkgs)) {
