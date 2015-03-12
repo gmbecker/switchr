@@ -1,4 +1,4 @@
-#setMethod("makePkgSourceDir", c(name = "ANY", source = "SVNSource"), function(name, source, path, repo) {
+                                        #setMethod("makePkgSourceDir", c(name = "ANY", source = "SVNSource"), function(name, source, path, repo) {
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,SVNSource
 setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
@@ -20,13 +20,13 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
               if(length(source@password) && nchar(source@password))
                   opts = paste(opts, "--password", source@password)
               
-    #did we already check it out?
+                                        #did we already check it out?
               if(file.exists(name) && file.exists(name, ".svn") && !forceRefresh)
               {
                   lfun(name, "Existing temporary checkout found at this location. Updating")
                   up = updateSVN(file.path(path, name), source,  param = param)
               } else {
-        ## clean up the directory if it was created from some other type of source
+                  ## clean up the directory if it was created from some other type of source
                   if(file.exists(name))
                       unlink(name, recursive = TRUE)
                   cmd = paste("svn co", location(source), name, opts)
@@ -65,7 +65,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
           if(latest_only) {
               ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
               ## for IndelsOverlay branch
-
+              
               reponm = gsub("\\.git", "", location(source))
               reponm = gsub(".*/([^/]+)/{0,1}$", "\\1", reponm)
               zipUrl = paste(gsub("\\.git", "", location(source)),
@@ -85,14 +85,14 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
               unzip(zpfile, exdir = path)
               file.rename(file.path(path, paste(reponm, branch(source), sep="-")),
                           destdir)
-#              uzdir
+                                        #              uzdir
           } else {
               source = as(source, "GitSource", strict = TRUE)
               makePkgDir(name, source, path, latest_only, param = param, forceRefresh)
           }
       })
 
-#setMethod("makePkgSourceDir", c(name = "ANY", source = "GitSource"), function(name, source, path,  repo) {
+                                        #setMethod("makePkgSourceDir", c(name = "ANY", source = "GitSource"), function(name, source, path,  repo) {
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,GitSource
 
@@ -203,7 +203,8 @@ setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
           function(name, source, path,  latest_only, param, forceRefresh = FALSE) {
     oldwd = getwd()
     on.exit(setwd(oldwd))
-    if
+    if(file.exists(file.path(path, name)))
+        unlink(file.path(path, name), recursive=TRUE, force=TRUE)
     if(!file.exists(path))
         dir.create(path, recursive = TRUE)
     setwd(path)
