@@ -1,4 +1,4 @@
-
+getBiocRepos = function() {
 if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 0) {
     message("R before 2.14 detected. Attempting to determine BioC repos by sourcing biocLite.R")
     env = new.env()
@@ -30,13 +30,32 @@ if(compareVersion(paste(R.version$major, R.version$minor, sep="."), "2.14.0") < 
         bioc = reps[grep("^bioc", reps[,"menu_name"], ignore.case=TRUE), "URL"]
     }
 }
+bioc
+}
 
+globalVariables("defaultGRANURL")
+
+
+
+##' defaultRepos
+##'
+##' Get default repositories for use as dependency repos and within
+##' install_packages
+##'
+##' @return A character vector of package repository urls
+##' @export
 defaultRepos = function() {
-    if(requireNamespace("BiocInstaller", quietly=TRUE))
-        repos = BiocInstaller::biocinstallRepos()
-    else
-        repos = getOption("repos")
-    if(requireNamespace("GRAN", quietly=TRUE))
-        repos = c(GRAN::defaultGRAN(), repos)
+    bioc = getBiocRepos()
+    optrepos = getOption("repos")
+    if(optrepos["CRAN"] == "@CRAN@")
+        optrepos = optrepos[!names(optrepos) == "CRAN"]
+    else if(!is.null(bioc))
+        bioc = bioc[!names(bioc) == "CRAN"]
+        
+
+    granrepos = NULL
+    if(exists("defaultGRANURL"))
+        granrepos = defaultGRANURL()
+    repos = unique(c(granrepos, optrepos, bioc))
     repos
 }

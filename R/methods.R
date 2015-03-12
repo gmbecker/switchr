@@ -56,7 +56,7 @@ setMethod("switchTo", c(name = "character", seed = "character"),
     if(chtype == "sessioninfo") {
         ## we have session info output
         ##XXX need to make sure double use of ... is safe!
-        sr = sessionRepo(seed, ..., stoponfail=FALSE) 
+        sr = lazyRepo(seed, ...)
 
         
         seed = if(grepl(sr, "file://")) sr else paste("file://",sr, sep="")

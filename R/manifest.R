@@ -75,7 +75,8 @@ makeManifest = function(..., dep_repos = defaultRepos()) {
 ##' @export
 GithubManifest = function( ..., pkgrepos = as.character(list(...))) {
 
-    names = gsub(".*/(.*)(.git){0,1}$", "\\1", pkgrepos)
+    names = gsub("[^/]*/([^/]*)/*$", "\\1", pkgrepos)
+    names = gsub("\\.git", "", names)
     res = makeManifest(url = paste0("git://github.com/", pkgrepos, ".git"),
              type = "git", branch = "master", name = names)
     as(res, "GithubPkgManifest")

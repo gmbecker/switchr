@@ -40,6 +40,7 @@ To stop using "vign1" we simply call /switchBack()/:
 switchBack()
 ```
 
+
 ## Representing package cohorts
 
 Empty package libraries are, of course, of limited use. The other main 
@@ -55,68 +56,32 @@ We can create a package manifest from scratch via the PkgManifest, though there
 convenience functions for common use-cases such as Github packages
 
 ```{r}
-man = PkgManifest(name = "fastdigest", url = "https://github.com/gmbecker/fastdigest")
+man = PkgManifest(name = "fastdigest", 
+    url = "https://github.com/gmbecker/fastdigest")
 man
 ```
 
-The GithubManifest function allows us to easily construct a manifest listing 
-many R packages hosted in various repositories across github.
+The `GithubManifest` convenience function builds manifests from GitHub username/repository
+pairs for package sources residing in the root directory of the master branch for the 
+specified repository.
 ```{r}
-
-man2 = GithubManifest("gmbecker/fastdigest",
-		      "gmbecker/gRAN",
-		      "rstudio/shiny",
-		      "ropensci/gistr")
+man2 = GithubManifest("gmbecker/fastdigest", 
+     "gmbecker/RCacheSuite")
 man2
 ```
 
+## Installing packages and package cohorts
 
-## Seeding package libraries
+*switchr* provides the /install_packages/ function for installing specific packages
+or sets of packages from a variety of sources, including traditional repositories
+and package manifests. This function supports package dependencies, including 
+non-repository to non-repository dependecies (e.g. between two or more packages
+on GitHub) on systems able to build packages from source.
 
-When creating a new package library, we can /seed/ it via a package manifest.
-When we do this, the packages listed in the manifest are automatically installed
-during package creation.
 
-NOT RUN:
+
+NOT RUN
 ```{r eval=FALSE}
-switchTo("vign2", man)
+install_packages("RCacheSuite", man2)
 ```
 
-After the package library is created in this way, it acts as normal.
-
-## Installing packages from manifests
-
-*switchr* provides the install_packages function, which allows users to install
-from package manifests as if they were package repositories. This includes 
-supporting complex webs of dependencies, even between non-repository-hosted
-packages, e.g. those on GitHub.
-
-NOT RUN:
-```{r eval=FALSE}
-man3 = GithubManifest("gmbecker/fastdigest", "gmbecker/RCacheSuite",
-    "duncantl/CodeDepends")
-install_packages("RCacheSuite", man3)
-```
-
-NOT RUN:
-```{r eval=FALSE}
-switchBack()
-```
-
-## Exact package versions
-
-install_packages supports installing exact package versions from a number 
-of sources, including CRAN, GitHub, and Bioconductor
-
-We do this by passing a data.frame with version information to the function
-
-NOT RUN:
-```{r eval=FALSE}
-install_packages("devtools", versions = data.frame(name="devtools", version="1.5",
-			     	      		   stringsAsFactors=FALSE))
-```
-
-A major function of switchr is reproducibility package libraries
-
-whether it be to ensure comparability between collaborators or
-reproducing an old result. 

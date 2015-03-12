@@ -14,6 +14,7 @@ biocrepos <- NULL
 ##' was installed when switchr was installed. It will return NULL otherwise.
 ##' @export
 biocReposForVers = function(version) {
+    bioc = getBiocRepos()
     if(is.null(bioc))
         NULL
     else

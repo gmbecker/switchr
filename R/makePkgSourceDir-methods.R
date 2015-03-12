@@ -203,13 +203,16 @@ setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
           function(name, source, path,  latest_only, param, forceRefresh = FALSE) {
     oldwd = getwd()
     on.exit(setwd(oldwd))
+    if
     if(!file.exists(path))
         dir.create(path, recursive = TRUE)
     setwd(path)
-    
+
+        
     if(missing(name))
         name = basename(location(source))
-    
+    if(file.exists(file.path(path, name)))
+        unlink(file.path(path, name), recursive=TRUE, force=TRUE)
     logfun(param)(name, "Copying local source directory into temporary checkout directory.")
     
    # ok= file.copy(location(source), file.path(path, name), recursive = TRUE)

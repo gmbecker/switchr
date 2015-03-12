@@ -5,7 +5,7 @@
 \title{flushSession
 Unload currently loaded packages from the current R session}
 \usage{
-flushSession(dontunload = switchDeps)
+flushSession(dontunload = switchrDontUnload())
 }
 \arguments{
 \item{dontunload}{Non-base packages to ignore (not detatch/unload)}
