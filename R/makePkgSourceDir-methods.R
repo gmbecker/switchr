@@ -37,7 +37,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
                   if(is(out, "error"))
                   {
                       msg = c(paste("Temporary SVN checkout failed. cmd:", cmd), out$message)
-                      logfun(param)(name, msg, type="error", param)
+                      logfun(param)(name, msg, type="error")
                       return(FALSE)
                   }
               }

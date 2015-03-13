@@ -39,7 +39,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, param)
                        "Unable to process this source."))
         logfun(param)(name, paste("The SVN repository does not appear to have",
                                  "branches and a non-trunk/non-master branch",
-                                 "was selected"), repo = repo, type="both")
+                                 "was selected"),  type="both")
         return(NULL)
     }
 
@@ -49,7 +49,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, param)
     if(!file.exists(ret))
     {
         logfun(param)(name, paste("Unable to find subdirectory", subdir,
-                                 "in branch", branch), repo, type="both")
+                                 "in branch", branch), type="both")
         warning(paste0("Constructed temporary package directory",ret,
                        " doesn't appear to  exist after svn checkout. ",
                        "Missing branch?"))
@@ -62,7 +62,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, param)
     {
         logfun(param)(name, paste("Specified branch/subdirectory combination",
                                  "does not appear to contain an R package"),
-                                 repo, type="both")
+                                  type="both")
         ret = NULL
     }
     ret
