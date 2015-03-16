@@ -70,9 +70,41 @@ man2 = GithubManifest("gmbecker/fastdigest",
 man2
 ```
 
-## Installing packages and package cohorts
+## Representing and (re-)installing package cohorts/libraries
 
-*switchr* provides the /install_packages/ function for installing specific packages
+Beyond package manifests, *switchr* also supports /seeding manifests/, which
+extend package manifests by indicating a subset of the packages listed in 
+the manifest, specific package-version information, or both.
+
+```{r}
+lman = libManifest()
+lman
+```
+
+Package or seeding manifests can then be used to /seed/ switchr libraries. 
+During the new-library creation process, all packages listed in the seed
+- typically a /seeding manifest/, /package manifest/, or specially-purposed
+package repository - are installed. In the case that a /seeding manifest/ is
+used, the exact, specified versions of the indicated packages are
+retrieved and installed, while for a package manifest the latest versions
+available are used.
+
+We specify a seed via the /seed/ argument to the /switchTo/ function, like so:
+
+NOT RUN
+```{r eval=FALSE}
+switchTo("vign2", seed = lman)
+```
+
+The above code will create a new switchr library called vign2 and populate it with
+the package versions listed in lman - i.e., the packages installed in the library
+used to build this vignette.
+
+
+## Installing specific packages
+
+
+*switchr* also provides the /install_packages/ function for installing specific packages
 or sets of packages from a variety of sources, including traditional repositories
 and package manifests. This function supports package dependencies, including 
 non-repository to non-repository dependecies (e.g. between two or more packages
@@ -84,4 +116,3 @@ NOT RUN
 ```{r eval=FALSE}
 install_packages("RCacheSuite", man2)
 ```
-
