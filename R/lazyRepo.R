@@ -106,7 +106,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
                       desc = untar(tball, files = file.path(pkgname,"DESCRIPTION"),
                           exdir = tmpdir)
-                      dcf = read.dcf(file.path(tmpdir, pkgname, "DESCRIPTION")) 
+                      dcf = read.dcf(file.path(tmpdir, pkgname,subdir(src), "DESCRIPTION")) 
                   } else if(!is.na(version)) {
        
                       pkgfile = locatePkgVersion( src@name, version, pkg_manifest = pkg_manifest,
@@ -115,13 +115,13 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                           stop("Unable to locate the specified version  of package",
                                src@name)
                       if(file.info(pkgfile)$isdir)
-                          desc = file.path(pkgfile, "DESCRIPTION")
+                          desc = file.path(pkgfile, subdir(src),"DESCRIPTION")
                       else {
                           
-                          succ= untar(pkgfile, files = file.path(pkgname,"DESCRIPTION"),
+                          succ= untar(pkgfile, files = file.path(pkgname,subdir(src),"DESCRIPTION"),
                               exdir = tempdir())
                           if(!succ)
-                              desc = file.path(tmpdir, pkgname, "DESCRIPTION")
+                              desc = file.path(tmpdir, pkgname, subdir(src),"DESCRIPTION")
                           else
                               stop("problem extracting DESCRIPTION from tarred package")
                       }
@@ -137,7 +137,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       if(!success)
                           stop("Unable to make package directory")
 
-                      dcf = read.dcf(file.path(pkgdir, "DESCRIPTION"))
+                      dcf = read.dcf(file.path(pkgdir, subdir(src),"DESCRIPTION"))
                   }
                   
                   fields = colnames(dcf)
@@ -173,7 +173,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                   
                   cmd = paste("cd", repdir, "; R CMD build",
                       "--no-resave-data",
-                      "--no-build-vignettes", pkgdir)
+                      "--no-build-vignettes", file.path(pkgdir, subdir(src)))
                   res = tryCatch(system_w_init(cmd, intern=TRUE, param = param),
                       error = function(x) x)
                   if(is(res, "error"))

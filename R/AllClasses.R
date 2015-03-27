@@ -1,3 +1,7 @@
+##' @import methods
+NULL
+
+
 ##' @export
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character"))
 

@@ -4,7 +4,7 @@
 \name{BiocRelease}
 \alias{BiocRelease}
 \title{BiocRelease}
-\format{\preformatted{Formal class 'RepoSubset' [package "roxygen_devtest"] with 3 slots
+\format{\preformatted{Formal class 'RepoSubset' [package "switchr"] with 3 slots
   ..@ repos       : Named chr [1:5] "http://bioconductor.org/packages/2.14/bioc" "http://bioconductor.org/packages/2.14/data/annotation" "http://bioconductor.org/packages/2.14/data/experiment" "http://bioconductor.org/packages/2.14/extra" ...
   .. ..- attr(*, "names")= chr [1:5] "BioCsoft" "BioCann" "BioCexp" "BioCextra" ...
   ..@ pkgs        : chr "BiocInstaller"
