@@ -29,16 +29,23 @@ makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
         dir.create(libloc, recursive=TRUE)
     oldlp = .libPaths()
     if(exclude.site)
-        .libPaths2(unique(.Library))
+        .libPaths2(unique(c(libloc,.Library)))
     else 
-        .libPaths2(unique(c(.Library.site, .Library)))
+        .libPaths2(unique(c(libloc,.Library.site, .Library)))
     on.exit(.libPaths(oldlp))    
 
-    if(missing(pkgs) && !missing(seed))
+    if(missing(pkgs) && !missing(seed)) {
         if(is(seed, "SessionManifest"))
             install_packages(seed)
         else if(is(seed, "PkgManifest"))
             pkgs = manifest_df(seed)$name
+        else if(is(seed, "character")) {
+            avl = tryCatch(available.packages(contrib.url(seed)))
+            if(!is(avl, "error"))
+                pkgs = avl[,"Package"]
+        }
+            
+    }
 
     if(!missing(pkgs))
         install_packages(pkgs, repos = seed)

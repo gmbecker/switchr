@@ -104,6 +104,8 @@ makePwdFun = function(scm_auth, url)
 ##' @param \dots Passed directly to constructors for PkgSource superclasses
 ##' @export
 makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, ...) {
+    if(is.na(type))
+        type = "unknown"
     type = tolower(type)
     if(missing(user))
         user = makeUserFun(scm_auth = scm_auth, url = url)

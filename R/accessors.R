@@ -194,6 +194,30 @@ setMethod("branch<-", "PkgSource", function(x, value) {
     })
 
 
+
+
+##' Get or set the package name associated with a Package Source
+##' @export
+##' @param x A source
+##' @rdname pkgname
+##' @docType methods
+setGeneric("pkgname", function(x) standardGeneric("pkgname"))
+##' @aliases pkgname,PkgSource
+##' @rdname pkgname
+setMethod("pkgname", "PkgSource", function(x) x@name)
+##' @rdname pkgname
+##' @param value The new pkgname
+setGeneric("pkgname<-", function(x, value) standardGeneric("pkgname<-"))
+##' @aliases pkgname<-,PkgSource
+##' @rdname pkgname
+setMethod("pkgname<-", "PkgSource", function(x, value) {
+    x@name = value
+    x
+    })
+
+
+
+
 ##' subdir
 ##' @rdname subdir
 ##' @param x An object associated with a subdirectory, typically a PkgSource

@@ -66,19 +66,38 @@ makeManifest = function(..., dep_repos = defaultRepos()) {
 ##' Create a package manifest containing only github packages
 ##'
 ##' @param pkgrepos Github repositories in the form "<user>/<reponame>"
-##' @param \dots Combined to populate \code{pkgrepos}
-##' @note This is a convenience wrapper for \code{\link{makeManifest}}. Non-default
-##' location information (e.g. branches other than master,
-##' subdirectories within the repository) are not currently supported. Use
-##' \code{\link{makeManifest}} or edit the package manifest after
-##' creation when those are required.
+##' @param \dots{} Combined to populate \code{pkgrepos}
+##' @details Any names of the pkgrepos vector are assumed to be
+##' pkg names for the manifest. For unnamed elements, the pkg
+##' name is assumed to be the repository name.
+##' @note This is a convenience wrapper for \code{\link{makeManifest}}.
+##' It uses the \code{username/repo[/subdir][@@ref]} shorthand for specifying
+##' package locations in github repositories introduced by Wickham's
+##' devtools. Unlike devtools, username is not optional, and  only branch
+##' names are currently supported in the \code{@@ref}
+##'
+##'
+##'
+##' 
 ##' @export
-GithubManifest = function( ..., pkgrepos = as.character(list(...))) {
+GithubManifest = function( ..., pkgrepos) {
 
-    names = gsub("[^/]*/([^/]*)/*$", "\\1", pkgrepos)
-    names = gsub("\\.git", "", names)
-    res = makeManifest(url = paste0("git://github.com/", pkgrepos, ".git"),
-             type = "git", branch = "master", name = names)
+    if(missing(pkgrepos)) {
+        pkgrepos = as.character(list(...))
+        names(pkgrepos) = names(list(...))
+    }
+   ## nms = gsub("[^/]*/([^/]*)/*$", "\\1", pkgrepos)
+  ##  nms = gsub("\\.git", "", nms)
+    args = lapply(pkgrepos, parse_git_repo)
+    nms = vec_get(args, "repo")
+    vecnms = names(pkgrepos)
+    if(!is.null(vecnms)) {
+        inds = nchar(vecnms) > 0
+        nms[inds] = vecnms[inds]
+    }
+        
+    res = makeManifest(url = sapply(args, const_git_url), subdir = vec_get(args, "subdir"),
+             type = "git", branch = vec_get(args, "ref"), name = nms)
     as(res, "GithubPkgManifest")
 }
  
@@ -86,6 +105,10 @@ GithubManifest = function( ..., pkgrepos = as.character(list(...))) {
 
         
 gitregex = "^(git:.*|http{0,1}://(www.){0,1}(github|bitbucket)\\.com.*|.*\\.git)$"
+
+vec_get = function(lst, ind)
+    sapply(lst, function(x) x[[ind]])
+
 
 
 .inferType = function(urls) {
@@ -141,3 +164,45 @@ readManifest = function(uri, local = !url.exists(uri), archive = FALSE) {
         manifest
     }
 }
+
+const_git_url = function(args) {
+    ret = "http://github.com/"
+    ret = paste0(ret, args$user, "/", args$repo)
+    ret
+}
+
+
+
+
+## Copyright Hadley Wickham. Lifted from devtools. Used under
+## GPL 2.
+# Parse concise git repo specification: [username/]repo[/subdir][#pull|@ref|@*release]
+# (the *release suffix represents the latest release)
+
+##We don't support the release or pull-request aspects of install_github currently.
+## Refs are assumed to be branch names
+parse_git_repo <- function(path) {
+    username_rx <- "(?:([^/]+)/)?"
+    repo_rx <- "([^/@#]+)"
+    subdir_rx <- "(?:/([^@#]*[^@#/]))?"
+    ref_rx <- "(?:@([^*].*))"
+    pull_rx <- "(?:#([0-9]+))"
+        release_rx <- "(?:@([*]release))"
+    ref_or_pull_or_release_rx <- sprintf("(?:%s|%s|%s)?", ref_rx, pull_rx, release_rx)
+    github_rx <- sprintf("^(?:%s%s%s%s|(.*))$",
+                         username_rx, repo_rx, subdir_rx, ref_or_pull_or_release_rx)
+    param_names <- c("username", "repo", "subdir", "ref", "pull", "release", "invalid")
+    replace <- setNames(sprintf("\\%d", seq_along(param_names)), param_names)
+    params <- lapply(replace, function(r) gsub(github_rx, r, path, perl = TRUE))
+    if (params$invalid != "")
+        stop(sprintf("Invalid git repo: %s", path))
+    if(!nchar(params$ref))
+        params$ref = "master"
+    if(!nchar(params$subdir))
+        params$subdir = "."
+
+    params <- params[sapply(params, nchar) > 0]
+  
+    params
+}
+

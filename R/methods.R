@@ -48,7 +48,7 @@ setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
 setMethod("switchTo", c(name = "character", seed = "character"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
     chtype = getStringType(seed)
-    if(chtype == file) {
+    if(chtype == "file") {
         seed = readLines(seed)
         chtype = getStringType(seed)
     }
@@ -56,10 +56,11 @@ setMethod("switchTo", c(name = "character", seed = "character"),
     if(chtype == "sessioninfo") {
         ## we have session info output
         ##XXX need to make sure double use of ... is safe!
-        sr = lazyRepo(seed, ...)
+        seed2 = makeSeedMan(parseSessionInfoString(seed))
+        sr = lazyRepo(seed2, ...)
 
         
-        seed = if(grepl(sr, "file://")) sr else paste("file://",sr, sep="")
+        seed = if(grepl("file://", sr)) sr else paste("file://",sr, sep="")
         seed = gsub("/src/contrib.*", "", seed)
         chtype = "repourl"
           

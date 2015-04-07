@@ -37,6 +37,10 @@ setMethod("libManifest", "missing",
                           repos = repos, ...)
           })
 
+
+
+
+
 ##' @rdname libManifest
 ##' @aliases libManifest,SwitchrCtx
 
@@ -123,3 +127,37 @@ setMethod("libManifest", "SwitchrCtx",
     else
         "repository"
 }
+
+##' makeSeedMan
+##'
+##' @param x The object to generate a seeding manifest from
+##' @param known_manifest  A manifest containing known locations of package sources.
+##' makeSeedMan will attempt to determine locations of packages listed in x using both
+##' known_manifest and official repositories.
+##' @export
+##'
+
+setGeneric("makeSeedMan", function(x, known_manifest = PkgManifest(), ...) standardGeneric("makeSeedMan"))
+
+setMethod("makeSeedMan", "parsedSessionInfo", function(x, known_manifest = PkgManifest(), ...) {
+
+              sinfopkginfo = rbind(x@attached, x@loaded)
+              sinfopkginfo = sinfopkginfo[!sinfopkginfo[,"Package"] %in% basepkgs,]
+              mani = PkgManifest(name = sinfopkginfo[,"Package"],
+                  dep_repos  = dep_repos(known_manifest))
+
+              haveany = nrow(manifest_df(mani)) > 0
+              if(haveany)
+                  mani = .findThem(mani, known_manifest)
+              if(nrow(manifest_df(mani))) {
+                  pkg_vers = data.frame(name = sinfopkginfo[,"Package"],
+                      version = sinfopkginfo[,"Version"],
+                      stringsAsFactors = FALSE)
+                  mani = SessionManifest(manifest = mani,
+                      versions = pkg_vers)
+              }
+              mani
+
+
+
+})

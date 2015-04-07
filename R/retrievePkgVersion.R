@@ -323,7 +323,7 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="trunk")
     
 
     
-    findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param)
+    findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param = param)
     
         
 }
@@ -350,7 +350,7 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
     
     currev = floor((maxrev+minrev)/2)
     
-    commit = binRevSearch(version, currev = currev, maxrev = maxrev, minrev = minrev, found = FALSE)
+    commit = binRevSearch(version, currev = currev, maxrev = maxrev, minrev = minrev, found = FALSE, param = param)
     cmd2 = paste("svn switch --ignore-ancestry -r", commit, svn_repo)#repoloc)
     system_w_init(cmd2, param = param)
     return(commit)
@@ -373,7 +373,7 @@ binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
             else
                 return(NULL)
         } else {
-            return(binRevSearch(version, floor((minrev + currev )/2),  currev, minrev, param, found = found))
+            return(binRevSearch(version, floor((minrev + currev )/2),  currev, minrev, param=param, found = found))
         }
     }
         

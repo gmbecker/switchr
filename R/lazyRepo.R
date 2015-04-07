@@ -104,7 +104,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                                           pkgname, version))
                       
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
-                      desc = untar(tball, files = file.path(pkgname,"DESCRIPTION"),
+                      desc = untar(tball, files = .descInTB(src, FALSE),
                           exdir = tmpdir)
                       dcf = read.dcf(file.path(tmpdir, pkgname,subdir(src), "DESCRIPTION")) 
                   } else if(!is.na(version)) {
@@ -118,7 +118,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                           desc = file.path(pkgfile, subdir(src),"DESCRIPTION")
                       else {
                           
-                          succ= untar(pkgfile, files = file.path(pkgname,subdir(src),"DESCRIPTION"),
+                          succ= untar(pkgfile, files = .descInTB(src),
                               exdir = tempdir())
                           if(!succ)
                               desc = file.path(tmpdir, pkgname, subdir(src),"DESCRIPTION")
@@ -170,7 +170,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                   newreqs = unlist(sapply(rawdeps, extract_dep_pkg_names))
                   newreqs = unique(newreqs[!newreqs %in% c(avail[,"Package"],
                       pkgsNeeded, basepkgs)])
-                  
+
+                  if(!file.exists(tball)) {
                   cmd = paste("cd", repdir, "; R CMD build",
                       "--no-resave-data",
                       "--no-build-vignettes", file.path(pkgdir, subdir(src)))
@@ -178,7 +179,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       error = function(x) x)
                   if(is(res, "error"))
                       stop(paste("Unable to build package", res))
-                  
+              }
                   ##update
                   pkgsNeeded <<- setdiff(c(pkgsNeeded, newreqs), pkgname)
                   
@@ -215,3 +216,11 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               fakerepo
           })
 
+
+## tar chokes when /./ appears in internal paths, so prevent that.
+.descInTB = function(src, use_subdir=TRUE) {
+    if(use_subdir && !is.na(subdir(src)) && subdir(src) != ".")
+        file.path(pkgname(src), subdir(src), "DESCRIPTION")
+    else
+        file.path(pkgname(src), "DESCRIPTION")
+}
