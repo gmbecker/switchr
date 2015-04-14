@@ -1,7 +1,6 @@
 Package: switchr
 Type: Package
-Title: Installing, managing, and switching betwen distinct sets of installed
-    packages
+Title: Installing, Managing, and Switching Between Distinct Sets of Installed Packages
 Version: 0.5.12
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
@@ -14,8 +13,6 @@ Description: switchr provides an abstraction for managing, installing,
 Imports:
     tools,
     RCurl,
-    methods
-Depends:
     methods
 Suggests:
     BiocInstaller,

@@ -284,9 +284,11 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
-highestBiocVers = function(repos = biocinstallRepos()[-length(biocinstallRepos())] ) {
+highestBiocVers = function(repos){
     if(!requireNamespace("BiocInstaller"))
         stop("Unable to determine bioc versions without BiocInstaller installed")
+    else if(missing(repos))
+        repos = BiocInstaller::biocinstallRepos()[-length(biocinstallRepos())]
     majvers = length(highestVs)
 ##    if(highestVs[majvers] > 0)
 ##        vers = paste(majvers, highestVs[majvers] - 1, sep=".")

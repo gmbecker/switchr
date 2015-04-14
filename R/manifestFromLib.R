@@ -134,11 +134,16 @@ setMethod("libManifest", "SwitchrCtx",
 ##' @param known_manifest  A manifest containing known locations of package sources.
 ##' makeSeedMan will attempt to determine locations of packages listed in x using both
 ##' known_manifest and official repositories.
+##' @param ... Currently unused.
 ##' @export
-##'
+##' @docType methods
+##' @rdname makeSeedMan
+
 
 setGeneric("makeSeedMan", function(x, known_manifest = PkgManifest(), ...) standardGeneric("makeSeedMan"))
 
+##' @rdname makeSeedMan
+##' @aliases makeSeedMan,parsedSessionInfo
 setMethod("makeSeedMan", "parsedSessionInfo", function(x, known_manifest = PkgManifest(), ...) {
 
               sinfopkginfo = rbind(x@attached, x@loaded)
