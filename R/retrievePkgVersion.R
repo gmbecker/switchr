@@ -197,7 +197,6 @@ setMethod("makeSVNURL", "GitSource",
 
 
     
-## @importFrom BiocInstaller biocinstallRepos biocVersion
 findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 {
     if(!requireNamespace("BiocInstaller")) {

@@ -1,5 +1,5 @@
 crandburl = "http://crandb.r-pkg.org/"
-
+globalVariables("fromJSON")
 
 ##' rVersionManifest
 ##' Create a Pkg manifest which points to tarballs representing the
@@ -17,7 +17,7 @@ crandburl = "http://crandb.r-pkg.org/"
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
-    if(!require("RJSONIO") && !exists("fromJSON", mode="function"))
+    if(!requireNamespace("RJSONIO") && !exists("fromJSON", mode="function"))
         stop("This function requires there RJSONIO package or another package which provides a 'fromJSON' function")
     
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
@@ -69,7 +69,7 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     cur_avail = available.packages(), verbose = FALSE, suggests = c("direct", "none"),
     delay = 1) {
-    
+    requireNamespace("RJSONIO")
     suggests = match.arg(suggests)
     
     urlpkg = paste0(crandburl, pkg, "/all")

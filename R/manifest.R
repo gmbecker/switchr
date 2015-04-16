@@ -50,7 +50,7 @@ ManifestRow = function(name = NA_character_,
 
 ##' Manifest constructor
 ##' Create a package manifest
-##' @param \dots Vectors containing package information. Passed to \code{\link{ManifestRow}}
+##' @param ... Vectors containing package information. Passed to \code{\link{ManifestRow}}
 ##' @param dep_repos The dependency repos for the package.
 ##' @export
 makeManifest = function(..., dep_repos = defaultRepos()) {
@@ -65,8 +65,8 @@ makeManifest = function(..., dep_repos = defaultRepos()) {
 ##'
 ##' Create a package manifest containing only github packages
 ##'
+##' @param ... Combined to populate \code{pkgrepos}
 ##' @param pkgrepos Github repositories in the form "<user>/<reponame>"
-##' @param \dots{} Combined to populate \code{pkgrepos}
 ##' @details Any names of the pkgrepos vector are assumed to be
 ##' pkg names for the manifest. For unnamed elements, the pkg
 ##' name is assumed to be the repository name.
