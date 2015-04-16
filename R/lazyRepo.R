@@ -74,11 +74,11 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               pkgsNeeded = pkgs
 
               mandf = manifest_df(pkg_manifest)
-              avail = available.packages(contrib.url(dep_repos(pkg_manifest)))
+              avail = available.packages(contrib.url(dep_repos(pkg_manifest), type="source"), type="source")
 
-              repdir = file.path(rep_path, "src", "contrib")
+              repdir = normalizePath2(file.path(rep_path, "src", "contrib"))
               dir.create(repdir, recursive = TRUE)
-              fakerepo = paste0("file://", normalizePath(repdir))
+              fakerepo = makeFileURL(repdir)
               innerFun = function(src, pkgname, version, dir) {
                   ## if we only select 1 row we get a character :(
                   if(is.null(dim((avail))))
@@ -93,20 +93,35 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       return()
                   }
                   
-                  tball = file.path(dir, paste(pkgname, "_", version,
-                      ".tar.gz", sep=""))
+                  tballpat =  paste(pkgname, "_", version,sep="")
 
                   tmpdir = tempdir()
-                  pkgdir = file.path(dir, pkgname)               
-                  if(file.exists(tball)) {
+                  pkgdir = file.path(dir, pkgname)    
+                  
+                  remOtherPkgVersions(pkgname, version, repdir, tmpdir, verbose = verbose)
+                  ## check if the exact package version we want has already been retreived in lazy repo
+                  exInRepo  = list.files(repdir, pattern = tballpat, full.names=TRUE)
+                  exInTmpdir =  list.files(tmpdir, pattern = tballpat, full.names=TRUE)                        
+                  if(length(exInRepo)) {
                       if(verbose)
-                          message(sprintf("Package %s (Version %s) already retrieved.",
+                          message(sprintf("Package %s (Version %s) found already in repo.",
                                           pkgname, version))
                       
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
-                      desc = untar(tball, files = .descInTB(src, FALSE),
-                          exdir = tmpdir)
+                      desc = fileFromBuiltPkg(exInRepo[1], files = .descInTB(src, FALSE),
+                            exdir = tmpdir)
+        
                       dcf = read.dcf(file.path(tmpdir, pkgname,subdir(src), "DESCRIPTION")) 
+                  } else if(length(exInTmpdir)) {
+                     if(verbose)
+                       message(sprintf("Package %s (Version %s) found in pkg storage",
+                                      pkgname, version))
+                     pkgfile = file.path(repdir, basename(exInTmpdir[1]))
+                     file.rename(exInTmpdir[1], pkgfile)
+                     desc = fileFromBuiltPkg(exInRepo[1], files = .descInTB(src, FALSE),
+                                             exdir = tmpdir)
+                     dcf = read.dcf(file.path(tmpdir, pkgname,subdir(src), "DESCRIPTION")) 
+                     
                   } else if(!is.na(version)) {
        
                       pkgfile = locatePkgVersion( src@name, version, pkg_manifest = pkg_manifest,
@@ -118,7 +133,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                           desc = file.path(pkgfile, subdir(src),"DESCRIPTION")
                       else {
                           
-                          succ= untar(pkgfile, files = .descInTB(src),
+                          succ= fileFromBuiltPkg(pkgfile, files = .descInTB(src),
                               exdir = tempdir())
                           if(!succ)
                               desc = file.path(tmpdir, pkgname, subdir(src),"DESCRIPTION")
@@ -171,12 +186,11 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                   newreqs = unique(newreqs[!newreqs %in% c(avail[,"Package"],
                       pkgsNeeded, basepkgs)])
 
-                  if(!file.exists(tball)) {
-                  cmd = paste("cd", repdir, "; R CMD build",
-                      "--no-resave-data",
-                      "--no-build-vignettes", file.path(pkgdir, subdir(src)))
-                  res = tryCatch(system_w_init(cmd, intern=TRUE, param = param),
-                      error = function(x) x)
+                  if(length(list.files(repdir, pattern = tballpat)) == 0) {
+                      cmd = paste(Rcmd("build", paste("--no-resave-data --no-build-vignettes", 
+                                                  file.path(pkgdir, subdir(src)))))
+                      res = tryCatch(system_w_init(cmd, dir = repdir, intern=TRUE, param = param),
+                        error = function(x) x)
                   if(is(res, "error"))
                       stop(paste("Unable to build package", res))
               }
@@ -212,7 +226,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                                         #    }
                   cnt = cnt + 1
               }
-              write_PACKAGES(repdir)
+              write_PACKAGES(repdir, type="source")
               fakerepo
           })
 

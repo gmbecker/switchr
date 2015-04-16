@@ -71,12 +71,12 @@ locatePkgVersion = function(name, version, pkg_manifest, param = SwitchrParam(),
 findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
 {
     destpath = dir
-    pkgs = as.data.frame(available.packages( fields = c("Package", "Version")), stringsAsFactors = FALSE)
+    pkgs = as.data.frame(available.packages( fields = c("Package", "Version"), type="source"), stringsAsFactors = FALSE)
     if(nrow(pkgs) && name %in% pkgs$Package)
     {
         pkg = pkgs[pkgs$Package == name,]
         if(pkg$Version == version){
-            res = download.packages(name, destdir = destpath)
+            res = download.packages(name, destdir = destpath, type="source")
             if(nrow(res) < 1)
                 stop("Package is in CRAN but download failed")
             return(res[1,2])
@@ -225,11 +225,8 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         if(is.null(commit))
             return(NULL)
         pkgdir = file.path(dir, name)
-        system_w_init(paste("R CMD build",
-                            "--no-build-vignettes",
-                            "--no-resave-data",
-                            "--no-manual",
-                            pkgdir), param = param)
+        system_w_init(Rcmd("build", paste("--no-build-vignettes --no-resave-data --no-manual",
+                            pkgdir)), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
         setwd(pkgdir)
         system_w_init("svn up", param = param) #this gets us back to the trunk
@@ -237,7 +234,6 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
     }
     ret
 }
-
 
 ## tries to download the file. Returns list with two elements (file:dl'ed file or NULL and versionToSearch:bioc version)
 .biocTryToDL = function(name, version, param, dir, verbose = FALSE) {
@@ -253,7 +249,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         if(verbose)
             message(sprintf("Searching Bioc repository for release %s", biocVersFromRepo(urls)))
         
-        pkgs = as.data.frame(available.packages(urls, fields = c("Package", "Version")), stringsAsFactors=FALSE)
+        pkgs = as.data.frame(available.packages(urls, fields = c("Package", "Version"), type="source"), stringsAsFactors=FALSE)
         pkg = pkgs[pkgs$Package == name,]       
         
         pkgAvail = nrow(pkg) > 0
@@ -361,11 +357,11 @@ binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
 {
     cmd = paste("svn diff --revision", paste(currev, maxrev, sep=":"), "DESCRIPTION")
     revs = tryCatch(system_w_init(cmd, intern=TRUE, param = param), error=function(x) x)
-    
-    revVersions = grep(".*[Vv]ersion:", revs, value=TRUE)
     if(is(revs, "error"))
         return(NULL)
-
+   
+    revVersions = grep("[-\\+].*[Vv]ersion:", revs, value=TRUE)
+ 
     if(!length(revVersions)) {
         if(minrev == maxrev - 1) {
             if(found)

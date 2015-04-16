@@ -60,8 +60,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
         sr = lazyRepo(seed2, ...)
 
         
-        seed = if(grepl("file://", sr)) sr else paste("file://",sr, sep="")
-        seed = gsub("/src/contrib.*", "", seed)
+        seed = if(grepl("file://", sr)) sr else makeFileURL(sr)
+        seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
         chtype = "repourl"
           
     } else if (grepl("(repo|contrib)", chtype)) {
@@ -78,6 +78,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
         chtype = "repourl"
     }
         
+    
+    ## At this point seed is guaranteed to be a repo url
     
     if(ignoreRVersion)
         rvers = NULL
@@ -98,9 +100,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
 
 repoFromString = function(str, type) {
     switch(type,
-           repodir = paste("file://", str, sep=""),
-           contribdir = paste("file://",
-               gsub("/(src|bin/windows|bin/macosx).*", "", str),
+           repodir = makeFileURL(str),
+           contribdir = makeFileURL(gsub("/(src|bin/windows|bin/macosx).*", "", str),
                sep=""),
            reporul = str,
            contriburl = gsub("/(src|bin/windows|bin/macosx).*", "", str))

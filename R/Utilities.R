@@ -1,3 +1,48 @@
+makeFileURL = function(path) {
+  if(Sys.info()["sysname"] == "Windows")
+    paste0("file:///", normalizePath2(path))
+  else
+    paste0("file://", normalizePath2(path))
+}
+
+remOtherPkgVersions = function(pkgname, version, repodir, storagedir, verbose=FALSE) {
+  tballpat = paste0(pkgname, "_")
+  
+  allinrepo = list.files(repodir, pattern = tballpat, full.names=TRUE)
+  wrongvers = !grepl(version, allinrepo, fixed=TRUE)
+  if(all(!wrongvers))
+    return()
+  if(verbose)
+    message(sprintf("found %d other versions of the package in the repo directory (%s). Moving them to the storage directory (%s)",
+                    sum(wrongvers), repodir, storagedir))
+  file.rename(allinrepo[wrongvers], 
+              file.path(storagedir, basename(allinrepo[wrongvers])))
+}
+
+fileFromBuiltPkg = function(archive, files, ...) {
+  filname = basename(archive)
+  ext = gsub(".*_[^[:alpha:]]*(\\..*)$", "\\1", filname)
+  fun = switch(ext,
+         ".zip" = unzip,
+         ".tar.gz"= untar,
+         "tgz" = untar,
+         stop(sprintf("unrecognized extension %s", ext))
+  )
+  
+  fun(archive, files = files, ...)
+}
+
+
+##' R executable
+##' @param cmd the R CMD to run. "build", "check", "INSTALL", or "" (for none)
+##' @param options The options to pass to the command
+##' @export
+Rcmd = function(cmd = c("build", "check", "INSTALL", ""), options) {
+  cmd = match.arg(arg=cmd)
+  cmdpart = if(nchar(cmd)) paste("CMD", cmd) else ""
+	paste(file.path(R.home("bin"), "R"), cmdpart,  options)
+}
+
 ##'Check if a directory contains package sources
 ##' @param dir The directory
 ##' @export
@@ -194,7 +239,7 @@ normalizePath2 = function(path, follow.symlinks=FALSE)
     {
         
         if(follow.symlinks || Sys.info()["sysname"]=="Windows")
-            normalizePath(path)
+            return(normalizePath(path))
         else {
             if(substr(path, 1, 1) == "~")
                 path = path.expand(path)
@@ -232,6 +277,8 @@ normalizePath2 = function(path, follow.symlinks=FALSE)
 ##' Run a system command with an optional intialization script (e.g. a .bashrc
 ##' sourced first).
 ##' @param cmd The text of the command. Must be length 1.
+##' @param dir The directory that the command should be executed in. The working directory will be temporarily changed to this dir,
+##' but will be changed back upon exit of system_w_init.
 ##' @param init (optional) a character value indicating the
 ##' location of an initialization shell script.
 ##' @param \dots additional parameters passed directly to \code{\link{system}}.
@@ -240,7 +287,7 @@ normalizePath2 = function(path, follow.symlinks=FALSE)
 ##' not specified (length 0).
 ##' @return Depends, see \code{\link{system}} for details.
 ##' @export
-system_w_init = function(cmd,
+system_w_init = function(cmd, dir,
     init = character(), ..., param = SwitchrParam())
 {
     if(!length(init) && !is.null(param))
@@ -249,6 +296,11 @@ system_w_init = function(cmd,
         stop("cmd should be of length 1")
     if(length(init) && nchar(init))
         cmd = paste(paste("source", init), cmd, sep = " ; ")
+    if(!missing(dir)) {
+      oldwd  = getwd()
+      setwd(dir)
+      on.exit(setwd(oldwd))
+    }
     system(cmd, ...)
 }
 

@@ -16,7 +16,7 @@
 ##' associated with the same R version to be considered a match.
 ##' @export
 makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
-                   contains, rvers = NULL) {
+                   contains, rvers = NULL, verbose=FALSE) {
 
     cenv = findCompEnv(name = name, rvers = rvers)
     
@@ -40,7 +40,7 @@ makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
         else if(is(seed, "PkgManifest"))
             pkgs = manifest_df(seed)$name
         else if(is(seed, "character")) {
-            avl = tryCatch(available.packages(contrib.url(seed)))
+            avl = tryCatch(available.packages(contrib.url(seed, type = "source"), type="source"))
             if(!is(avl, "error"))
                 pkgs = avl[,"Package"]
         }
@@ -48,7 +48,7 @@ makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
     }
 
     if(!missing(pkgs))
-        install_packages(pkgs, repos = seed)
+        install_packages(pkgs, repos = seed, type="source")
     write.table(data.frame(name = name, url = "", paths = libloc,
                            excl.site = exclude.site,
                            rversion = gsub("R version ([^ ]*).*", "\\1",

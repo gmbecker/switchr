@@ -87,15 +87,19 @@ setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), funct
         libloc = list(...)["lib.loc"]
     else
         libloc = .libPaths()[1]
+    if("type" %in% list(...))
+      type = list(...)$type
+    else
+      type = "source"
     avail1 = available.packages(lazyrepo)
-    avail2 = available.packages(contrib.url(dep_repos(man)))
+    avail2 = available.packages(contrib.url(dep_repos(man), type = type))
     new = !avail2[,"Package"] %in% avail1[,"Package"]
     avail = rbind(avail1, avail2[new,])
     
     oldpkgs = installed.packages(libloc)[,"Package"]
     oldinfo = lapply(oldpkgs, function(x) file.info(system.file("DESCRIPTION", package = x)))
     
-    install.packages(pkgs, available = avail, ...)
+    utils::install.packages(pkgs, available = avail, ...)
 
     newpkgs  = installed.packages(libloc)[,"Package"]
 
