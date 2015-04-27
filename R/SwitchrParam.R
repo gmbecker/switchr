@@ -9,5 +9,7 @@
 ##' @author Gabriel Becker
 ##' @aliases SwitchrParam-class
 ##' @export
-SwitchrParam = function(logfun = function(...) NULL, shell_init= character())
-    new("SwitchrParam", logfun = logfun, shell_init = shell_init)
+SwitchrParam = function(logfun = function(...) NULL, shell_init= character(),
+                        archive_timing = 2, archive_retries=2)
+    new("SwitchrParam", logfun = logfun, shell_init = shell_init,
+        archive_timing=archive_timing, archive_retries = archive_retries)

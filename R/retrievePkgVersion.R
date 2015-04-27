@@ -92,9 +92,15 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
     if(!file.exists(destpath))
         dir.create(destpath, recursive = TRUE)
     destfile = file.path(destpath, tarname)
-    res = tryCatch(download.file(cranurl, destfile), error = function(e) e)
-    if(is(res, "error") || res > 0)
-        destfile = NULL
+    retries = 0
+    while(retries < archive_retries(param)) {
+        res = tryCatch(download.file(cranurl, destfile), error = function(e) e)
+        Sys.sleep(archive_timing(param))
+        if(is(res, "error") || res > 0) 
+            destfile = NULL
+        else
+            break
+    }
     
     destfile
 }

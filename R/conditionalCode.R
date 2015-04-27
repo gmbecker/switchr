@@ -49,10 +49,24 @@ globalVariables("defaultGRANURL")
 defaultRepos = function() {
     bioc = getBiocRepos()
     optrepos = getOption("repos")
-    if(optrepos["CRAN"] == "@CRAN@")
-        optrepos = optrepos[!names(optrepos) == "CRAN"]
-    else if(!is.null(bioc))
-        bioc = bioc[!names(bioc) == "CRAN"]
+    if(optrepos["CRAN"] == "@CRAN@") {
+        
+        if(any(grepl("cran", bioc, ignore.case=TRUE))) 
+            optrepos = optrepos[!names(optrepos) == "CRAN"]
+        else {
+
+            if(interactive())
+                chooseCRANmirror()
+            else{
+                message("Switchr needs a default CRAN mirror set via R options. Using the Rstudio mirror. This happens only when no CRAN mirror is selected *and* the BiocInstaller package is not installed.")
+                chooseCRANmirror(ind= 1)
+            }
+            optrepos = getOption("repos")
+        }
+    } else if (!is.null(names(bioc))) 
+          bioc = bioc[!names(bioc) == "CRAN"]
+    
+
         
 
     granrepos = NULL

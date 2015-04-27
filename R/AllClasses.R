@@ -3,7 +3,8 @@ NULL
 
 
 ##' @export
-setClass("SwitchrParam", representation(logfun = "function", shell_init = "character"))
+setClass("SwitchrParam", representation(logfun = "function", shell_init = "character",
+                                        archive_timing="numeric", archive_retries="numeric"))
 
 
 

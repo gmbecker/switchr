@@ -340,7 +340,8 @@ highestBiocVers = function(repos){
     if(!requireNamespace("BiocInstaller"))
         stop("Unable to determine bioc versions without BiocInstaller installed")
     else if(missing(repos))
-        repos = BiocInstaller::biocinstallRepos()[-length(biocinstallRepos())]
+        ## head -1 removes the last element
+        repos =head(BiocInstaller::biocinstallRepos(), -1)
     majvers = length(highestVs)
 ##    if(highestVs[majvers] > 0)
 ##        vers = paste(majvers, highestVs[majvers] - 1, sep=".")

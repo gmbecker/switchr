@@ -1,4 +1,83 @@
 
+##' Get or set the number of seconds to wait after trying to
+##' retrieve a file from the CRAN Archive.
+##'
+##' This is intended to stop intermittent install failures
+##' due to failing to retrieve files that *are* in the
+##' archive but are not downloading properly when a larger 
+##' number of packages is being retrieved.
+##'
+##' @param x A SwitchrParam object
+##' @return When getting, the number of seconds to wait,
+##' when setting, a new, updated SwitchrParam object.
+
+##' @rdname archive_timing
+##' @docType methods
+##' @export
+
+setGeneric("archive_timing", function(x) standardGeneric("archive_timing"))
+
+##' @rdname archive_timing
+##' @aliases archive_timing,SwitchrParam
+setMethod("archive_timing", "SwitchrParam", function(x) x@archive_timing)
+
+##' @rdname archive_timing
+##' @aliases archive_timing<-
+##' @export
+setGeneric("archive_timing<-", function(x, value) standardGeneric("archive_timing<-"))
+
+##' @rdname archive_timing
+##' @param value The new number of seconds to wait
+##' @aliases archive_timing<-,SwitchrParam
+setMethod("archive_timing<-", "SwitchrParam", function(x, value) {
+                                x@archive_timing = value
+                                x
+                            })
+
+
+
+
+##' archive_retries
+##' 
+##' Get or set the number of times to retry downloading a file from
+##' the CRAN archive
+##'
+##' This is intended to stop intermittent install failures
+##' due to failing to retrieve files that *are* in the
+##' archive but are not downloading properly when a larger 
+##' number of packages is being retrieved.
+##'
+##' @param x A SwitchrParam object
+##' @return When getting, the number of seconds to wait,
+##' when setting, a new, updated SwitchrParam object.
+##' @rdname archive_retries
+##' @docType methods
+##' @export
+setGeneric("archive_retries", function(x) standardGeneric("archive_retries"))
+
+##' @rdname archive_retries
+##' @aliases archive_retries,SwitchrParam
+setMethod("archive_retries", "SwitchrParam", function(x) x@archive_retries)
+
+##' @rdname archive_retries
+##' @aliases archive_retries<-
+##' @export
+setGeneric("archive_retries<-",
+           function(x, value) standardGeneric("archive_retries<-"))
+
+##' @rdname archive_retries
+##' @param value The new number of seconds to wait
+##' @aliases archive_retries<-,SwitchrParam
+setMethod("archive_retries<-", "SwitchrParam", function(x, value) {
+                                x@archive_retries = value
+                                x
+                            })
+
+
+
+
+
+
 ##' dep_repos
 ##'
 ##' Get or set repositories to be used to fullfill dependencies beyond packages

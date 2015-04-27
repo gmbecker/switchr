@@ -38,7 +38,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
                    rep_path = file.path(dir, "repo"),
                    get_suggests = FALSE,
                    verbose = FALSE,
-                   scm_auths = list(bioconductor = c("readonly", "readonly"))){
+                   scm_auths = list(bioconductor = c("readonly", "readonly")),
+                   param = SwitchrParam()){
 
               vers = versions_df(pkg_manifest)$version
               inds = match(pkgs, versions_df(pkg_manifest)$name)
@@ -79,7 +80,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               repdir = normalizePath2(file.path(rep_path, "src", "contrib"))
               dir.create(repdir, recursive = TRUE)
               fakerepo = makeFileURL(repdir)
-              innerFun = function(src, pkgname, version, dir) {
+              innerFun = function(src, pkgname, version, dir, param) {
                   ## if we only select 1 row we get a character :(
                   if(is.null(dim((avail))))
                       avail = t(as.matrix(avail))
@@ -125,7 +126,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                   } else if(!is.na(version)) {
        
                       pkgfile = locatePkgVersion( src@name, version, pkg_manifest = pkg_manifest,
-                          dir = dir)
+                          dir = dir, param = param)
                       if(is.null(pkgfile))
                           stop("Unable to locate the specified version  of package",
                                src@name)
@@ -204,6 +205,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               avail = avail[!avail[,"Package"] %in% mandf$name,]
               cnt =1 
               while(length(pkgsNeeded) && cnt < 1000){
+                  print(pkgsNeeded)
                   pkg = pkgsNeeded[1]
                   vers = versions[pkgs == pkg]
                   if(!length(vers))
@@ -218,7 +220,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                           url = manrow$url, branch = manrow$branch,
                           subdir = manrow$subdir,
                           scm_auth = scm_auths)
-                      innerFun(src, pkg, version = vers, dir = repdir) #without versions for now
+                      innerFun(src, pkg, version = vers, dir = repdir,
+                               param = param) 
                   } else if(pkg %in% avail[,"Package"])
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkg)
                   else
