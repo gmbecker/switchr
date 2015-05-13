@@ -1,7 +1,7 @@
 Package: switchr
 Type: Package
 Title: Installing, Managing, and Switching Between Distinct Sets of Installed Packages
-Version: 0.5.15
+Version: 0.5.16
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Copyright: Genentech Inc

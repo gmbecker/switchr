@@ -47,36 +47,6 @@ setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
 ##' @aliases switchTo,character,character
 setMethod("switchTo", c(name = "character", seed = "character"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
-    chtype = getStringType(seed)
-    if(chtype == "file") {
-        seed = readLines(seed)
-        chtype = getStringType(seed)
-    }
-    
-    if(chtype == "sessioninfo") {
-        ## we have session info output
-        ##XXX need to make sure double use of ... is safe!
-        seed2 = makeSeedMan(parseSessionInfoString(seed))
-        sr = lazyRepo(seed2, ...)
-
-        
-        seed = if(grepl("file://", sr)) sr else makeFileURL(sr)
-        seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
-        chtype = "repourl"
-          
-    } else if (grepl("(repo|contrib)", chtype)) {
-        seed = repoFromString(seed, chtype)
-        chtype = "repourl"
-    }
-
-    if(chtype != "repourl") {
-        man = readManifest(seed)
-        if(!is(man, "SessionManifest"))
-            man = SessionManifest(versions = data.frame(name = manifest_df(man)$name,
-                                      version = NA, stringsAsFactors=FALSE), manifest = man)
-        seed = lazyRepo(man)
-        chtype = "repourl"
-    }
         
     
     ## At this point seed is guaranteed to be a repo url
@@ -88,9 +58,42 @@ setMethod("switchTo", c(name = "character", seed = "character"),
 
     cenv = findCompEnv(name = name, rvers = rvers)
 
-    if(is.null(cenv))
-        cenv = makeLibraryCtx(name = name, seed = seed, ...)
-
+    if(is.null(cenv)) {
+            chtype = getStringType(seed)
+            if(chtype == "file") {
+                seed = readLines(seed)
+                chtype = getStringType(seed)
+            }
+            
+            if(chtype == "sessioninfo") {
+                ## we have session info output
+                ##XXX need to make sure double use of ... is safe!
+                seed2 = makeSeedMan(parseSessionInfoString(seed))
+                sr = lazyRepo(seed2, ...)
+                
+                
+                seed = if(grepl("file://", sr)) sr else makeFileURL(sr)
+                seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
+                chtype = "repourl"
+                
+            } else if (grepl("(repo|contrib)", chtype)) {
+                seed = repoFromString(seed, chtype)
+                chtype = "repourl"
+            }
+            
+            if(chtype != "repourl") {
+                man = readManifest(seed)
+                if(!is(man, "SessionManifest"))
+                    man = SessionManifest(versions = data.frame(name = manifest_df(man)$name,
+                                              version = NA, stringsAsFactors=FALSE), manifest = man)
+                seed = lazyRepo(man)
+                chtype = "repourl"
+            }
+            
+            cenv = makeLibraryCtx(name = name, seed = seed, ...)
+        } else {
+            message(sprintf("Library %s already exists. Ignoring seed and switching to existing library"), name)
+        }
     if(!is.null(cenv))
         ##        switchTo(name = name, seed = cenv)
         switchTo(name = cenv)
