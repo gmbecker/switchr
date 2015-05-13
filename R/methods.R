@@ -101,10 +101,10 @@ setMethod("switchTo", c(name = "character", seed = "character"),
 repoFromString = function(str, type) {
     switch(type,
            repodir = makeFileURL(str),
-           contribdir = makeFileURL(gsub("/(src|bin/windows|bin/macosx).*", "", str),
+           contribdir = makeFileURL(gsub("/(src|bin/windows|bin/macosx|bin/macos).*", "", str),
                sep=""),
-           reporul = str,
-           contriburl = gsub("/(src|bin/windows|bin/macosx).*", "", str))
+           repourl = str,
+           contriburl = gsub("/(src|bin/windows|bin/macosx|bin/macos).*", "", str))
 }
            
 
@@ -168,23 +168,39 @@ getStringType = function(str) {
     if(any(grepl("Platform:", str)))
         return("sessioninfo")
     if(length(str) > 1)
-        stop("Char vector of length >1 with non-sessionInfo contents detected")
+        return(sapply(str, getStringType))
 
+    
+    if(grepl("file://", str)) {
+        isfilurl = TRUE
+        str = fileFromFileURL(str)
+    } else
+        isfilurl = FALSE
+    
     if(file.exists(str)) {
         if( !file.exists(file.path(str, ".")))
-            return("file")
-        else {
+            ret = "file"
+        else { #if str points to a directory
             if(grepl("contrib/{0,1}$", str))
-                return("contribdir")
-
+                ret = "contribdir"
+            
             if(file.exists(file.path(str,
                                      "src/contrib/PACKAGES")))
-                return("repodir")
+                ret = "repodir"
             else
-                return("manifestdir")
+                ret = "manifestdir"
+            
         }
-                                     
+        if(!is.null(ret)) {
+            if(ret != "file" && isfilurl)
+                ret = gsub("dir$", "url", ret)
+            return(ret)
+        }
+    } else if (isfilurl) { # file doesn't exist, but its a file url
+        stop("file urls to non-existent files are not allowed as seeds/repos")
     }
+                                     
+   
     if(url.exists(str)) {
         if(grepl("contrib/{0,1}$", str))
             return("contriburl")
@@ -319,10 +335,10 @@ setMethod("attachedPkgs<-", "SwitchrCtx", function(seed, value) {
 setGeneric("announce", function(seed, reverted=FALSE) standardGeneric("announce"))
 
 setMethod("announce", "SwitchrCtx", function(seed, reverted=FALSE) {
-    message(sprintf("%s to the '%s' computing environment. %d packages are currently available. Packages installed in your site library ARE %ssuppressed.\n To switch back to your previous environment type switchBack()",
-                    ifelse(reverted, "Reverted", "Switched"),
-                    seed@name, nrow(seed@packages),
-                    ifelse(seed@exclude.site, "", "NOT ")))
+    message(sprintf("%s to the '%s' computing environment. %d packages are currently available.", ifelse(reverted, "Reverted", "Switched"),
+                    seed@name,  nrow(seed@packages)))
+    message(sprintf("Packages installed in your site library ARE %ssuppressed.", ifelse(seed@exclude.site, "", "NOT ")))
+    message("To switch back to your previous environment type switchBack()")
 })
 
 setMethod("show", "SwitchrCtx", function(object) {

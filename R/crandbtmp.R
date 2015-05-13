@@ -17,12 +17,12 @@ globalVariables("fromJSON")
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
-    if(!requireNamespace("RJSONIO") && !exists("fromJSON", mode="function"))
+    if(!requireNamespace("RJSONIO"))
         stop("This function requires there RJSONIO package or another package which provides a 'fromJSON' function")
     
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
     resp = getURL(url)
-    cont = fromJSON(resp)
+    cont = RJSONIO::fromJSON(resp)
     tb_urls = buildTarURLs(cont, curr_avail)
     PkgManifest(name = names(cont), url = tb_urls, type = "tarball",
                 dep_repos = character())
@@ -74,7 +74,7 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     
     urlpkg = paste0(crandburl, pkg, "/all")
     resp = getURL(urlpkg)
-    cont = as.list(fromJSON(resp))
+    cont = as.list(RJSONIO::fromJSON(resp))
     cont2 = cont[["versions"]][[vers]]
     tl = do.call(c, lapply(cont$timeline, as.Date))
     
@@ -91,20 +91,20 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     names(versneeded) = pkg
     i = 1
     while(i <= length(deps)) {
-
+        deps = deps[!deps %in% c("R", basepkgs)]
         tmpkg = deps[i]
         if(verbose)
-            print(paste("Resolving dependency", i, "of", length(deps), "-",
+            message(paste("Resolving dependency", i, "of", length(deps), "-",
                         tmpkg ))
         urlpkg = paste0(crandburl, tmpkg, "/all")
-        depcont = as.list(fromJSON(getURL(urlpkg)))
+        depcont = as.list(RJSONIO::fromJSON(getURL(urlpkg)))
         if(!identical(names(depcont), c("error", "reason"))) {
             tl = do.call(c, lapply(depcont$timeline, as.Date))
         ## we put the 1 in here for packages whose first release
         ## was later than {date}
             depvers = names(tl)[max(c(1,which(tl <= date)))]
             if(verbose)
-                print(paste("  Need version", depvers))
+                message(paste("  Need version", depvers))
             names(depvers) = tmpkg
             tmpcont = as.list(depcont[["versions"]][[depvers]])
             tmpdeps = names(c(tmpcont$Depends, tmpcont$Imports))

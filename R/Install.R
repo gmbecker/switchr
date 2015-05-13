@@ -6,7 +6,7 @@
 ##' @param repos The (generalized) repositor(ies) to install the packages from.
 ##' Can be a character vector of traditional package repositories (as with install.packages)
 ##' or a PkgManifest or SessionManifest (or a url thereof)
-##' @param versions An optional data.frame specifying exact versions of the packages to install
+##' @param versions An optional named character vector or data.frame specifying exact versions of the packages to install
 ##' @param verbose Should extra information be printed during the console during installation
 ##' @param \dots extra parameters passed directly to install.packages
 ##'
@@ -31,24 +31,44 @@ setGeneric("install_packages", function(pkgs, repos, versions = NULL, verbose = 
 ##'@rdname install
 ##' @aliases install_packages,character,character
 setMethod("install_packages", c("character", "character"), function(pkgs, repos, versions, verbose, ...) {
-
-    man = PkgManifest(manifest = ManifestRow(), dep_repos = repos)
+              chtypes = getStringType(repos)
+              if(any(chtypes %in% c("sessioninfo", "manifestdir")))
+                  stop("Unsupported character format passed to repos argument")
+              repos = mapply(repoFromString, str = repos, type = chtypes)
+              
+                 
+              man = PkgManifest(manifest = ManifestRow(), dep_repos = repos)
+    ## FIXME: I should only have to handle versions type and missing versions in
+    ## one method, currently its handled in two. Bad design
     if(!is.null(versions)) {
-        manifest_df(man) = ManifestRow(name = versions$name)
-        man = .findThem(man, PkgManifest(dep_repos = repos))
-        man = SessionManifest(manifest = man, versions = versions)
+        if(is(versions, "character"))
+            versions = data.frame(name = names(versions),
+                version = versions, stringsAsFactors=FALSE)
+        if(any(!versions$names %in% pkgs))
+            stop("Versions specified for packages not being installed. This is not currently supported.")
+        if(any(!pkgs %in% versions$name)) {
+            
+            manifest_df(man) = ManifestRow(name = versions$name)
+            man = .findThem(man, PkgManifest(dep_repos = repos))
+            man = SessionManifest(manifest = man, versions = versions)
+        }
+    } else {
+        versions = rep(NA_character_, times = length(pkgs))
+        names(versions) = pkgs
     }
-    install_packages(pkgs, repos = man, verbose = verbose, ...)
+    install_packages(pkgs, repos = man, verbose = verbose, versions = versions, ...)
     
 })
-##'@rdname install
+
+
+##' @rdname install
 ##' @aliases install_packages,character,missing
 
 setMethod("install_packages", c(pkgs = "character", repos= "missing"), function(pkgs, repos, versions = NULL, verbose, ...) {
     install_packages(pkgs, repos = defaultRepos(), verbose = verbose,
                      versions = versions, ...)
 })
-
+ 
 ##'@rdname install
 ##' @aliases install_packages,SessionManifest,ANY
 
@@ -72,14 +92,34 @@ setMethod("install_packages", c(pkgs = "character", repos= "SessionManifest"), f
 
 
 
-##'@rdname install
+##' @rdname install
 ##' @aliases install_packages,character,PkgManifest
-
-setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), function(pkgs, repos, verbose, ...) {
-
-    ghrepo= lazyRepo(pkgs, repos, verbose = verbose)
-    .install_packages(pkgs, ghrepo, man = repos, ...)
-})
+          
+setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), function(pkgs, repos, versions, verbose,...) {
+              
+              if(missing(versions) || is.null(versions))
+                  versions = rep(NA_character_, times = length(pkgs))
+              else if (is(versions, "data.frame")) {
+                  ord = match(pkg, versions$name)
+                  ord = ord[!is.na(ord)]
+                  versions = versions$name[ord]
+              } else if (!is(versions, "character") ||
+                         (length(versions) != length(pkgs) && is.null(names(versions))))
+                    stop("unsupported specification of package versions")
+              
+              if(is.null(names(versions)))
+                  names(versions) = pkgs
+              mtch = match(pkgs, names(versions))
+              miss = is.na(mtch)
+              if(any(miss)) {
+                  new = rep(NA_character_, times = sum(miss))
+                  names(new) = pkgs[miss]
+                  versions = c(versions, new)
+              }
+              
+              ghrepo= lazyRepo(pkgs, repos, verbose = verbose, versions = versions)
+              .install_packages(pkgs, ghrepo, man = repos, ...)
+          })
 
 ## @param man A PkgManifest
 .install_packages = function(pkgs, lazyrepo, man, ...) {

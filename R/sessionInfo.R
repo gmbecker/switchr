@@ -31,11 +31,10 @@ getPkgs = function(string, pattern = "other attached packages:")
         return(data.frame())
     ##what we care about starts AFTER the other attacehd pkgs line
     start = start + 1
-    end = grep("^$", string[start:length(string)])
-    if(!length(end))
-        end = length(string) - start
-    else
-        end = end[1] - 1
+    end = min(c( grep("^$", string[start:length(string)]),
+        grep(":", string[start:length(string)]),
+        length(string) - start))
+    end = end[1] - 1
     ##end is relative to start!!!
     string = string[start + 0:end]
     stuff = strsplit(paste(string, collapse = " "), split = "[[:space:]]" )[[1]]

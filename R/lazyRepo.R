@@ -203,9 +203,9 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               }
               force(avail)
               avail = avail[!avail[,"Package"] %in% mandf$name,]
+              pkgsNeeded = setdiff(pkgsNeeded, avail[,"Package"])
               cnt =1 
               while(length(pkgsNeeded) && cnt < 1000){
-                  print(pkgsNeeded)
                   pkg = pkgsNeeded[1]
                   vers = versions[pkgs == pkg]
                   if(!length(vers))

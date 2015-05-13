@@ -5,6 +5,15 @@ makeFileURL = function(path) {
     paste0("file://", normalizePath2(path))
 }
 
+fileFromFileURL = function(fileurl) {
+    if(Sys.info()["sysname"] == "Windows")
+        pat = "file:///"
+    else
+        pat = "file://"
+    gsub(pat,  "" , fileurl, fixed=TRUE)
+
+}
+
 remOtherPkgVersions = function(pkgname, version, repodir, storagedir, verbose=FALSE) {
   tballpat = paste0(pkgname, "_")
   

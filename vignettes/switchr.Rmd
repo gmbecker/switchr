@@ -59,7 +59,7 @@ convenience functions for common use-cases such as Github packages
 man = PkgManifest(name = "fastdigest", 
     url = "https://github.com/gmbecker/fastdigest")
 man
-```
+``` 
 
 The `GithubManifest` convenience function builds manifests from GitHub username/repository
 pairs for package sources residing in the root directory of the master branch for the 
@@ -69,6 +69,8 @@ man2 = GithubManifest("gmbecker/fastdigest",
      "gmbecker/RCacheSuite")
 man2
 ```
+
+
 
 ## Representing and (re-)installing package cohorts/libraries
 
