@@ -13,7 +13,8 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
                    get_suggests = FALSE,
                    verbose = FALSE,
                    scm_auths = list(bioconductor = c("readonly", "readonly")),
-                   param = SwitchrParam()){
+                   param = SwitchrParam(),
+                   force_refresh = FALSE){
 
               
               lazyRepo(pkgs = versions_df(pkgs)$name,
@@ -24,7 +25,8 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
                        get_suggests = get_suggests,
                        verbose = verbose,
                        scm_auths = scm_auths,
-                       param = param)
+                       param = param,
+                       force_refresh = force_refresh)
           })
 
 ##' @rdname lazyRepo
@@ -39,7 +41,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
                    get_suggests = FALSE,
                    verbose = FALSE,
                    scm_auths = list(bioconductor = c("readonly", "readonly")),
-                   param = SwitchrParam()){
+                   param = SwitchrParam(),
+                   force_refresh = FALSE){
 
               vers = versions_df(pkg_manifest)$version
               inds = match(pkgs, versions_df(pkg_manifest)$name)
@@ -54,7 +57,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
                        get_suggests = get_suggests,
                        verbose = verbose,
                        scm_auths = scm_auths,
-                       param = param)
+                       param = param,
+                       force_refresh = force_refresh)
           })
 
 
@@ -70,7 +74,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                    get_suggests = FALSE,
                    verbose = FALSE,
                    scm_auths = list(bioconductor = c("readonly", "readonly")),
-                   param = SwitchrParam()){
+                   param = SwitchrParam(),
+                   force_refresh = FALSE){
 
               pkgsNeeded = pkgs
 
@@ -80,7 +85,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               repdir = normalizePath2(file.path(rep_path, "src", "contrib"))
               dir.create(repdir, recursive = TRUE)
               fakerepo = makeFileURL(repdir)
-              innerFun = function(src, pkgname, version, dir, param) {
+              innerFun = function(src, pkgname, version, dir, param, force_refresh= FALSE) {
                   ## if we only select 1 row we get a character :(
                   if(is.null(dim((avail))))
                       avail = t(as.matrix(avail))
@@ -103,7 +108,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                   ## check if the exact package version we want has already been retreived in lazy repo
                   exInRepo  = list.files(repdir, pattern = tballpat, full.names=TRUE)
                   exInTmpdir =  list.files(tmpdir, pattern = tballpat, full.names=TRUE)                        
-                  if(length(exInRepo)) {
+                  if(length(exInRepo) && !force_refresh) {
                       if(verbose)
                           message(sprintf("Package %s (Version %s) found already in repo.",
                                           pkgname, version))
@@ -146,7 +151,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       
                       if(verbose)
                           message(sprintf("Retrieving package %s from %s (branch %s)",
-                                          pkgname, location(src), branch(branch)))
+                                          pkgname, location(src), branch(src)))
                       
                       success = makePkgDir(pkgname, src, path = dir,
                           latest_only = is.na(version), param = param)
@@ -188,13 +193,15 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       pkgsNeeded, basepkgs)])
 
                   if(length(list.files(repdir, pattern = tballpat)) == 0) {
+                      if(verbose)
+                          message(sprintf("Building package %s", pkgname))
                       cmd = paste(Rcmd("build", paste("--no-resave-data --no-build-vignettes", 
                                                   file.path(pkgdir, subdir(src)))))
                       res = tryCatch(system_w_init(cmd, dir = repdir, intern=TRUE, param = param),
                         error = function(x) x)
                   if(is(res, "error"))
                       stop(paste("Unable to build package", res))
-              }
+                  }
                   ##update
                   pkgsNeeded <<- setdiff(c(pkgsNeeded, newreqs), pkgname)
                   
@@ -221,7 +228,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                           subdir = manrow$subdir,
                           scm_auth = scm_auths)
                       innerFun(src, pkg, version = vers, dir = repdir,
-                               param = param) 
+                               param = param,
+                               force_refresh = force_refresh) 
                   } else if(pkg %in% avail[,"Package"])
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkg)
                   else

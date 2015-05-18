@@ -58,7 +58,8 @@ setGeneric("lazyRepo",
                     get_suggests = FALSE,
                     verbose = FALSE,
                     scm_auths = list(bioconductor = c("readonly", "readonly")),
-                    param = SwitchrParam()) standardGeneric("lazyRepo"))
+                    param = SwitchrParam(),
+                    force_refresh = FALSE) standardGeneric("lazyRepo"))
 
 
 

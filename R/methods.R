@@ -389,6 +389,8 @@ currentCompEnv = function() {
             if(is.null(Renvs$stack)) {
                 lp = .libPaths()
                 lp = lp[!(lp %in% .Library | lp %in% .Library.site)]
+                if(!length(lp))
+                    lp = .libPaths()
                 Renvs$stack = list(original = SwitchrCtx("original",
                                        libpaths = lp , seed = NULL,
                                        exclude.site=FALSE))

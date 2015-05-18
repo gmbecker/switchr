@@ -1,3 +1,17 @@
+url.exists = function(x, ...) {
+    if(requireNamespace("RCurl"))
+        RCurl::url.exists(x, ...)
+    else {
+        con = url(x)
+        on.exit(close(con))
+        res = tryCatch(readLines(con), error = function(e) e)
+        if(is(res, "error"))
+            FALSE
+        else
+            TRUE
+    }
+}
+
 makeFileURL = function(path) {
   if(Sys.info()["sysname"] == "Windows")
     paste0("file:///", normalizePath2(path))

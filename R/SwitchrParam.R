@@ -7,12 +7,12 @@
 ##' @param archive_timing The timeout after downloading a package from the CRAN Archive.
 ##' @param archive_retries Number of times to retry retrieving a package from the CRAN Archive.
 ##' @param dl_method The download method to use when retrieve package
-##' source files. See \code{\link[pkg=utils]{download.file}} If none is specified,
+##' source files. See \code{\link{download.file}} If none is specified,
 ##' the method defaults to "curl" if the RCurl package is installed and "auto" otherwise.
 ##' 
 ##' @return A SwitchrParam object.
 ##' @author Gabriel Becker
-##' @aliases SwitchrParam-class)
+##' @aliases SwitchrParam-class
 ##' @export
 SwitchrParam = function(logfun = function(...) NULL, shell_init= character(),
     archive_timing = 2, archive_retries=2, dl_method) {

@@ -126,6 +126,8 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' @param dep_repos A list of traditional pkg repositories which can contain dependencies
 ##' for the packages listed in \code{manifest}.
 ##' @param \dots Arguments passed to \code{\link{ManifestRow}} if \code{manifest} is not specified
+##' @param dl_method Download method. Ignored unless \code{manifest} is a
+##' character scalar containing a URL to a serialized manifest
 ##' @details If a package is found in both the manifest dataf.frame and the dependency
 ##' repositories, the version in the manifest will always take precidence within the
 ##' switchr framework.
