@@ -5,6 +5,8 @@
 \alias{libManifest}
 \alias{libManifest,SwitchrCtx}
 \alias{libManifest,SwitchrCtx-method}
+\alias{libManifest,character}
+\alias{libManifest,character-method}
 \alias{libManifest,missing}
 \alias{libManifest,missing-method}
 \title{libManifest
@@ -19,13 +21,17 @@ libManifest(lib = currentCompEnv(), record_versions = TRUE,
   record_versions = TRUE, known_manifest = makeManifest(dep_repos = repos),
   repos = defaultRepos(), ...)
 
+\S4method{libManifest}{character}(lib = currentCompEnv(),
+  record_versions = TRUE, known_manifest = makeManifest(dep_repos = repos),
+  repos = defaultRepos(), ...)
+
 \S4method{libManifest}{SwitchrCtx}(lib = currentCompEnv(),
   record_versions = TRUE, known_manifest = makeManifest(dep_repos = repos),
   repos = defaultRepos(), ...)
 }
 \arguments{
-\item{lib}{A SwitchrCtx object. Defaults to the currently active switchr
-library.}
+\item{lib}{A SwitchrCtx object, or the name of a switchr library. Defaults
+to the currently active switchr library.}
 
 \item{record_versions}{Should the exact versions of installed packages be
 recorded in the manifest (TRUE)}
@@ -44,5 +50,13 @@ location information for packages not installed via
 libManifest
 Create a Session- or PkgManifest for the contents of a switchr
 library.
+}
+\examples{
+man = libManifest()
+man
+\dontrun{
+man2 = libManifest("myotherlib")
+man2
+}
 }
 

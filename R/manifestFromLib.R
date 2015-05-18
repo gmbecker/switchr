@@ -1,8 +1,8 @@
 ##' libManifest
 ##' Create a Session- or PkgManifest for the contents of a switchr
 ##' library.
-##' @param lib A SwitchrCtx object. Defaults to the currently active switchr
-##' library.
+##' @param lib A SwitchrCtx object, or the name of a switchr library. Defaults
+##' to the currently active switchr library.
 ##' @param record_versions Should the exact versions of installed packages be
 ##' recorded in the manifest (TRUE)
 ##' @param known_manifest An existing manifest, used when imputing
@@ -15,6 +15,13 @@
 ##' @param \dots currently unused
 ##' @docType methods
 ##' @rdname libManifest
+##' @examples
+##' man = libManifest()
+##' man
+##' \dontrun{
+##' man2 = libManifest("myotherlib")
+##' man2
+##' }
 ##' @export
 setGeneric("libManifest", function(lib = currentCompEnv(),
                                    record_versions = TRUE,
@@ -22,6 +29,8 @@ setGeneric("libManifest", function(lib = currentCompEnv(),
                                    repos = defaultRepos(),
                                    ...)
            standardGeneric("libManifest"))
+
+
 
 ##' @rdname libManifest
 ##' @aliases libManifest,missing
@@ -36,6 +45,27 @@ setMethod("libManifest", "missing",
                           known_manifest = known_manifest,
                           repos = repos, ...)
           })
+
+
+
+
+##' @rdname libManifest
+##' @aliases libManifest,character
+setMethod("libManifest", "character",
+          function(lib,
+                   record_versions = TRUE,
+                   known_manifest = makeManifest(dep_repos = repos),
+                   repos = defaultRepos(),
+                   ...) {
+              lib = findCompEnv(name = lib)
+              if(is.null(lib))
+                  stop("No library with that name exists")
+              libManifest(lib = lib, record_versions = record_versions,
+                          known_manifest = known_manifest,
+                          repos = repos, ...)
+          })
+
+
 
 
 
@@ -130,17 +160,39 @@ setMethod("libManifest", "SwitchrCtx",
 
 ##' makeSeedMan
 ##'
-##' @param x The object to generate a seeding manifest from
+##' @param x The object to generate a seeding manifest from, if missing, the
+##' output from sessionInfo() is used.
 ##' @param known_manifest  A manifest containing known locations of package sources.
 ##' makeSeedMan will attempt to determine locations of packages listed in x using both
 ##' known_manifest and official repositories.
 ##' @param ... Currently unused.
+##' @examples
+##' man = makeSeedMan()
 ##' @export
 ##' @docType methods
 ##' @rdname makeSeedMan
 
 
 setGeneric("makeSeedMan", function(x, known_manifest = PkgManifest(), ...) standardGeneric("makeSeedMan"))
+
+
+
+##' @rdname makeSeedMan
+##' @aliases makeSeedMan,missing
+setMethod("makeSeedMan", "missing", function(x, known_manifest = PkgManifest(), ...) {
+              parsed = parseSessionInfoString(capture.output(print(sessionInfo())))
+              makeSeedMan(parsed, known_manifest = known_manifest, ...)
+})
+
+
+
+##' @rdname makeSeedMan
+##' @aliases makeSeedMan,sessionInfo
+setMethod("makeSeedMan", "sessionInfo", function(x, known_manifest = PkgManifest(), ...) {
+              parsed = parseSessionInfoString(capture.output(print(x)))
+              makeSeedMan(parsed, known_manifest = known_manifest, ...)
+})
+
 
 ##' @rdname makeSeedMan
 ##' @aliases makeSeedMan,parsedSessionInfo

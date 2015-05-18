@@ -10,6 +10,10 @@
 ##' specified. An error will be thrown otherwise.
 ##' @return NULL, called for its side-effect of removing/destroying a switchr
 ##' library
+##' @examples
+##' \dontrun{
+##' removeLib("mylibrary")
+##' }
 ##' @export
 removeLib = function(name = NULL, repos = NULL, compEnv = NULL, fromStack = FALSE) {
     if(is.null(name) &&

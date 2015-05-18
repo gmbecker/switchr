@@ -36,6 +36,15 @@ Renvs= new.env()
 ##'
 ##' @return Invisibly returns the SwitchrCtx object representing the new
 ##' computing environment
+##'
+##' @examples
+##' \dontrun{
+##' switchTo("mynewlibrary")
+##' switchBack()
+##' 
+##' fdman = GithubManifest("gmbecker/fastdigest")
+##' switchTo("fastdigestlib", seed = fdman)
+##' }
 ##' @export
 ##' @docType methods
 ##' @rdname switchTo
@@ -76,18 +85,21 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
                 chtype = "repourl"
                 
-            } else if (grepl("(repo|contrib)", chtype)) {
+            } else if (chtype == "manifesttxt") {
+                con = textConnection(seed)
+                on.exit(close(con))
+                seed2 = loadManifest(con)
+                close(con)
+                on.exit(NULL)
+                
+                seed = lazyRepo(seed2, ...)
+            } else if(grepl("(repo|contrib)", chtype)) {
                 seed = repoFromString(seed, chtype)
                 chtype = "repourl"
             }
             
             if(chtype != "repourl") {
-                man = readManifest(seed)
-                if(!is(man, "SessionManifest"))
-                    man = SessionManifest(versions = data.frame(name = manifest_df(man)$name,
-                                              version = NA, stringsAsFactors=FALSE), manifest = man)
-                seed = lazyRepo(man)
-                chtype = "repourl"
+                stop("We should have a repository by this point. This shouldn't happen. Contact the maintainers")
             }
             
             cenv = makeLibraryCtx(name = name, seed = seed, ...)
@@ -104,8 +116,7 @@ setMethod("switchTo", c(name = "character", seed = "character"),
 repoFromString = function(str, type) {
     switch(type,
            repodir = makeFileURL(str),
-           contribdir = makeFileURL(gsub("/(src|bin/windows|bin/macosx|bin/macos).*", "", str),
-               sep=""),
+           contribdir = makeFileURL(gsub("/(src|bin/windows|bin/macosx|bin/macos).*", "", str)),
            repourl = str,
            contriburl = gsub("/(src|bin/windows|bin/macosx|bin/macos).*", "", str))
 }
@@ -170,6 +181,9 @@ setMethod("switchTo", c("character", "missing"),
 getStringType = function(str) {
     if(any(grepl("Platform:", str)))
         return("sessioninfo")
+    if(grepl("^# R manifest", str[1]))
+        return("manifesttxt")
+    
     if(length(str) > 1)
         return(sapply(str, getStringType))
 
@@ -382,6 +396,8 @@ currentCompEnv = function() {
             Renvs$stack[[1]]
         }
 
+
+globalVariables(".lib.loc")
 
 .libPaths2 = function(fulllp) {
     fun = function(x) .lib.loc <<- unique(x)

@@ -22,6 +22,8 @@ switching to this library}
 
 \item{rvers}{Optional R version. If specified, existing libraries much be
 associated with the same R version to be considered a match.}
+
+\item{verbose}{Should informative messages be emitted to the console}
 }
 \description{
 Locate or create a specified switchr library

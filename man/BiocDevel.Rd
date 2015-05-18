@@ -5,7 +5,8 @@
 \alias{BiocDevel}
 \title{BiocDevel}
 \format{\preformatted{Formal class 'RepoSubset' [package "roxygen_devtest"] with 3 slots
-  ..@ repos       : chr [1:4] "http://bioconductor.org/packages/3.0/bioc" "http://bioconductor.org/packages/3.0/data/annotation" "http://bioconductor.org/packages/3.0/data/experiment" "http://bioconductor.org/packages/3.0/extra"
+  ..@ repos       : Named chr [1:5] "http://bioconductor.org/packages/3.0/bioc" "http://bioconductor.org/packages/3.0/data/annotation" "http://bioconductor.org/packages/3.0/data/experiment" "http://bioconductor.org/packages/3.0/extra" ...
+  .. ..- attr(*, "names")= chr [1:5] "BioCsoft" "BioCann" "BioCexp" "BioCextra" ...
   ..@ pkgs        : chr "BiocInstaller"
   ..@ default_name: chr "BioC_3.0"
 }}

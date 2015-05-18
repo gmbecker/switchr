@@ -22,6 +22,12 @@ rVersionManifest
 Create a Pkg manifest which points to tarballs representing the
 cohort of packages associated with a particular release of R
 }
+\examples{
+\dontrun{
+man = rVersionManifest("3.1.1")
+man
+}
+}
 \author{
 Gabriel Becker
 }

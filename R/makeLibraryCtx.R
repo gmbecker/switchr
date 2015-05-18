@@ -14,6 +14,7 @@
 ##' @param contains Currently unused.
 ##' @param rvers Optional R version. If specified, existing libraries much be
 ##' associated with the same R version to be considered a match.
+##' @param verbose Should informative messages be emitted to the console
 ##' @export
 makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
                    contains, rvers = NULL, verbose=FALSE) {

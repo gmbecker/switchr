@@ -23,6 +23,20 @@
 ##' to \code{repos}, which is then used in conjuction with
 ##' \code{link{install.packages}} to do the actual installation.
 ##'
+##' @examples
+##' \dontrun{
+##' ## equivalent to install.packages, except it stores
+##' ## package provenance and knows about bioconductor repos
+##' install_packages("nlme")
+##'
+##' ## install from a manifest
+##' man = GithubManifest("gmbecker/fastdigest")
+##' install_packages("fastdigest", man)
+##'
+##' ## install a full seeding manifest
+##' man2 = makeSeedManifest("myotherlib")
+##' install_packages(man2)
+##' }
 ##' @author Gabriel Becker
 ##' @docType methods
 ##' @rdname install
@@ -100,7 +114,7 @@ setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), funct
               if(missing(versions) || is.null(versions))
                   versions = rep(NA_character_, times = length(pkgs))
               else if (is(versions, "data.frame")) {
-                  ord = match(pkg, versions$name)
+                  ord = match(pkgs, versions$name)
                   ord = ord[!is.na(ord)]
                   versions = versions$name[ord]
               } else if (!is(versions, "character") ||

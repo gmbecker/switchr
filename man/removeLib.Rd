@@ -29,4 +29,9 @@ Remove a switchr library and update the manifest of existing libraries
 Only one of \code{name}, \code{repos} and \code{compEnv} should be
 specified. An error will be thrown otherwise.
 }
+\examples{
+\dontrun{
+removeLib("mylibrary")
+}
+}
 

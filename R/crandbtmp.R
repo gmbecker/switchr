@@ -13,15 +13,21 @@ globalVariables("fromJSON")
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
 ##' @author Gabriel Becker
-
+##' @examples
+##' \dontrun{
+##' man = rVersionManifest("3.1.1")
+##' man
+##' }
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
-    if(!requireNamespace("RJSONIO"))
+    if(!requireNamespace("RJSONIO") || !requireNamespace("RCurl"))
         stop("This function requires there RJSONIO package or another package which provides a 'fromJSON' function")
     
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
-    resp = getURL(url)
+    con = url(url)
+    resp = suppressWarnings(readLines(con))
+    close(con)
     cont = RJSONIO::fromJSON(resp)
     tb_urls = buildTarURLs(cont, curr_avail)
     PkgManifest(name = names(cont), url = tb_urls, type = "tarball",
@@ -61,7 +67,10 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 ##' of the specified package. In general it will *not* perfectly recreate
 ##' the set of package versions originally used.
 ##' @author Gabriel Becker
-
+##' @examples
+##' \dontrun{
+##' man = cranPkgVersManifest("devtools", "1.6")
+##' }
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 
@@ -73,7 +82,9 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     suggests = match.arg(suggests)
     
     urlpkg = paste0(crandburl, pkg, "/all")
-    resp = getURL(urlpkg)
+    con = url(urlpkg)
+    resp = suppressWarnings(readLines(con))
+    close(con)
     cont = as.list(RJSONIO::fromJSON(resp))
     cont2 = cont[["versions"]][[vers]]
     tl = do.call(c, lapply(cont$timeline, as.Date))
@@ -97,7 +108,10 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
             message(paste("Resolving dependency", i, "of", length(deps), "-",
                         tmpkg ))
         urlpkg = paste0(crandburl, tmpkg, "/all")
-        depcont = as.list(RJSONIO::fromJSON(getURL(urlpkg)))
+        con = url(urlpkg)
+        resp = suppressWarnings(readLines(con))
+        close(con)
+        depcont = as.list(RJSONIO::fromJSON(resp))
         if(!identical(names(depcont), c("error", "reason"))) {
             tl = do.call(c, lapply(depcont$timeline, as.Date))
         ## we put the 1 in here for packages whose first release

@@ -3,17 +3,26 @@
 \docType{methods}
 \name{makeSeedMan}
 \alias{makeSeedMan}
+\alias{makeSeedMan,missing}
+\alias{makeSeedMan,missing-method}
 \alias{makeSeedMan,parsedSessionInfo}
 \alias{makeSeedMan,parsedSessionInfo-method}
+\alias{makeSeedMan,sessionInfo}
+\alias{makeSeedMan,sessionInfo-method}
 \title{makeSeedMan}
 \usage{
 makeSeedMan(x, known_manifest = PkgManifest(), ...)
+
+\S4method{makeSeedMan}{missing}(x, known_manifest = PkgManifest(), ...)
+
+\S4method{makeSeedMan}{sessionInfo}(x, known_manifest = PkgManifest(), ...)
 
 \S4method{makeSeedMan}{parsedSessionInfo}(x, known_manifest = PkgManifest(),
   ...)
 }
 \arguments{
-\item{x}{The object to generate a seeding manifest from}
+\item{x}{The object to generate a seeding manifest from, if missing, the
+output from sessionInfo() is used.}
 
 \item{known_manifest}{A manifest containing known locations of package sources.
 makeSeedMan will attempt to determine locations of packages listed in x using both
@@ -23,5 +32,8 @@ known_manifest and official repositories.}
 }
 \description{
 makeSeedMan
+}
+\examples{
+man = makeSeedMan()
 }
 

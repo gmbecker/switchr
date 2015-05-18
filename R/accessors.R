@@ -35,6 +35,36 @@ setMethod("archive_timing<-", "SwitchrParam", function(x, value) {
                             })
 
 
+##' Get or set the download method for retreiving files.
+##'
+##' @param x A SwitchrParam object
+##' @rdname dl_method
+##' @docType methods
+##' @export
+
+setGeneric("dl_method", function(x) standardGeneric("dl_method"))
+
+##' @rdname dl_method
+##' @aliases dl_method,SwitchrParam
+setMethod("dl_method", "SwitchrParam", function(x) x@dl_method)
+
+##' @rdname dl_method
+##' @aliases dl_method<-
+##' @export
+setGeneric("dl_method<-", function(x, value) standardGeneric("dl_method<-"))
+
+##' @rdname dl_method
+##' @param value The new number of seconds to wait
+##' @aliases dl_method<-,SwitchrParam
+setMethod("dl_method<-", "SwitchrParam", function(x, value) {
+                                x@dl_method = value
+                                x
+                            })
+
+
+
+
+
 
 
 ##' archive_retries

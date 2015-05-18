@@ -84,4 +84,13 @@ This means you will have to reinstall packages after switching, which is
 important and intended (e.g. when switching to using Bioc devel from Bioc
 release).
 }
+\examples{
+\dontrun{
+switchTo("mynewlibrary")
+switchBack()
+
+fdman = GithubManifest("gmbecker/fastdigest")
+switchTo("fastdigestlib", seed = fdman)
+}
+}
 

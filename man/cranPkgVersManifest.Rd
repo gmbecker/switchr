@@ -54,6 +54,11 @@ used in conjunction within an analysis which used a the \code{vers} version
 of the specified package. In general it will *not* perfectly recreate
 the set of package versions originally used.
 }
+\examples{
+\dontrun{
+man = cranPkgVersManifest("devtools", "1.6")
+}
+}
 \author{
 Gabriel Becker
 }

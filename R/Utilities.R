@@ -15,7 +15,9 @@ fileFromFileURL = function(fileurl) {
 }
 
 remOtherPkgVersions = function(pkgname, version, repodir, storagedir, verbose=FALSE) {
-  tballpat = paste0(pkgname, "_")
+    if(is.na(version))
+        return()
+    tballpat = paste0(pkgname, "_")
   
   allinrepo = list.files(repodir, pattern = tballpat, full.names=TRUE)
   wrongvers = !grepl(version, allinrepo, fixed=TRUE)

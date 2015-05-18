@@ -6,7 +6,7 @@
 ##' @return A PkgManifest or SessionManifest object
 ##' @export
 loadManifest = function(fil) {
-    if(url.exists(fil)) {
+    if(is(fil, "character") && url.exists(fil)) {
 
             
         newfil = tempfile(pattern = "manifest")

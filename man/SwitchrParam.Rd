@@ -8,13 +8,20 @@ A contstructor for a SwitchrParam object representing a number of common
 parameters understood by the switchr framework}
 \usage{
 SwitchrParam(logfun = function(...) NULL, shell_init = character(),
-  archive_timing = 2, archive_retries = 2)
+  archive_timing = 2, archive_retries = 2, dl_method = "auto")
 }
 \arguments{
 \item{logfun}{The function to be called to write to logs}
 
 \item{shell_init}{A character containing the location of a shell script to
 be sourced before any system commands.}
+
+\item{archive_timing}{The timeout after downloading a package from the CRAN Archive.}
+
+\item{archive_retries}{Number of times to retry retrieving a package from the CRAN Archive.}
+
+\item{dl_method}{The download method to use when retrieve package
+source files. See \code{\link[pkg=utils]{download.file}}}
 }
 \value{
 A SwitchrParam object.

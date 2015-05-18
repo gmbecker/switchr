@@ -39,7 +39,7 @@ install_packages(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 Can be a character vector of traditional package repositories (as with install.packages)
 or a PkgManifest or SessionManifest (or a url thereof)}
 
-\item{versions}{An optional data.frame specifying exact versions of the packages to install}
+\item{versions}{An optional named character vector or data.frame specifying exact versions of the packages to install}
 
 \item{verbose}{Should extra information be printed during the console during installation}
 
@@ -62,6 +62,21 @@ to \code{\link{install.packages}}. Otherwise, a Just-in-Time package
 repository is constructed using the information in the manifest(s) passed
 to \code{repos}, which is then used in conjuction with
 \code{link{install.packages}} to do the actual installation.
+}
+\examples{
+\dontrun{
+## equivalent to install.packages, except it stores
+## package provenance and knows about bioconductor repos
+install_packages("nlme")
+
+## install from a manifest
+man = GithubManifest("gmbecker/fastdigest")
+install_packages("fastdigest", man)
+
+## install a full seeding manifest
+man2 = makeSeedManifest("myotherlib")
+install_packages(man2)
+}
 }
 \author{
 Gabriel Becker

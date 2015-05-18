@@ -1,10 +1,12 @@
 ##' @import methods
 NULL
 
+setOldClass("sessionInfo")
 
 ##' @export
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character",
-                                        archive_timing="numeric", archive_retries="numeric"))
+                                        archive_timing="numeric", archive_retries="numeric",
+                                        dl_method = "character"))
 
 
 
@@ -129,12 +131,17 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' switchr framework.
 ##' @export
 ##' @aliases PkgManifest-class
-##' @import RCurl
-PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), ... ){
+PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), ..., dl_method){
     if(is.character(manifest)) {
         if(url.exists(manifest)) {
             fil = tempfile()
-            download.file(manifest, method = "curl", fil)
+            if(missing(dl_method)) {
+                if(requireNamespace("RCurl"))
+                    dl_meth = "curl"
+                else
+                    dl_meth = "auto"
+            }
+            download.file(manifest, method = dl_meth, fil)
             manifest  = fil
         }
 

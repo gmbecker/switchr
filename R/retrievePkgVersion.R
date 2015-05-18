@@ -124,7 +124,7 @@ setMethod("findPkgVersionInRepo", "character",
               url = paste(repo, paste0(name,"_", version,".tar.gz"), sep="/")
               if(url.exists(url)) {
                   dest = file.path(dir, basename(url))
-                  res = download.file(url, method="curl", destfile = dest)
+                  res = download.file(url, method=dl_method(param), destfile = dest)
                   if(res==0L)
                       return(dest)
               }

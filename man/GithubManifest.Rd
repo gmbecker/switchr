@@ -26,4 +26,8 @@ package locations in github repositories introduced by Wickham's
 devtools. Unlike devtools, username is not optional, and  only branch
 names are currently supported in the \code{@ref}
 }
+\examples{
+ghman = GithubManifest("gmbecker/switchr", "hadley/devtools")
+ghman
+}
 
