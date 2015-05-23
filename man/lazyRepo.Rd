@@ -14,25 +14,25 @@
 lazyRepo(pkgs, pkg_manifest, versions = rep(NA, times = length(pkgs)),
   dir = tempdir(), rep_path = file.path(dir, "repo"),
   get_suggests = FALSE, verbose = FALSE, scm_auths = list(bioconductor =
-  c("readonly", "readonly")), param = SwitchrParam())
+  c("readonly", "readonly")), param = SwitchrParam(), force_refresh = FALSE)
 
 \S4method{lazyRepo}{SessionManifest,ANY}(pkgs, pkg_manifest,
   versions = rep(NA, times = length(pkgs)), dir = tempdir(),
   rep_path = file.path(dir, "repo"), get_suggests = FALSE,
   verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam())
+  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
 
 \S4method{lazyRepo}{character,SessionManifest}(pkgs, pkg_manifest,
   versions = rep(NA, times = length(pkgs)), dir = tempdir(),
   rep_path = file.path(dir, "repo"), get_suggests = FALSE,
   verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam())
+  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
 
 \S4method{lazyRepo}{character,PkgManifest}(pkgs, pkg_manifest,
   versions = rep(NA, times = length(pkgs)), dir = tempdir(),
   rep_path = file.path(dir, "repo"), get_suggests = FALSE,
   verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam())
+  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
 }
 \arguments{
 \item{pkgs}{The packages to install}
@@ -58,6 +58,9 @@ out package sources from one or more sources listed in \code{manifest}
 Defaults to readonly access to Bioconductor SVN}
 
 \item{param}{A SwitchrParam object}
+
+\item{force_refresh}{If a package already appears in the lazy repo area,
+it be updated (e.g. from SCM) and built again? Defaults to FALSE}
 }
 \value{
 A path to the populated lazy repository, suitable for 'coercing' to

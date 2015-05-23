@@ -200,8 +200,7 @@ getStringType = function(str) {
         else { #if str points to a directory
             if(grepl("contrib/{0,1}$", str))
                 ret = "contribdir"
-            
-            if(file.exists(file.path(str,
+            else if(file.exists(file.path(str,
                                      "src/contrib/PACKAGES")))
                 ret = "repodir"
             else
@@ -389,8 +388,6 @@ currentCompEnv = function() {
             if(is.null(Renvs$stack)) {
                 lp = .libPaths()
                 lp = lp[!(lp %in% .Library | lp %in% .Library.site)]
-                if(!length(lp))
-                    lp = .libPaths()
                 Renvs$stack = list(original = SwitchrCtx("original",
                                        libpaths = lp , seed = NULL,
                                        exclude.site=FALSE))

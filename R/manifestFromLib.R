@@ -76,18 +76,44 @@ setMethod("libManifest", "character",
 
 setMethod("libManifest", "SwitchrCtx",
           function(lib, record_versions, known_manifest, ...) {
-              instpkgs = installed.packages(library_paths(lib))[,"Package"]
-              instpkginfo = do.call(rbind, lapply(instpkgs,
+
+              libp = full_libpaths(lib)
+              dropfirst = length(list.files(list.dirs(libp[1])[1], pattern = "dummy_for_check", recursive=TRUE)) > 0
+              if(dropfirst)
+                  libp = libp[-1]
+
+              instpkgs = installed.packages(libp,
+                                            noCache=TRUE)[,"Package"]
+              instpkgs = instpkgs[!duplicated(instpkgs)]
+              
+              res = lapply(instpkgs,
                   function(x, fields) {
-                      dcf =  read.dcf(system.file("DESCRIPTION", package = x),
-                          fields = fields)
-                      dcf[,fields]
+                      dcf =  tryCatch(read.dcf(system.file("DESCRIPTION",
+                          package = x,
+                          lib.loc = libp),
+                          fields = fields), error = function(e) NULL)
+                      if(!is.null(dcf))
+                          dcf = dcf[,fields]
+                      else {
+                          dcf = data.frame(Package = character(),
+                              Version = character(),
+                              SourceType = character(),
+                              SourceLocation = character(),
+                              SourceBranch = character(),
+                              SourceSubdir = character(),
+                              stringsAsFactors = FALSE)
+
+                          warning("Package ", x, " seems to have gone missing since my installed.packages call 2 seconds ago. libpaths are ", paste(libp, collapse=" , "))
+                      }
+                      dcf
                   },
                   fields = c("Package", "Version", "SourceType",
                       "SourceLocation",
                       "SourceBranch",
-                      "SourceSubdir")))
-              mani = PkgManifest(name = instpkginfo[,"Package"],
+                      "SourceSubdir"))
+          res = res[!sapply(res, is.null)]
+          instpkginfo = do.call(rbind, res)
+          mani = PkgManifest(name = instpkginfo[,"Package"],
                   type = instpkginfo[,"SourceType"],
                   url = instpkginfo[,"SourceLocation"],
                   branch = instpkginfo[,"SourceBranch"],

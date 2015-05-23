@@ -43,6 +43,8 @@ setGeneric("makePkgDir",
 ##' out package sources from one or more sources listed in \code{manifest}
 ##' Defaults to readonly access to Bioconductor SVN
 ##' @param param A SwitchrParam object
+##' @param force_refresh If a package already appears in the lazy repo area,
+##' it be updated (e.g. from SCM) and built again? Defaults to FALSE
 ##' @return A path to the populated lazy repository, suitable for 'coercing' to
 ##' a url and installing from.
 ##' @export

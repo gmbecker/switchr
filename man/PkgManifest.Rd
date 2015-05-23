@@ -14,6 +14,9 @@ PkgManifest(manifest = ManifestRow(...), dep_repos = defaultRepos(), ...,
 \item{dep_repos}{A list of traditional pkg repositories which can contain dependencies
 for the packages listed in \code{manifest}.}
 
+\item{dl_method}{Download method. Ignored unless \code{manifest} is a
+character scalar containing a URL to a serialized manifest}
+
 \item{\dots}{Arguments passed to \code{\link{ManifestRow}} if \code{manifest} is not specified}
 }
 \description{

@@ -470,6 +470,25 @@ setMethod("library_paths", "SwitchrCtx", function(seed) {
 })
 
 
+##' full_libpaths
+##'
+##' Accessor for the full library path associate with a SwitchrCtx, including
+##' the R library and (if not excluded) the site library
+##'
+##' @param seed a SwitchrCtx
+##' @export
+##' @docType methods
+##' @rdname full_libpaths
+
+setGeneric("full_libpaths", function(seed) standardGeneric("full_libpaths"))
+
+##' @rdname full_libpaths
+##' @aliases full_libpaths,SwitchrCtx
+setMethod("full_libpaths", "SwitchrCtx", function(seed) {
+              unique(c(library_paths(seed), if(seed@exclude.site) character() else .Library.site, .Library))
+          })
+
+
 
 ##'List the packages installed in a switchr context (library)
 ##' @docType methods
@@ -486,10 +505,7 @@ setMethod("packages", "SwitchrCtx", function(seed) seed@packages)
 setGeneric("update_pkgs_list", function(seed) standardGeneric("update_pkgs_list"))
 setMethod("update_pkgs_list", "SwitchrCtx", function(seed){
 
-    if(seed@exclude.site)
-        pathsToLook = unique(c(library_paths(seed), .Library))
-    else
-        pathsToLook = unique(c(library_paths(seed), .Library.site, .Library))
+              pathsToLook = full_libpaths(seed)
 
     
     pkgs = installed.packages(pathsToLook,

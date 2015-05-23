@@ -8,7 +8,7 @@ A contstructor for a SwitchrParam object representing a number of common
 parameters understood by the switchr framework}
 \usage{
 SwitchrParam(logfun = function(...) NULL, shell_init = character(),
-  archive_timing = 2, archive_retries = 2, dl_method = "auto")
+  archive_timing = 2, archive_retries = 2, dl_method)
 }
 \arguments{
 \item{logfun}{The function to be called to write to logs}
@@ -21,7 +21,8 @@ be sourced before any system commands.}
 \item{archive_retries}{Number of times to retry retrieving a package from the CRAN Archive.}
 
 \item{dl_method}{The download method to use when retrieve package
-source files. See \code{\link[pkg=utils]{download.file}}}
+source files. See \code{\link{download.file}} If none is specified,
+the method defaults to "curl" if the RCurl package is installed and "auto" otherwise.}
 }
 \value{
 A SwitchrParam object.
