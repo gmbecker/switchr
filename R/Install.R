@@ -162,8 +162,10 @@ setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), funct
         possupdates = newpkgs[!newinds]
         
         newinfo = lapply(possupdates, function(x) file.info(system.file("DESCRIPTION", package = x)))
+        oldmatchinds = match(possupdates, oldpkgs) ## should never be NA because of how possupdates is defined
         
-        updated = mapply(function(old, new) !identical(old, new), old = oldinfo, new = newinfo)
+        updated = mapply(function(old, new) !identical(old, new), old = oldinfo[oldmatchinds],
+            new = newinfo)
         installedpkgs = c(newpkgs[newinds], newpkgs[updated])
     } else
         installedpkgs = newpkgs
