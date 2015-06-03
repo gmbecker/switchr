@@ -85,7 +85,22 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
                 chtype = "repourl"
                 
-            } else if (chtype == "manifesttxt") {
+            } else if (chtype == "manifesturl") {
+                if(requireNamespace(RCurl)) {
+                    seed = strSplit(getURL(seed), "\n")[[1]]
+
+                } else {
+                    seed2 = tryCatch(readLines(seed), error = function(e) e)
+                    if(is(seed2, "error"))
+                        stop("Unable to access gist due to https URL. Please install RCurl or use an R version that has libcurl built in.")
+                    seed = seed2
+                }
+                    
+                chtype = "manifesttxt"
+                
+                
+            }
+            if (chtype == "manifesttxt") {
                 con = textConnection(seed)
                 on.exit(close(con))
                 seed2 = loadManifest(con)
@@ -93,7 +108,9 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 on.exit(NULL)
                 
                 seed = lazyRepo(seed2, ...)
-            } else if(grepl("(repo|contrib)", chtype)) {
+            }
+            
+            if(grepl("(repo|contrib)", chtype)) {
                 seed = repoFromString(seed, chtype)
                 chtype = "repourl"
             }
@@ -107,7 +124,6 @@ setMethod("switchTo", c(name = "character", seed = "character"),
             message(sprintf("Library %s already exists. Ignoring seed and switching to existing library"), name)
         }
     if(!is.null(cenv))
-        ##        switchTo(name = name, seed = cenv)
         switchTo(name = cenv)
     else
         stop("unable to switch to computing environment")
@@ -178,6 +194,9 @@ setMethod("switchTo", c("character", "missing"),
 })
 
 
+gistregex = "gist\\.githubusercontent\\.com"
+
+
 getStringType = function(str) {
     if(any(grepl("Platform:", str)))
         return("sessioninfo")
@@ -216,7 +235,15 @@ getStringType = function(str) {
         stop("file urls to non-existent files are not allowed as seeds/repos")
     }
                                      
-   
+    ## gist urls have a weird thing where if you put *any* valid url
+    ## after a gist raw link that works you get the same contents
+    ## rather than 404, so the check for PACKAGES.gz isn't safe
+    ## until after we've ruled out a gist
+    if(grepl(gistregex, str)){
+        if(!grepl("/raw/", str))
+            stop("When seeding with a manifest within a gist, use the URL to the raw file contents, not the overall gist URL.")
+        return("manifesturl")
+    }
     if(url.exists(paste0(str, "/PACKAGES.gz")))
         return("contriburl")
     else if (url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))
