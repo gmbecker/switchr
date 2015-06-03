@@ -1,21 +1,25 @@
 Package: switchr
 Type: Package
-Title: Installing, Managing, and Switching Between Distinct Sets of Installed Packages
-Version: 0.9.2
+Title: Installing, Managing, and Switching Between Distinct Sets of
+        Installed Packages
+Version: 0.9.3
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Copyright: Genentech Inc
-Description: 'switchr' provides an abstraction for managing, installing,
+Description: Provides an abstraction for managing, installing,
     and switching between sets of installed R packages. This allows users to
     maintain multiple package libraries simultaneously, e.g. to maintain
     strict, package-version-specific reproducibility of many analyses, or
-    work within a devel/release paradigm.
-Imports:
-    tools
-Depends:
-    methods
-Suggests:
-    BiocInstaller,
-    RJSONIO,
-    RCurl
+    work within a devel/release paradigm. Introduces a generalized package
+    installation process which supports multiple repository and 
+    non-repository sources and tracks package provenance.
+Imports: tools
+Depends: methods
+Suggests: BiocInstaller, RJSONIO, RCurl
 License: Artistic-2.0
+URL: https://github.com/gmbecker/switchr
+BugReports: https://github.com/gmbecker/switchr/issues
+NeedsCompilation: no
+Packaged: 2015-06-02 16:18:00 UTC; beckerg4
+Repository: CRAN
+Date/Publication: 2015-06-03 12:22:20

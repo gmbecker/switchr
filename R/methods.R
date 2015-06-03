@@ -217,17 +217,13 @@ getStringType = function(str) {
     }
                                      
    
-    if(url.exists(str)) {
-        if(grepl("contrib/{0,1}$", str))
-            return("contriburl")
-                   
-        if(url.exists(paste(str, "src/contrib/PACKAGES", sep ="")) ||
-           url.exists(paste(str, "bin/windows/contrib/PACKAGES", sep ="")) ||
-           url.exists(paste(str, "bin/macosx/contrib/PACKAGES", sep ="")))
-            return("repourl")
-        else
-            return("manifesturl")
-    }
+    if(url.exists(paste0(str, "/PACKAGES.gz")))
+        return("contriburl")
+    else if (url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))
+        return("repourl")
+    else if (url.exists(str))
+        return("manifesturl")
+    
     stop("Unidentifiable string:", str)
 }
 
@@ -242,12 +238,9 @@ setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed,
         }
 
         flushSession()
-        
-        if(!name@exclude.site)
-            .libPaths(library_paths(name))
-        else
-            .libPaths2(c(library_paths(name), .Library))
 
+        .libPaths2(library_paths(name), name@exclude.site)
+        
          if(!reverting) {
 #            attachedPkgs(Renvs$stack[[length(Renvs$stack)]]) = atched
              Renvs$stack = c(name, Renvs$stack)
@@ -295,7 +288,7 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
               cenv = makeLibraryCtx(name = name, seed = NULL,
                   ...)
               oldlp = .libPaths()
-              .libPaths2(library_paths(cenv))
+              .libPaths2(library_paths(cenv), cenv@exclude.site)
               on.exit(.libPaths2(oldlp))
 
               install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
@@ -398,11 +391,12 @@ currentCompEnv = function() {
 
 globalVariables(".lib.loc")
 
-.libPaths2 = function(fulllp) {
-    fun = function(x) .lib.loc <<- unique(x)
-    environment(fun) = environment(.libPaths)
+.libPaths2 = function(fulllp, exclude.site=TRUE) {
+    fun = .libPaths
+    lst = list()
+    lst$.Library.site = if(exclude.site) character() else .Library.site
+    
+    environment(fun) = list2env(lst,
+                   parent = environment(.libPaths))
     fun(fulllp)
 }
-
-
-    

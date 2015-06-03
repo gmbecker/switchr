@@ -29,10 +29,7 @@ makeLibraryCtx = function(name, seed=NULL, pkgs, exclude.site = TRUE,
     if(!file.exists(libloc))
         dir.create(libloc, recursive=TRUE)
     oldlp = .libPaths()
-    if(exclude.site)
-        .libPaths2(unique(c(libloc,.Library)))
-    else 
-        .libPaths2(unique(c(libloc,.Library.site, .Library)))
+    .libPaths2(libloc, exclude.site)
     on.exit(.libPaths(oldlp))    
 
     if(missing(pkgs) && !missing(seed)) {
