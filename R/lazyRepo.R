@@ -30,6 +30,35 @@ setMethod("lazyRepo", c(pkgs = "SessionManifest", pkg_manifest = "ANY"),
           })
 
 ##' @rdname lazyRepo
+##' @aliases lazyRepo,PkgManifest,ANY
+setMethod("lazyRepo", c(pkgs = "PkgManifest", pkg_manifest = "ANY"),
+          function(pkgs,
+                   pkg_manifest,
+                   versions,
+                   dir = tempdir(),
+                   rep_path = file.path(dir, "repo"),
+                   get_suggests = FALSE,
+                   verbose = FALSE,
+                   scm_auths = list(bioconductor = c("readonly", "readonly")),
+                   param = SwitchrParam(),
+                   force_refresh = FALSE){
+
+              
+              lazyRepo(pkgs = manifest_df(pkgs)$name,
+                       pkg_manifest = pkgs,
+                       versions = rep(NA, length(nrow(manifest_df(pkgs)))),
+                       dir = dir,
+                       rep_path = rep_path,
+                       get_suggests = get_suggests,
+                       verbose = verbose,
+                       scm_auths = scm_auths,
+                       param = param,
+                       force_refresh = force_refresh)
+          })
+
+
+
+##' @rdname lazyRepo
 ##' @aliases lazyRepo,character,SessionManifest
 
 setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "SessionManifest"),
@@ -210,6 +239,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               }
               force(avail)
               avail = avail[!avail[,"Package"] %in% mandf$name,]
+              if(is.null(dim(avail))) ##if there's only 1 pkg it gives a character :(
+                  avail = t(avail)
               pkgsNeeded = setdiff(pkgsNeeded, avail[,"Package"])
               cnt =1 
               while(length(pkgsNeeded) && cnt < 1000){

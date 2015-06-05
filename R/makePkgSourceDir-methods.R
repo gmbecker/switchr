@@ -126,12 +126,13 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
                                         sdir, " on branch ", branch(source)))
           }
           rtdir = file.path(path, name)
-          ret = !is.null(findPkgDir(rtdir, branch(source), source@subdir, param = param))
+          ret = file.exists(rtdir)
                                         #success log
           if(ret)
           {
               logfun(param)(name, paste("Temporary source directory successfully created:", ret))
-          }
+          } 
+              
           ret
       })
 ##stub for everyone else

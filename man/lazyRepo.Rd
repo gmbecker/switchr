@@ -3,6 +3,8 @@
 \docType{methods}
 \name{lazyRepo}
 \alias{lazyRepo}
+\alias{lazyRepo,PkgManifest,ANY}
+\alias{lazyRepo,PkgManifest,ANY-method}
 \alias{lazyRepo,SessionManifest,ANY}
 \alias{lazyRepo,SessionManifest,ANY-method}
 \alias{lazyRepo,character,PkgManifest}
@@ -21,6 +23,11 @@ lazyRepo(pkgs, pkg_manifest, versions = rep(NA, times = length(pkgs)),
   rep_path = file.path(dir, "repo"), get_suggests = FALSE,
   verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
   "readonly")), param = SwitchrParam(), force_refresh = FALSE)
+
+\S4method{lazyRepo}{PkgManifest,ANY}(pkgs, pkg_manifest, versions = rep(NA,
+  times = length(pkgs)), dir = tempdir(), rep_path = file.path(dir, "repo"),
+  get_suggests = FALSE, verbose = FALSE, scm_auths = list(bioconductor =
+  c("readonly", "readonly")), param = SwitchrParam(), force_refresh = FALSE)
 
 \S4method{lazyRepo}{character,SessionManifest}(pkgs, pkg_manifest,
   versions = rep(NA, times = length(pkgs)), dir = tempdir(),

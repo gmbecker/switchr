@@ -60,7 +60,8 @@ switchrManifest = function() {
     manfile = file.path(dir, "manifest.dat")
     
     if(!file.exists(manfile))
-        data.frame(url = character(), name = character(), libpaths = character(), stringsAsFactors = FALSE, rversion = character())
+        data.frame(url = character(), name = character(), libpaths = character(),
+                   stringsAsFactors = FALSE, rversion = character())
     else
         read.table(file.path(dir, "manifest.dat"), header=TRUE, stringsAsFactors=FALSE)
 }

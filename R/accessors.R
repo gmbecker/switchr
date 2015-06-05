@@ -450,10 +450,6 @@ setMethod("addPkg", "SessionManifest",
               x
           })
 
-
-
-
-
 ##' library_paths
 ##'
 ##' Accessor for which directories an SwitchrCtx is associated with.

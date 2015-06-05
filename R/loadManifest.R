@@ -31,7 +31,7 @@ loadManifest = function(fil) {
     body = txt[-headerInds]
     depRepos = gsub(".*repo: (.*)", "\\1", header[grep("repo:", header)])
     df = read.table(file = textConnection(body, "r"),
-        header = TRUE, sep = ",")
+        header = TRUE, sep = ",", stringsAsFactors=FALSE)
     if("version" %in% names(df)) {
         sess = TRUE
         vdf = df[!is.na(df$version), c("name", "version")]

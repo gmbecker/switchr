@@ -104,7 +104,7 @@ findPkgDir = function(rootdir, branch, subdir, repo, param)
     } else if(is.null(branch) || branch %in% c("master", "trunk")) {
         ret = rootdir
     } else {
-        warning(paste0("The svn repository at ", location(source),
+        warning(paste0("The svn repository at ", rootdir,
                        " does not appear to have branches. ",
                        "Unable to process this source."))
         logfun(param)(name, paste("The SVN repository does not appear to have",

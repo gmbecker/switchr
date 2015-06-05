@@ -86,8 +86,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 chtype = "repourl"
                 
             } else if (chtype == "manifesturl") {
-                if(requireNamespace(RCurl)) {
-                    seed = strSplit(getURL(seed), "\n")[[1]]
+                if(requireNamespace("RCurl")) {
+                    seed = strsplit(RCurl::getURL(seed), "\n")[[1]]
 
                 } else {
                     seed2 = tryCatch(readLines(seed), error = function(e) e)
@@ -106,8 +106,13 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 seed2 = loadManifest(con)
                 close(con)
                 on.exit(NULL)
+
                 
-                seed = lazyRepo(seed2, ...)
+                sr = lazyRepo(seed2, ...)
+                seed = if(grepl("file://", sr)) sr else makeFileURL(sr)
+                seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
+                
+                chtype = "repourl"
             }
             
             if(grepl("(repo|contrib)", chtype)) {

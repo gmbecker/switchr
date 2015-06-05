@@ -1,0 +1,8 @@
+Changes in version 0.9.4 (2015-06-05)
+Bugfixes
+	* Fix test for whether a url points to a repository to handle gist urls correctly
+	* Fix handling of package checkout directories for Git branches
+	* Fix typo strSplit -> strsplit
+	* Fix gist-based manifest (url) support
+Minor new features
+        * Add a lazyRepo,PkgManifest,ANY convenience method for building a lazy repo of an entire manifest
