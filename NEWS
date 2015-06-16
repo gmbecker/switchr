@@ -6,3 +6,8 @@ Bugfixes
 	* Fix gist-based manifest (url) support
 Minor new features
         * Add a lazyRepo,PkgManifest,ANY convenience method for building a lazy repo of an entire manifest
+Changes in version 0.9.5 (2015-06-16)
+Bugfixes
+  * Fix transformation to and from file URLs in Windows (added regression test)
+Minor new features
+  * makeFileURL and fileFromFileURL are now exported. 

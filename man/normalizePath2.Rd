@@ -4,13 +4,16 @@
 \alias{normalizePath2}
 \title{normalizePath2}
 \usage{
-normalizePath2(path, follow.symlinks = FALSE)
+normalizePath2(path, follow.symlinks = FALSE, winslash = "\\\\")
 }
 \arguments{
 \item{path}{The path to normalize}
 
 \item{follow.symlinks}{Should symlinks (other than . and ..)
 be resolved to their physical locations? (FALSE)}
+
+\item{winslash}{The value of winslash to be passed down to normalizePath
+on windows systems}
 }
 \value{
 The normalized path.

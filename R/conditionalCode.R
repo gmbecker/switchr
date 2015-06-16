@@ -4,8 +4,12 @@ getBiocRepos = function() {
     if(requireNamespace("BiocInstaller", quietly=TRUE)) {
         bioc = BiocInstaller::biocinstallRepos()
     } else {
-
-        bioc = defaultBiocRepos
+        if(is.null(defaultBiocRepos)) {
+            bioc = tryCatch(getBiocReposFromRVers(), function(e) character())
+            if(length(bioc) == 0)
+                warning("Unable to determine Bioc repositories. They will not be included in the set of default dependency repos")
+        } else
+            bioc = defaultBiocRepos
     }
     bioc
 }

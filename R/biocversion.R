@@ -36,4 +36,7 @@ cleanem = function(lines) {
     lines
 }
     
-defaultBiocRepos = getBiocReposFromRVers()
+defaultBiocRepos = tryCatch(getBiocReposFromRVers(), error = function(e) {
+                                warning("Unable to access http://bioconductor.org/config.yaml. This installation won't have a baked-in default set of Bioc Repositories. You may want to try reinstalling. switchr will attempt to determine default Bioc repos when the package is loaded.")
+                                NULL
+                            })

@@ -11,21 +11,49 @@ url.exists = function(x, ...) {
             TRUE
     }
 }
-
+##' make file url
+##'
+##' @param path The path to wrap in a file:// URL
+##' @return A valid file URL
+##' @export
 makeFileURL = function(path) {
-  if(Sys.info()["sysname"] == "Windows")
-    paste0("file:///", normalizePath2(path))
-  else
+  if(Sys.info()["sysname"] == "Windows") {
+      .winFileURL(path)
+  } else
     paste0("file://", normalizePath2(path))
 }
 
-fileFromFileURL = function(fileurl) {
-    if(Sys.info()["sysname"] == "Windows")
-        pat = "file:///"
-    else
-        pat = "file://"
-    gsub(pat,  "" , fileurl, fixed=TRUE)
+isWindows = function( ) tolower(Sys.info()["sysname"]) == "windows"
 
+##' Get path from file URL
+##'
+##' @param fileurl A file url (beginning in file://)
+##' @return The system directory path that \code{fileurl} points to
+##' @export
+fileFromFileURL = function(fileurl) {
+    if(!isWindows())
+        ret = gsub("file://",  "" , fileurl, fixed=TRUE)
+    else
+        ret = .winFileFromURL(fileurl)
+
+}
+
+.winFileFromURL = function(fileurl) {
+    if(grepl("file:///", fileurl))
+        ret = gsub("^file:///", "", fileurl)
+    else if (grepl("^file://[[:alpha:]]", fileurl))
+        ret = gsub("^file:",  "", fileurl)
+    ret = gsub("%20", " ", ret)
+    normalizePath2(ret)
+}
+
+.winFileURL = function(path) {
+    path = normalizePath2(path, winslash="/")
+    path = gsub(" ", "%20", path)
+    if(grepl("^//", path))
+        paste0("file:", path)
+    else
+        paste0("file:///", path)
 }
 
 remOtherPkgVersions = function(pkgname, version, repodir, storagedir, verbose=FALSE) {
@@ -258,13 +286,15 @@ getPkgDir = function(basepath,name,  subdir, scm_type, branch)
 ##' @param path The path to normalize
 ##' @param follow.symlinks Should symlinks (other than . and ..)
 ##' be resolved to their physical locations? (FALSE)
+##' @param winslash The value of winslash to be passed down to normalizePath
+##' on windows systems
 ##' @return The normalized path.
 ##' @export
-normalizePath2 = function(path, follow.symlinks=FALSE)
+normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\")
     {
         
         if(follow.symlinks || Sys.info()["sysname"]=="Windows")
-            return(normalizePath(path))
+            return(normalizePath(path, winslash = winslash))
         else {
             if(substr(path, 1, 1) == "~")
                 path = path.expand(path)

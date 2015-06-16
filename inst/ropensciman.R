@@ -1,5 +1,6 @@
 library(XML)
-txt = readLines(url("https://ropensci.org/packages/"))
+library(RCurl)
+txt = getURL("https://ropensci.org/packages/")
 pg = htmlParse(txt)
 linkaroos = getNodeSet(pg, "//a[./span/text()='github']/@href")
 library(switchr)
