@@ -447,11 +447,16 @@ setMethod("addPkg", "PkgManifest",
 setMethod("addPkg", "SessionManifest",
           function(x, ..., rows, versions) {
               manifest(x) = addPkg(manifest(x), ..., rows = rows, versions = NULL)
-              if(any(versions$name %in% versions_df(x)$name))
-                  stop("Version already set for one or more packages")
-              oldv = versions_df(x)
-              versions = version[,names(oldv)]
-              versions_df(x) = rbind(oldv, versions)
+              if(!missing(versions) && length(versions) > 0) {
+                  if(is(versions, "character"))
+                      versions = data.frame(name = names(versions),
+                          version = versions, stringsAsFactors = FALSE)
+                  if(any(versions$name %in% versions_df(x)$name))
+                      stop("Version already set for one or more packages")
+                  oldv = versions_df(x)
+                  versions = version[,names(oldv)]
+                  versions_df(x) = rbind(oldv, versions)
+              }
               x
           })
 

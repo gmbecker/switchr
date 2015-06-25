@@ -179,11 +179,20 @@ setClass("SessionManifest", representation(pkg_versions = "data.frame",
 ##' information, and a data.frame defining a filter with exact versions
 ##' of some or all packages
 ##' @param manifest A PkgManifest
-##' @param versions A data.frame with 2 columns: name and version.
+##' @param versions A data.frame with 2 columns: name and version, or a named
+##' character vector. In the case of a character vector, the names are taken to
+##' be package names
 ##' @return A SessionManifest object
 ##' @aliases SessionManifest-class
 ##' @export
 SessionManifest = function(manifest, versions) {
+    if(is(versions, "character"))
+        versions = data.frame(name = names(versions), version = versions,
+            stringsAsFactors=FALSE)
+    unknown = setdiff(versions$name, manifest_df(manifest)$name)
+    if(length(unknown) > 0)
+        stop("Setting version constraints on packages not listed in the manifest is not currently supported")
+    
     new("SessionManifest", pkg_versions = versions, pkg_manifest = manifest)
 }
 

@@ -30,8 +30,10 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
     close(con)
     cont = RJSONIO::fromJSON(resp)
     tb_urls = buildTarURLs(cont, curr_avail)
-    PkgManifest(name = names(cont), url = tb_urls, type = "tarball",
+    man = PkgManifest(name = names(cont), url = tb_urls, type = "tarball",
                 dep_repos = character())
+    vers = gsub(".*_(.*)\\.tar\\.gz", tb_urls)
+    SesssionManifest(man, versions = vers)
 }
 
 
@@ -133,8 +135,10 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     }
         
     pkgurls = buildTarURLs(versneeded, cur_avail)
-    PkgManifest(name = names(versneeded), url = pkgurls, type = "tarball",
+    man = PkgManifest(name = names(versneeded), url = pkgurls, type = "tarball",
                 dep_repos = character())
+    SessionManifest(man, versions = data.frame(name = names(versneeded), version = versneeded,
+                                               stringsAsFactors = FALSE))
     
 }
 

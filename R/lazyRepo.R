@@ -128,7 +128,12 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkgname)
                       return()
                   }
-                  
+
+                  if(is(src, "TarballSource") && !is.na(version)) {
+                      v = gsub(".*_(.*)\\.(tar|zip).*", "\\1", location(src))
+                      if(compareVersion(v, version) != 0)
+                          stop("Got a tarball source (direct link) to the wrong package version for package ", pkgname, ". Likely inconsistent Seeding Manifest")
+                  }
                   tballpat =  paste(pkgname, "_", version,sep="")
 
                   tmpdir = tempdir()
@@ -157,8 +162,10 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                      desc = fileFromBuiltPkg(exInRepo[1], files = .descInTB(src, FALSE),
                                              exdir = tmpdir)
                      dcf = read.dcf(file.path(tmpdir, pkgname,subdir(src), "DESCRIPTION")) 
-                     
-                  } else if(!is.na(version)) {
+
+                     ## tarballs don't really support versions. We will check if it
+                     ## is the right version below and throw an error if it isn't
+                 } else if(!is.na(version) && !is(src, "TarballSource")) {
        
                       pkgfile = locatePkgVersion( src@name, version, pkg_manifest = pkg_manifest,
                           dir = dir, param = param)

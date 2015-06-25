@@ -10,7 +10,9 @@ SessionManifest(manifest, versions)
 \arguments{
 \item{manifest}{A PkgManifest}
 
-\item{versions}{A data.frame with 2 columns: name and version.}
+\item{versions}{A data.frame with 2 columns: name and version, or a named
+character vector. In the case of a character vector, the names are taken to
+be package names}
 }
 \value{
 A SessionManifest object
