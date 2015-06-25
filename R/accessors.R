@@ -454,7 +454,7 @@ setMethod("addPkg", "SessionManifest",
                   if(any(versions$name %in% versions_df(x)$name))
                       stop("Version already set for one or more packages")
                   oldv = versions_df(x)
-                  versions = version[,names(oldv)]
+                  versions = versions[,names(oldv)]
                   versions_df(x) = rbind(oldv, versions)
               }
               x
