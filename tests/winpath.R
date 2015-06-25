@@ -13,3 +13,6 @@ if(switchr:::isWindows())
     checkUrlRoundtrip("\\\\laptop\\My Documents\\")
 
         
+bef = switchrDontUnload()
+af = switchrDontUnload("knitr")
+stopifnot(all(c("stringr", "stringi", "magrittr") %in% af))

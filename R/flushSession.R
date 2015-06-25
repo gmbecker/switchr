@@ -21,7 +21,7 @@ switchrDontUnload = function(value, add=TRUE) {
         switchrOpts$dontunload
     } else {
         deps = package_dependencies(value,
-            db = available.packages(contribl.url(defaultRepos())),
+            db = available.packages(contrib.url(defaultRepos())),
             recursive=TRUE)
         ## not unloading a package makes no sense if you don't also keep it's
         ## dependencies 

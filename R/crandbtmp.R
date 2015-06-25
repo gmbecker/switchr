@@ -32,8 +32,9 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
     tb_urls = buildTarURLs(cont, curr_avail)
     man = PkgManifest(name = names(cont), url = tb_urls, type = "tarball",
                 dep_repos = character())
-    vers = gsub(".*_(.*)\\.tar\\.gz", tb_urls)
-    SesssionManifest(man, versions = vers)
+    vers = gsub(".*_(.*)\\.tar\\.gz", "\\1", tb_urls)
+    names(vers) = names(cont)
+    SessionManifest(man, versions = vers)
 }
 
 
