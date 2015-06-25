@@ -13,3 +13,7 @@ Minor new features
   * makeFileURL and fileFromFileURL are now exported. 
 API changes
   * Installation will no longer fail if bioconductor.com/config.yaml is unreachable. In this case the package will attempt to read it when the package is loaded, and throw a warning if this fails as well.
+Changes in version 0.9.7
+Bugfixes
+  * Fix extraneous warning from dir.create call within lazyRepo when dir already exists
+  * When specifying a package in switchrDontUnload, its (recursive) dependencies are now included also.

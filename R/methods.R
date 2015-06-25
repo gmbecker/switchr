@@ -164,9 +164,7 @@ setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
               
               ## copy existing library contents to the new one
               dirs = list.dirs(file.path(switchrBaseDir(), seed@name), recursive = FALSE)
-            ##  dests = file.path(library_paths(cenv)[1], basename(dirs))
-    ##          dir.create(dests)
-     ##         mapply(file.copy,dirs, dests, recursive=TRUE)
+
               file.copy(dirs, library_paths(cenv)[1],
                         recursive = TRUE, overwrite = FALSE)
 

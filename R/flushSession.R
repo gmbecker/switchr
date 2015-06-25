@@ -12,6 +12,7 @@ switchDeps = c(basepkgs, "switchr", "RCurl", "bitops", "BiocInstaller", "RJSONIO
 ##' @note By default switchr will not attempt to unload any base packages,
 ##' itself, or any of its dependencies. Attempting to unload any of these
 ##' packages will result in undefined behavior and is not recommended.
+##' @importFrom tools package_dependencies
 ##' @export
 switchrDontUnload = function(value, add=TRUE) {
     if(missing(value)){
@@ -19,6 +20,12 @@ switchrDontUnload = function(value, add=TRUE) {
             switchrOpts$dontunload = switchDeps
         switchrOpts$dontunload
     } else {
+        deps = package_dependencies(value,
+            db = available.packages(contribl.url(defaultRepos())),
+            recursive=TRUE)
+        ## not unloading a package makes no sense if you don't also keep it's
+        ## dependencies 
+        value = unique(c(names(deps), unlist(deps, recursive=TRUE)))
         if(add)
             value = unique(c(switchrDontUnload(), value))
         switchrOpts$dontunload = value

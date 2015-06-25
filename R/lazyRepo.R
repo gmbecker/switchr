@@ -112,7 +112,8 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               avail = available.packages(contrib.url(dep_repos(pkg_manifest), type="source"), type="source")
 
               repdir = normalizePath2(file.path(rep_path, "src", "contrib"))
-              dir.create(repdir, recursive = TRUE)
+              if(!file.exists(repdir))
+                  dir.create(repdir, recursive = TRUE)
               fakerepo = makeFileURL(repdir)
               innerFun = function(src, pkgname, version, dir, param, force_refresh= FALSE) {
                   ## if we only select 1 row we get a character :(
