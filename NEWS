@@ -17,3 +17,12 @@ Changes in version 0.9.7
 Bugfixes
   * Fix extraneous warning from dir.create call within lazyRepo when dir already exists
   * When specifying a package in switchrDontUnload, its (recursive) dependencies are now included also.
+  * libManifest will no longer list base packages, as they are not installable in the normal sense.
+  * lazyRepo ignores base packages
+  * install_packages no longer builds a lazy repo when passed urls for existing repositories
+  * empty calls to ManifestRow now correctly return an empty (0 row) manifest df, rather than a df with 1 row filled with NAs
+  * crandb related methods (rVersionManifest and cranPkgVersManifest) now return SessionManifests rather than PkgManifests with tarball sources.
+  * install_packages no longer prompts the user to select a CRAN mirror unnecessarily (bypass bug when avail is specified in install.packages)
+Minor API changes
+  * SessionManifest now defaults to defining a cohort of 0 specified package versions on top of the specified manifest
+  

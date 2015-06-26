@@ -17,16 +17,19 @@ emptyManifest = data.frame(name = character(),
 ##'
 ##' Create one or more rows of a manifest data.frame
 ##'
-##' @param name name of the package
+##' @param name name of the package. 
 ##' @param url location of the package sources
 ##' @param type type of location (svn, git, local, etc)
 ##' @param branch name of the branch to use to build the package
 ##' @param subdir subdirectory to use to build the package
 ##' @param extra currently ignored. extra commands for building or
 ##' installing the package
+##' @details If name is missing, an empty (0 row) manifest data.frame
+##' is returned. All other fields default to values indicating no information-
+##'  \code{NA_character} in most cases, and \code{"."} for \code{subdir}
 ##' @return A valid Package manifest data.frame
 ##' @export
-ManifestRow = function(name = NA_character_,
+ManifestRow = function(name,
     url = NA_character_,
     type = NA_character_,
     branch = NA_character_,
@@ -34,7 +37,7 @@ ManifestRow = function(name = NA_character_,
     extra = NA_character_
     ) {
 
-    if(length(name) == 0)
+    if(missing(name) || length(name) == 0)
         return(emptyManifest)
     if( is.na(type) && !is.na(url))
         type = .inferType(url)

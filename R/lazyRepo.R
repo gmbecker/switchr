@@ -106,6 +106,7 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                    param = SwitchrParam(),
                    force_refresh = FALSE){
 
+             
               pkgsNeeded = pkgs
 
               mandf = manifest_df(pkg_manifest)
@@ -252,28 +253,35 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
               pkgsNeeded = setdiff(pkgsNeeded, avail[,"Package"])
               cnt =1 
               while(length(pkgsNeeded) && cnt < 1000){
+                  
                   pkg = pkgsNeeded[1]
-                  vers = versions[pkgs == pkg]
-                  if(!length(vers))
-                      vers = NA
-                      
-                  if(pkg %in% mandf$name) {
-                      manrow = mandf[mandf$name == pkg, ]
-                      ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
-                      ## for IndelsOverlay branch
-                      src = makeSource(name = pkg,
-                          type = manrow$type,
-                          url = manrow$url, branch = manrow$branch,
-                          subdir = manrow$subdir,
-                          scm_auth = scm_auths)
-                      innerFun(src, pkg, version = vers, dir = repdir,
-                               param = param,
-                               force_refresh = force_refresh) 
-                  } else if(pkg %in% avail[,"Package"])
+                  ## base packages are not installable and can't be safely replaced
+                  ## within an R installation
+                  if(pkg %in% basepkgs)
                       pkgsNeeded <<- setdiff(pkgsNeeded, pkg)
-                  else
-                      stop(sprintf("Unable to locate package %s", pkg))
+                  else {
+                      vers = versions[pkgs == pkg]
+                      if(!length(vers))
+                          vers = NA
+                      
+                      if(pkg %in% mandf$name) {
+                          manrow = mandf[mandf$name == pkg, ]
+                          ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
+                          ## for IndelsOverlay branch
+                          src = makeSource(name = pkg,
+                              type = manrow$type,
+                              url = manrow$url, branch = manrow$branch,
+                              subdir = manrow$subdir,
+                              scm_auth = scm_auths)
+                          innerFun(src, pkg, version = vers, dir = repdir,
+                                   param = param,
+                                   force_refresh = force_refresh) 
+                      } else if(pkg %in% avail[,"Package"])
+                            pkgsNeeded <<- setdiff(pkgsNeeded, pkg)
+                        else
+                            stop(sprintf("Unable to locate package %s", pkg))
                                         #    }
+                  }
                   cnt = cnt + 1
               }
               write_PACKAGES(repdir, type="source")

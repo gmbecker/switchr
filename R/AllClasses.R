@@ -6,7 +6,9 @@ setOldClass("sessionInfo")
 ##' @export
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character",
                                         archive_timing="numeric", archive_retries="numeric",
-                                        dl_method = "character"))
+                                        dl_method = "character"),
+         prototype = prototype(logfun = message, shell_init = "", archive_timing = 2, archive_retries = 2,
+                          dl_method = "auto"))
 
 
 
@@ -185,9 +187,9 @@ setClass("SessionManifest", representation(pkg_versions = "data.frame",
 ##' @return A SessionManifest object
 ##' @aliases SessionManifest-class
 ##' @export
-SessionManifest = function(manifest, versions) {
+SessionManifest = function(manifest, versions = character()) {
     if(is(versions, "character"))
-        versions = data.frame(name = names(versions), version = versions,
+        versions = data.frame(name = as.character(names(versions)), version = versions,
             stringsAsFactors=FALSE)
     unknown = setdiff(versions$name, manifest_df(manifest)$name)
     if(length(unknown) > 0)

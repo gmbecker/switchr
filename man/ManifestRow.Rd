@@ -4,12 +4,11 @@
 \alias{ManifestRow}
 \title{ManifestRow}
 \usage{
-ManifestRow(name = NA_character_, url = NA_character_,
-  type = NA_character_, branch = NA_character_, subdir = ".",
-  extra = NA_character_)
+ManifestRow(name, url = NA_character_, type = NA_character_,
+  branch = NA_character_, subdir = ".", extra = NA_character_)
 }
 \arguments{
-\item{name}{name of the package}
+\item{name}{name of the package.}
 
 \item{url}{location of the package sources}
 
@@ -27,5 +26,10 @@ A valid Package manifest data.frame
 }
 \description{
 Create one or more rows of a manifest data.frame
+}
+\details{
+If name is missing, an empty (0 row) manifest data.frame
+is returned. All other fields default to values indicating no information-
+ \code{NA_character} in most cases, and \code{"."} for \code{subdir}
 }
 

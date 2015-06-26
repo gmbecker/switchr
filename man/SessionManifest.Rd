@@ -5,7 +5,7 @@
 \alias{SessionManifest-class}
 \title{SessionManifest}
 \usage{
-SessionManifest(manifest, versions)
+SessionManifest(manifest, versions = character())
 }
 \arguments{
 \item{manifest}{A PkgManifest}

@@ -38,7 +38,7 @@ should be counted.}
 to the crandb database. Defaults to 1 second}
 }
 \value{
-A PkgManifest object
+A SessionManifest object
 }
 \description{
 cranPkgVersManifest

@@ -15,7 +15,7 @@ rVersionManifest(vers, curr_avail = available.packages())
 whether the necessary version is in the CRAN archive or normal repository}
 }
 \value{
-A PkgManifest object
+A SessionManifest object
 }
 \description{
 rVersionManifest
