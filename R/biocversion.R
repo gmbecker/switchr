@@ -3,10 +3,33 @@ biocrepostmpl = c("http://bioconductor.org/packages/%%%%/bioc" ,
     "http://bioconductor.org/packages/%%%%/data/experiment" ,
               "http://bioconductor.org/packages/%%%%/extra" )
 
+dev_vers_aliases = c("dev", "devel", "trunk")
+
+## using closures for state/"activeBinding" style behavior here because
+## reading the yaml file may fail on installation
+doyamlsetup = function() {
+    yamlval = NULL
+    fun = function() {
+        if(!is.null(yamlval))
+            return(yamlval)
+        
+        con = url("http://bioconductor.org/config.yaml")
+        on.exit(close(con))
+        yaml = tryCatch(readLines(con), error = function(e) {
+                            warning("Unable to access http://bioconductor.org/config.yaml to determine Bioc releases and associated R versions. switchr will attempt this again when the package is loaded. You may want to reinstall with network access, some Bioc-related functionality may not work properly.")
+                            NULL
+                        })
+        yamlval <<- yaml
+        yamlval
+    }
+    fun
+}
+
+
+getBiocYaml = doyamlsetup()
+
 getBiocReposFromRVers = function() {
-    con = url("http://bioconductor.org/config.yaml")
-    myyaml = readLines(con)
-    close(con)
+    myyaml = getBiocYaml()
     biocvers = getBiocvrFromRvr(myyaml)
     gsub("%%%%", biocvers, biocrepostmpl)
 }
@@ -23,9 +46,17 @@ getBiocvrFromRvr = function(yaml, Rvers) {
     biocvers = mymatty[row, 1]
 }
 
-isCurrentDevelVr = function(vr, yaml) {
+getBiocDevelVr = function() {
+    yaml = getBiocYaml()
     develln = grep("^devel_version:",yaml)
     develvr = gsub('.*:.*"(.*)".*', "\\1", yaml[develln])
+    develvr
+}
+
+develVers = getBiocDevelVr()
+
+isCurrentDevelVr = function(vr, yaml) {
+    develvr = getBiocDevelVr()
     vr == develvr
 }
 

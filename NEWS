@@ -13,7 +13,7 @@ Minor new features
   * makeFileURL and fileFromFileURL are now exported. 
 API changes
   * Installation will no longer fail if bioconductor.com/config.yaml is unreachable. In this case the package will attempt to read it when the package is loaded, and throw a warning if this fails as well.
-Changes in version 0.9.7
+Changes in version 0.9.8
 Bugfixes
   * Fix extraneous warning from dir.create call within lazyRepo when dir already exists
   * When specifying a package in switchrDontUnload, its (recursive) dependencies are now included also.
@@ -23,6 +23,11 @@ Bugfixes
   * empty calls to ManifestRow now correctly return an empty (0 row) manifest df, rather than a df with 1 row filled with NAs
   * crandb related methods (rVersionManifest and cranPkgVersManifest) now return SessionManifests rather than PkgManifests with tarball sources.
   * install_packages no longer prompts the user to select a CRAN mirror unnecessarily (bypass bug when avail is specified in install.packages)
+  * Switched to dynamic determination of Bioc devel version using yaml across the whole package
 Minor API changes
-  * SessionManifest now defaults to defining a cohort of 0 specified package versions on top of the specified manifest
+  * SessionManifest now defaults to defining a cohort of 0 specified package versions on top of the specified package manifest
+  * Added head and tail methods for PkgManifest and SessionManifest objects
+  * makeBiocSVNURL and related functions will now accept "devel" or "trunk" to indicate the current devel version. Default is now "devel" 
+New features
+    * Added BiocSVNManifest function which creates a manifest of all svn locations for Bioc packages for a specific release (or the current devel trunk).  
   

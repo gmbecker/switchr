@@ -359,8 +359,8 @@ system_w_init = function(cmd, dir,
     system(cmd, ...)
 }
 
-highestVs = c(9, 14, 0)
-develVers = 3.0
+highestVs = c(9, 14, 2)
+
 
 decrBiocVersion = function(biocVers) {
     vals = strsplit(biocVers, ".", fixed=TRUE)[[1]]
@@ -391,6 +391,15 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
+biocReposFromVers = function(vers = develVers) {
+    if(!requireNamespace("BiocInstaller"))
+        stop("Unable to manipulate bioc versions without BiocInstaller installed")
+   
+    repos = head(BiocInstaller::biocinstallRepos(), -1)
+    bef= gsub("(.*/)[0-9][^/]*/.*", "\\1", repos)
+    af = gsub(".*/[0-9][^/]*(/.*)", "\\1", repos)
+    paste0(bef, vers, af)
+}    
 highestBiocVers = function(repos){
     if(!requireNamespace("BiocInstaller"))
         stop("Unable to determine bioc versions without BiocInstaller installed")
@@ -398,15 +407,11 @@ highestBiocVers = function(repos){
         ## head -1 removes the last element
         repos =head(BiocInstaller::biocinstallRepos(), -1)
     majvers = length(highestVs)
-##    if(highestVs[majvers] > 0)
-##        vers = paste(majvers, highestVs[majvers] - 1, sep=".")
-##    else
-##        vers = paste(majvers -1, highestVs[majvers-1], sep=".")
     vers = paste(majvers, highestVs[majvers], sep=".")
-    bef= gsub("(.*/)[0-9][^/]*/.*", "\\1", repos)
-    af = gsub(".*/[0-9][^/]*(/.*)", "\\1", repos)
-    paste0(bef, vers, af)
+    biocReposFromVers(vers = vers)
 }
+
+
 
 
 #system(..., intern=TRUE) throws an error if the the command fails,

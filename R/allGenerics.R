@@ -47,6 +47,13 @@ setGeneric("makePkgDir",
 ##' it be updated (e.g. from SCM) and built again? Defaults to FALSE
 ##' @return A path to the populated lazy repository, suitable for 'coercing' to
 ##' a url and installing from.
+##' @details When checking building from SVN or git checkouts, this function
+##' will first look for existing checkouts for the relevant packages in
+##' \code{dir}. If found, these will be updated (in the case of conflicts, the
+##' behavior is undefined and will likely fail if they are not resolvable). This
+##' allows the user to have an existing, checkout directory where he or she
+##' works on development versions of multiple, interrelated packages, as local
+##' changes WILL be reflected in the packages built into the lazy repository.
 ##' @export
 ##' @author Gabriel Becker
 ##' @rdname lazyRepo

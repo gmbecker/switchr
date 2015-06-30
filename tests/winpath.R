@@ -40,3 +40,9 @@ stopifnot(nrow(manifest_df(man)) == 0)
 
 sman = SessionManifest(man)
 stopifnot(nrow(manifest_df(sman)) == 0 && nrow(versions_df(sman)) == 0)
+
+## make sure bioc version stuff works
+thing = switchr:::develVers
+stopifnot(is(thing, "character"))
+
+stopifnot(nrow(available.packages(contrib.url(switchr:::highestBiocVers())))>0)

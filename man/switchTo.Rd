@@ -84,6 +84,14 @@ This means you will have to reinstall packages after switching, which is
 important and intended (e.g. when switching to using Bioc devel from Bioc
 release).
 }
+\note{
+By default, this process involves a call to \code{flushSession} which will
+attempt to unload all loaded packages. While some support of configuring
+what is unloaded is provided via \code{switchrDontUnload}, it is recommended
+that you turn this feature entirely off via \code{switchrNoUnload(TRUE)} when
+using switchr within dyanmic documents (.Rnw/.Rmd files, etc), particularly
+when using the knitr package.
+}
 \examples{
 \dontrun{
 switchTo("mynewlibrary")

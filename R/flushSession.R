@@ -32,7 +32,27 @@ switchrDontUnload = function(value, add=TRUE) {
     }
 
 }
-        
+
+##' Skip unloading of packages in session
+##' @param value A logical value, or missing to return the current option
+##' @return A logical indicating whether or not calling \code{flushSession} will skipped during the library switching process.
+##' @details This should be set to TRUE  when using switchr in the context of dynamic documents such as .Rnw and .Rmd files. 
+##' @export
+##' 
+switchrNoUnload = function(value) {
+    if(missing(value)){
+        if(is.null(switchrOpts$noflush)) 
+            switchrOpts$noflush = FALSE
+        switchrOpts$noflush
+    } else {
+        if(is.na(value))
+            value = FALSE
+        if(!is(value, "logical"))
+            stop("The no unload option must be a logical value") 
+        switchrOpts$noflush = value
+    }
+    
+}
 
 ##' flushSession
 ##' Unload currently loaded packages from the current R session

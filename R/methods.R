@@ -33,7 +33,12 @@ Renvs= new.env()
 ##' important and intended (e.g. when switching to using Bioc devel from Bioc
 ##' release).
 ##'
-##'
+##' @note By default, this process involves a call to \code{flushSession} which will
+##' attempt to unload all loaded packages. While some support of configuring
+##' what is unloaded is provided via \code{switchrDontUnload}, it is recommended
+##' that you turn this feature entirely off via \code{switchrNoUnload(TRUE)} when
+##' using switchr within dyanmic documents (.Rnw/.Rmd files, etc), particularly
+##' when using the knitr package.
 ##' @return Invisibly returns the SwitchrCtx object representing the new
 ##' computing environment
 ##'
@@ -267,7 +272,8 @@ setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed,
             Renvs$stack = list(original = SwitchrCtx("original", paths, exclude.site=FALSE, seed = NULL))
         }
 
-        flushSession()
+        if(!switchrNoUnload())
+            flushSession()
 
         .libPaths2(library_paths(name), name@exclude.site)
         

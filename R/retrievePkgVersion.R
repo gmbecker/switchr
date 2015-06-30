@@ -300,28 +300,30 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 
 
 ##' Make a Bioconductor SVN url for a package
-##' @param name The name of the package
-##' @param biocVers The version (release) of bioconductor, or trunk (the default) for
+##' @param name A vector of bioconductor package names The name of the package
+##' @param biocVers The version (release) of bioconductor, or \code{'trunk'} (the default) for
 ##' Bioc devel.
+##' @return A vector of urls for the specified packages within the Bioconductor SVN repository
 ##' @export
-makeBiocSVNURL = function(name, biocVers = "trunk") 
-    paste0("https://hedgehog.fhcrc.org/bioconductor/", biocVers, "/madman/Rpacks/", name)
-    
-findBiocSVNRev = function(name, version, destpath, param, biocVers="trunk")
-{
-    if(biocVers != biocVersFromRepo(highestBiocVers()) && biocVers != "trunk") {
-##        addl_dir = paste0("BioC_", biocVers)
-        biocVers = paste("branches/RELEASE", gsub(".", "_", biocVers, fixed=TRUE), sep="_")
-    } else {
+makeBiocSVNURL = function(name, biocVers = "devel") {
+
+    biocVers = tolower(biocVers)
+    if(biocVers == biocVersFromRepo(highestBiocVers()) || biocVers %in% dev_vers_aliases) {
         biocVers = "trunk"
-        addl_dir = ""
+    } else {
+        biocVers = paste("branches/RELEASE", gsub(".", "_", biocVers, fixed=TRUE), sep="_")
     }
 
+    paste0("https://hedgehog.fhcrc.org/bioconductor/", biocVers, "/madman/Rpacks/", name)
+}
+    
+findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
+{
+ 
     pkgdir = file.path(destpath, name) ##file.path(destpath, addl_dir)
     repoloc = makeBiocSVNURL(name, biocVers)
     if(!file.exists(pkgdir)) {
         src = makeSource(name = name, url = repoloc, type = "svn", user = "readonly", password="readonly")
-        ##ret = makePkgSourceDir(name = name, source = src, path = file.path(destpath, addl_dir), repo = repo)
         ret = makePkgDir(name = name, source = src, path = destpath, latest_only = FALSE, param = param)
         
         if(!ret)

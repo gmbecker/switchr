@@ -4,13 +4,16 @@
 \alias{makeBiocSVNURL}
 \title{Make a Bioconductor SVN url for a package}
 \usage{
-makeBiocSVNURL(name, biocVers = "trunk")
+makeBiocSVNURL(name, biocVers = "devel")
 }
 \arguments{
-\item{name}{The name of the package}
+\item{name}{A vector of bioconductor package names The name of the package}
 
-\item{biocVers}{The version (release) of bioconductor, or trunk (the default) for
+\item{biocVers}{The version (release) of bioconductor, or \code{'trunk'} (the default) for
 Bioc devel.}
+}
+\value{
+A vector of urls for the specified packages within the Bioconductor SVN repository
 }
 \description{
 Make a Bioconductor SVN url for a package

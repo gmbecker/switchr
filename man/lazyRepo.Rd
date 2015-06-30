@@ -78,6 +78,15 @@ Create a lazy repository for installing directly from a package
 manifest. Most users will want to call \code{Install} directly,
 which will call this as needed behind the scenes.
 }
+\details{
+When checking building from SVN or git checkouts, this function
+will first look for existing checkouts for the relevant packages in
+\code{dir}. If found, these will be updated (in the case of conflicts, the
+behavior is undefined and will likely fail if they are not resolvable). This
+allows the user to have an existing, checkout directory where he or she
+works on development versions of multiple, interrelated packages, as local
+changes WILL be reflected in the packages built into the lazy repository.
+}
 \author{
 Gabriel Becker
 }
