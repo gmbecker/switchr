@@ -30,4 +30,6 @@ Minor API changes
   * makeBiocSVNURL and related functions will now accept "devel" or "trunk" to indicate the current devel version. Default is now "devel" 
 New features
     * Added BiocSVNManifest function which creates a manifest of all svn locations for Bioc packages for a specific release (or the current devel trunk).  
-  
+Changes in version 0.9.9 (2015-07-01)
+Bugfixes
+	* We now import symbols from base packages (other than base) as per new R CMD check requirements.

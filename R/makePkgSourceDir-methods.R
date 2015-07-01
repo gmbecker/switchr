@@ -58,7 +58,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
 
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,GithubSource
-
+##' @importFrom utils unzip
 setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
           function(name, source, path, latest_only = FALSE,  param, forceRefresh = FALSE)
       {
@@ -145,7 +145,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "ANY"),
 })
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,CRANSource
-
+##' @importFrom utils untar download.packages
 setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, source, path, latest_only, param, forceRefresh = FALSE) {
 
     if(!file.exists(file.path(path, name)))

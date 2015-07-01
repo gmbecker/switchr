@@ -135,6 +135,7 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' switchr framework.
 ##' @export
 ##' @aliases PkgManifest-class
+##' @importFrom utils read.table
 PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), ..., dl_method){
     if(is.character(manifest)) {
         if(url.exists(manifest)) {
@@ -149,9 +150,10 @@ PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), 
             manifest  = fil
         }
 
-        if(file.exists(manifest))
+        if(file.exists(manifest)) {
             manifest = read.table(manifest, header= TRUE, sep= ",", stringsAsFactors = FALSE, ...)
-        else
+            manifest = manifest[,names(ManifestRow())]
+        } else
             stop("invalid manifest")
     }
 

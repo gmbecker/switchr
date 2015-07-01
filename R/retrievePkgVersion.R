@@ -241,6 +241,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 }
 
 ## tries to download the file. Returns list with two elements (file:dl'ed file or NULL and versionToSearch:bioc version)
+##' @importFrom utils contrib.url available.packages compareVersion download.file
 .biocTryToDL = function(name, version, param, dir, verbose = FALSE) {
     
     destpath = dir

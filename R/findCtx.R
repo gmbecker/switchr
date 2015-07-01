@@ -71,6 +71,7 @@ switchrManifest = function() {
 ##' Update the cached information regarding available switchr libraries.
 ##' @return NULL, used for it's side-effect of updating the switchr library
 ##' metadata cache.
+##' @importFrom utils write.table
 updateManifest = function() {
     fils = list.files(switchrBaseDir(), recursive = TRUE, full.names = TRUE, pattern = "lib_info")
     man = do.call(rbind.data.frame, lapply(fils, function(x) read.table(x, stringsAsFactors = FALSE, header = TRUE)))

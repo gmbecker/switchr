@@ -41,6 +41,7 @@
 ##' @docType methods
 ##' @rdname install
 ##' @export
+##' @importFrom utils available.packages contrib.url installed.packages
 setGeneric("install_packages", function(pkgs, repos, versions = NULL, verbose = FALSE, ...) standardGeneric("install_packages"))
 ##'@rdname install
 ##' @aliases install_packages,character,character

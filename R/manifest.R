@@ -147,6 +147,7 @@ const_git_url = function(args) {
 
 ##We don't support the release or pull-request aspects of install_github currently.
 ## Refs are assumed to be branch names
+##' @importFrom stats setNames
 parse_git_repo <- function(path) {
     username_rx <- "(?:([^/]+)/)?"
     repo_rx <- "([^/@#]+)"

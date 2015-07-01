@@ -25,6 +25,7 @@ globalVariables("defaultGRANURL")
 ##'
 ##' @return A character vector of package repository urls
 ##' @export
+##' @importFrom utils chooseCRANmirror
 defaultRepos = function() {
     bioc = getBiocRepos()
     optrepos = getOption("repos")

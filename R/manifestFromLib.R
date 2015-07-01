@@ -209,6 +209,7 @@ setGeneric("makeSeedMan", function(x, known_manifest = PkgManifest(), ...) stand
 
 ##' @rdname makeSeedMan
 ##' @aliases makeSeedMan,missing
+##' @importFrom utils capture.output sessionInfo
 setMethod("makeSeedMan", "missing", function(x, known_manifest = PkgManifest(), ...) {
               parsed = parseSessionInfoString(capture.output(print(sessionInfo())))
               makeSeedMan(parsed, known_manifest = known_manifest, ...)
