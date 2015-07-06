@@ -439,3 +439,6 @@ requireNamespace2 = function(...) {
     else
         require(...)
 }
+
+if(!exists("paste0"))
+    paste0 = function(...) paste(..., sep="")
