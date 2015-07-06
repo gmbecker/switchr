@@ -38,3 +38,6 @@ Bugfixes
 Changes in version 0.9.11 (2015-07-06)
 Miscellaneous
 	* We no longer use tools::package_dependencies to determine depedencies because it is relatively new and prevents switchr from installing in older Rs.
+Changes in version 0.9.12 (2015-07-06)
+Miscellaneous
+	* Remove unnecessary usage of globalVariable to increase compatability with old R versions

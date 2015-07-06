@@ -1,5 +1,4 @@
 crandburl = "http://crandb.r-pkg.org/"
-globalVariables("fromJSON")
 
 ##' rVersionManifest
 ##' Create a Pkg manifest which points to tarballs representing the

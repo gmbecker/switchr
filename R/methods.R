@@ -1,6 +1,4 @@
 Renvs= new.env()
-##this doesn't seem to work anyway...
-#if(getRversion() >= "2.15.1") globalVariables(".lib.loc")
 
 ##' switchTo
 ##'
@@ -425,7 +423,6 @@ currentCompEnv = function() {
         }
 
 
-globalVariables(".lib.loc")
 
 .libPaths2 = function(fulllp, exclude.site=TRUE) {
     fun = .libPaths
