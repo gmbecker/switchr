@@ -162,7 +162,7 @@ setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, sourc
 
 setMethod("makePkgDir", c(name="ANY", source="BiocSource"), function(name, source, path, latest_only, param, forceRefresh = FALSE) {
 
-    if(!requireNamespace("BiocInstaller", quietly=TRUE))
+    if(!requireNamespace2("BiocInstaller", quietly=TRUE))
         stop("Can't handle BiocSource without BiocInstaller installed")
     if(!file.exists(file.path(path, name)))
         dir.create(file.path(path, name), recursive=TRUE)

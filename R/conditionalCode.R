@@ -1,5 +1,5 @@
 getBiocRepos = function() {
-    if(requireNamespace("BiocInstaller", quietly=TRUE)) {
+    if(requireNamespace2("BiocInstaller", quietly=TRUE)) {
         bioc = BiocInstaller::biocinstallRepos()
     } else {
         if(is.null(defaultBiocRepos)) {

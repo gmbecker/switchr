@@ -205,7 +205,7 @@ setMethod("makeSVNURL", "GitSource",
     
 findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 {
-    if(!requireNamespace("BiocInstaller")) {
+    if(!requireNamespace2("BiocInstaller")) {
         warning("Unable to search bioconductor for package version because BiocInstaller is not available")
         return(NULL)
     }

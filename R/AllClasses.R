@@ -141,7 +141,7 @@ PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), 
         if(url.exists(manifest)) {
             fil = tempfile()
             if(missing(dl_method)) {
-                if(requireNamespace("RCurl"))
+                if(requireNamespace2("RCurl"))
                     dl_meth = "curl"
                 else
                     dl_meth = "auto"

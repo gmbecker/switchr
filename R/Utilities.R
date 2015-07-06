@@ -1,5 +1,5 @@
 url.exists = function(x, ...) {
-    if(requireNamespace("RCurl"))
+    if(requireNamespace2("RCurl"))
         RCurl::url.exists(x, ...)
     else {
         con = url(x)
@@ -392,7 +392,7 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
 biocReposFromVers = function(vers = develVers) {
-    if(!requireNamespace("BiocInstaller"))
+    if(!requireNamespace2("BiocInstaller"))
         stop("Unable to manipulate bioc versions without BiocInstaller installed")
    
     repos = head(BiocInstaller::biocinstallRepos(), -1)
@@ -401,7 +401,7 @@ biocReposFromVers = function(vers = develVers) {
     paste0(bef, vers, af)
 }    
 highestBiocVers = function(repos){
-    if(!requireNamespace("BiocInstaller"))
+    if(!requireNamespace2("BiocInstaller"))
         stop("Unable to determine bioc versions without BiocInstaller installed")
     else if(missing(repos))
         ## head -1 removes the last element
@@ -429,3 +429,13 @@ errorOrNonZero = function(out)
         FALSE
 }
 
+
+## NB this will give different behavior in R versions that
+## provide requireNamespace and thsoe that don't re the search path.
+## Not ideal, but otherwise switchr will fail to install at all.
+requireNamespace2 = function(...) {
+    if(exists("requireNamespace"))
+        requireNamespace(...)
+    else
+        require(...)
+}

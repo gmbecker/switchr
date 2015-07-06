@@ -89,7 +89,7 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 chtype = "repourl"
                 
             } else if (chtype == "manifesturl") {
-                if(requireNamespace("RCurl")) {
+                if(requireNamespace2("RCurl")) {
                     seed = strsplit(RCurl::getURL(seed), "\n")[[1]]
 
                 } else {
