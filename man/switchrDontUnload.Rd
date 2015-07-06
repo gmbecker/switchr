@@ -17,6 +17,7 @@ Get or set the packages to not unload when flushing the system
 \note{
 By default switchr will not attempt to unload any base packages,
 itself, or any of its dependencies. Attempting to unload any of these
-packages will result in undefined behavior and is not recommended.
+packages (e.g. \code{add=FALSE}) will result in undefined behavior and
+is not recommended.
 }
 

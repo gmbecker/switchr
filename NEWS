@@ -30,6 +30,11 @@ Minor API changes
   * makeBiocSVNURL and related functions will now accept "devel" or "trunk" to indicate the current devel version. Default is now "devel" 
 New features
     * Added BiocSVNManifest function which creates a manifest of all svn locations for Bioc packages for a specific release (or the current devel trunk).  
-Changes in version 0.9.9 (2015-07-01)
+Changes in version 0.9.10 (2015-07-01)
 Bugfixes
+	* Fix regression(?) where specifying a SessionManifest seed for an existing library would force it to rebuild and reinstall everything in the seed.
+	* Calling switchTo with a seed for  library that already exists now invokes a message rather than a warning
 	* We now import symbols from base packages (other than base) as per new R CMD check requirements.
+Changes in version 0.9.11 (2015-07-06)
+Miscellaneous
+	* We no longer use tools::package_dependencies to determine depedencies because it is relatively new and prevents switchr from installing in older Rs.

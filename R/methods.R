@@ -160,8 +160,8 @@ setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
                   rvers = paste(R.version$major, R.version$minor, sep=".")
               exsting = findCompEnv(name = name, rvers = rvers)
               if(!is.null(exsting)) {
-                  warning("A switchr context with that name already exists")
-                  switchTo(exsting)
+                  message("Found existing switchr context. Ignoring seed value")
+                  return(switchTo(exsting))
               }
               cenv = makeLibraryCtx(name = name, seed = NULL,
                   exclude.site = seed@exclude.site,
@@ -318,8 +318,8 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
                   rvers = paste(R.version$major, R.version$minor, sep=".")
               exsting = findCompEnv(name = name, rvers = rvers)
               if(!is.null(exsting)) {
-                  warning("A switchr context with that name already exists")
-                  switchTo(exsting)
+                  message("Found existing switchr context. Ignoring seed value")
+                  return(switchTo(exsting))
               }
               cenv = makeLibraryCtx(name = name, seed = NULL,
                   ...)
@@ -347,8 +347,8 @@ setMethod("switchTo", c("character", seed = "SessionManifest"),
                   rvers = paste(R.version$major, R.version$minor, sep=".")
               exsting = findCompEnv(name = name, rvers = rvers)
               if(!is.null(exsting)) {
-                  warning("A switchr context with that name already exists")
-                  switchTo(exsting)
+                  message("Found existing switchr context. Ignoring seed value")
+                  return(switchTo(exsting))
               }
               cenv = makeLibraryCtx(name = name, seed = NULL,
                   ...)

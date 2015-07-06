@@ -11,8 +11,8 @@ switchDeps = c(basepkgs, "switchr", "RCurl", "bitops", "BiocInstaller", "RJSONIO
 ##' @param add Should \code{value} be added to the existing list?
 ##' @note By default switchr will not attempt to unload any base packages,
 ##' itself, or any of its dependencies. Attempting to unload any of these
-##' packages will result in undefined behavior and is not recommended.
-##' @importFrom tools package_dependencies
+##' packages (e.g. \code{add=FALSE}) will result in undefined behavior and
+##' is not recommended.
 ##' @export
 switchrDontUnload = function(value, add=TRUE) {
     if(missing(value)){
@@ -20,18 +20,49 @@ switchrDontUnload = function(value, add=TRUE) {
             switchrOpts$dontunload = switchDeps
         switchrOpts$dontunload
     } else {
-        deps = package_dependencies(value,
-            db = available.packages(contrib.url(defaultRepos())),
-            recursive=TRUE)
-        ## not unloading a package makes no sense if you don't also keep it's
-        ## dependencies 
-        value = unique(c(names(deps), unlist(deps, recursive=TRUE)))
+        ## had to add our own code for this because package_dependencies is
+        ## relatively new and we need switchr to install on R's as old as
+        ## possible
+        
+        value = .dodepsourselves(value, incl_pkgs = TRUE)
         if(add)
             value = unique(c(switchrDontUnload(), value))
         switchrOpts$dontunload = value
     }
 
 }
+
+.dodepsourselves = function(pkg, av = available.packages(contrib.url(defaultRepos())), incl_pkgs = TRUE) {
+    deps = .innerdodeps(pkg, av)
+    done = pkg
+    remaining = deps
+    while(length(remaining) > 0) {
+        d = remaining[1]
+        newdeps = .innerdodeps(d, av, done = done)
+        done = c(done, d)
+        deps = c(deps, newdeps)
+        remaining = unique(c(remaining[-1], newdeps))
+    }
+    if(incl_pkgs)
+        deps = unique(c(pkg, deps))
+    deps
+}
+
+.innerdodeps = function(pkg, av, done = character() ) {
+    deps = av[pkg, c("Depends", "Imports")]
+    deps = unlist(as.vector(deps))
+    deps = deps[!is.na(deps)]
+    if(length(deps) >0) {
+        deps = unlist(strsplit(deps, "[[:space:]]*,[[:space:]]*"))
+        deps = gsub("[[:space:]]*([\\._[:alnum:]]*).*", "\\1", deps)
+        deps = deps[deps!= "R"]
+        deps = unique(deps)
+        deps = deps[!deps %in% c(done, basepkgs)]
+    }
+    deps
+    
+}
+        
 
 ##' Skip unloading of packages in session
 ##' @param value A logical value, or missing to return the current option
