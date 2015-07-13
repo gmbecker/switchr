@@ -32,8 +32,8 @@ setMethod("publishManifest", c(manifest = "PkgManifest",
               })
               ## write.table complains about column names with append=TRUE, but
               ## it's fine because all the previous lines are comments.
-              res = tryCatch(write.table(manifest_df(manifest), file = con, append=TRUE,
-                          sep = ","), warning=function(w) NULL)
+              res = tryCatch(write.table(manifest_df(manifest), file = con,
+                          sep = ",", row.names = FALSE), warning=function(w) NULL)
 
               close(con)
               dest
@@ -56,11 +56,11 @@ setMethod("publishManifest", c("SessionManifest", "character"),
               })
 
               df = manifest_df(manifest)
-              df = merge(df, versions_df(manifest), by = "name")
+              df = merge(df, versions_df(manifest), by = "name", sort=FALSE)
               ## write.table complains about column names with append=TRUE, but
               ## it's fine because all the previous lines are comments.
-              res = tryCatch(write.table(df, file = con, append=TRUE,
-                          sep = ","), warning=function(w) NULL)
+              res = tryCatch(write.table(df, file = con,
+                          sep = ",", row.names=FALSE), warning=function(w) NULL)
 
               close(con)
               dest

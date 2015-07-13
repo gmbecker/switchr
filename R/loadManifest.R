@@ -30,8 +30,14 @@ loadManifest = function(fil) {
     header = txt[headerInds]
     body = txt[-headerInds]
     depRepos = gsub(".*repo: (.*)", "\\1", header[grep("repo:", header)])
+    colcl = sapply(ManifestRow(), class)
+    if(any(grepl("# Manifest type: session", header)))
+        colcl= c(colcl, version="character")
+    
     df = read.table(file = textConnection(body, "r"),
-        header = TRUE, sep = ",", stringsAsFactors=FALSE)
+        header = TRUE, sep = ",", stringsAsFactors=FALSE, comment.char="#",
+                    colClasses =  colcl,
+                    row.names=NULL)
     if("version" %in% names(df)) {
         sess = TRUE
         vdf = df[!is.na(df$version), c("name", "version")]

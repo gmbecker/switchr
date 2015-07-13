@@ -46,3 +46,19 @@ thing = switchr:::develVers
 stopifnot(is(thing, "character"))
 
 stopifnot(nrow(available.packages(contrib.url(switchr:::highestBiocVers())))>0)
+
+## regression test for publishManifest
+mantests = function(man) {
+    tmpdir = tempdir()
+    manfil = publishManifest(man, file.path(tmpdir, "sman.rman"))
+    mantab = read.csv(manfil, comment.char="#")
+    stopifnot(nrow(mantab) > 0)
+    man2 = loadManifest(manfil)
+    stopifnot(identical(man, man2))
+}
+
+
+sman = makeSeedMan()
+man = manifest(sman)
+mantests(sman)
+mantests(man)

@@ -101,7 +101,12 @@ package specific option for the remainder of the R session.
 \verb@switchr@ package libraries can be removed via the
 \texttt{removeLib} function, like so
 
+<<eval=FALSE>>=
+### Not Run
+removeLib("mylibrary")
+@ 
 
+This removes the switchr library and all the packages installed therein.
 
 \subsection{Representing package cohorts}
 
@@ -269,16 +274,12 @@ While we chose not to depend on Xie's \verb@knitr@ package,
 residing in dynamic documents which are processed with that system,
 e.g. .Rmd files. To do this, users need simply ensure that knitr and
 its dependencies are not unloaded during the library switching
-process. This is achieved via the \texttt{switchrDontUnload} function,
-which sets a persistent option telling \verb@switchr@ to ignore those
-packages when emptying the current R session. Base packages,
-\verb@switchr@ itself, and its dependencies are always ignored in this way.
+process. This is most safely achieved via the \texttt{switchrNoUnload}
+which disables the unloading of packages when switching libraries. 
 
 <<eval=FALSE>>=
 ## NOT RUN
-switchrDontUnload(c("knitr", "evaluate", "digest", "formatR", "highr", 
-                    "markdown", "stringr"))
-
+switchrNoUnload(TRUE)
 @ 
 
 In the knitr case, for example, this function can be called from the

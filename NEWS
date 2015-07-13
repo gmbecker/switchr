@@ -39,5 +39,9 @@ Changes in version 0.9.11 (2015-07-06)
 Miscellaneous
 	* We no longer use tools::package_dependencies to determine depedencies because it is relatively new and prevents switchr from installing in older Rs.
 Changes in version 0.9.12 (2015-07-06)
+Bugfixes
+	* Fix regression in publishManifest resulting in files which contain only the header comments
 Miscellaneous
 	* Remove unnecessary usage of globalVariable to increase compatability with old R versions
+	* Add requireNamespace2 for backwards compatability with old Rs, switch to using that throughout package
+	* Add alternative definition of paste0 for backwards compatability with Rs old enough not to have it.

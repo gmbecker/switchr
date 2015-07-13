@@ -440,5 +440,7 @@ requireNamespace2 = function(...) {
         require(...)
 }
 
+## this will give identical behavior but will be less efficient
+## when paste0 doesn't exist.
 if(!exists("paste0"))
     paste0 = function(...) paste(..., sep="")
