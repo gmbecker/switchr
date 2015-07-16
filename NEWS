@@ -49,3 +49,6 @@ Changes in version 0.9.13 (2015-15-07)
 Bugfixes
 	* refine how git existing git checkouts are updated. 
 	* Add testing of git-based makePkgDir and updateGit functions
+Changes to version 0.9.14 (2015-16-07)
+Bugfixes
+	* further iteration on how git checkouts are updated.
