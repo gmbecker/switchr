@@ -62,3 +62,52 @@ sman = makeSeedMan()
 man = manifest(sman)
 mantests(sman)
 mantests(man)
+
+
+test_ghupdate_dirty = function() {
+    ghsource = makeSource("https://github.com/gmbecker/gRAN", type = "git", scm_auth=list(), branch = "master", name = "GRANBase")
+    dir = file.path(tempdir(), "gittst")
+    if(!file.exists(dir))
+        dir.create(dir)
+    res = makePkgDir("GRANBase", ghsource, dir, FALSE)
+    oldwd = getwd()
+    on.exit(setwd(oldwd))
+    pkgdir = file.path(dir, "GRANBase")
+    setwd(pkgdir)
+    dfile = file.path(pkgdir, "DESCRIPTION")
+    oldD = readLines(dfile)
+    
+    writeLines("lol", con = dfile)
+    newD = readLines(dfile)
+    upd1 = switchr:::updateGit(pkgdir, ghsource, SwitchrParam())
+    newD2 = readLines(dfile)
+    if(newD != newD2)
+        stop( "Local changes not preserved during updateGit call from within correct branch")
+    
+    setwd(oldwd)
+    unlink(pkgdir, recursive=TRUE)
+    ghsourcebr = makeSource("https://github.com/gmbecker/gRAN", type = "git", scm_auth=list(), branch = "API_refactor", name = "GRANBase")
+    res = makePkgDir("GRANBase", ghsourcebr, dir, FALSE)
+    curbr = switchr:::gitCurrentBranch(SwitchrParam())
+    system("git checkout master")
+    oldwd = setwd(pkgdir)
+    upd2 = switchr:::updateGit(pkgdir, ghsourcebr, SwitchrParam())
+    if(!upd2)
+        stop("Update of source checkout when currently on different branch failed")
+    system("git checkout master")
+    oldD = readLines(dfile)
+    writeLines("lol", con=dfile)
+    upd3 = tryCatch(switchr:::updateGit(pkgdir, ghsourcebr, SwitchrParam()), error = function(x) x)
+    if(!is(upd3, "error"))
+        stop("switchr did not throw an error non-current branch was updated with dirty wd")
+    system("git checkout DESCRIPTION")
+    setwd(oldwd)
+    on.exit(NULL)
+    TRUE
+}
+test_ghupdate_dirty()
+
+
+
+
+    

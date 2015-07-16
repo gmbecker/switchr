@@ -45,3 +45,7 @@ Miscellaneous
 	* Remove unnecessary usage of globalVariable to increase compatability with old R versions
 	* Add requireNamespace2 for backwards compatability with old Rs, switch to using that throughout package
 	* Add alternative definition of paste0 for backwards compatability with Rs old enough not to have it.
+Changes in version 0.9.13 (2015-15-07)
+Bugfixes
+	* refine how git existing git checkouts are updated. 
+	* Add testing of git-based makePkgDir and updateGit functions

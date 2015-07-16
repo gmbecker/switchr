@@ -221,8 +221,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 
         if(!file.exists(dir))
             dir.create(dir, recursive=TRUE)
-        oldwd = getwd()
-        setwd(dir)
+        oldwd = setwd(dir)
         on.exit(setwd(oldwd))
         
         commit = findBiocSVNRev(name, version, destpath = dir,
@@ -344,9 +343,8 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
 ## confusing, should change this.
 findSVNRev = function(name, version, svn_repo, pkgpath, param) {
 
-    oldwd = getwd()
     ##setwd(file.path(destpath,  name))
-    setwd(pkgpath)
+    oldwd = setwd(pkgpath)
     on.exit(setwd(oldwd))
     system_w_init(paste("svn switch --ignore-ancestry", svn_repo), param = param)
 

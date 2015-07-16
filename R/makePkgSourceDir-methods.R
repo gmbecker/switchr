@@ -5,12 +5,10 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
           function(name, source, path, latest_only = FALSE, param,
                    forceRefresh = FALSE) {
               lfun = logfun(param)
-              oldwd = getwd()
-              on.exit(setwd(oldwd))
               if(!file.exists(path))
                   dir.create(path, recursive = TRUE)
-              setwd(path)
-              
+              oldwd = setwd(path)
+              on.exit(setwd(oldwd))              
               if(missing(name))
                   name = basename(location(source))
               
@@ -87,8 +85,9 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
                           destdir)
                                         #              uzdir
           } else {
-              source = as(source, "GitSource", strict = TRUE)
-              makePkgDir(name, source, path, latest_only, param = param, forceRefresh)
+          #    source = as(source, "GitSource", strict = TRUE)
+           #   makePkgDir(name, source, path, latest_only, param = param, forceRefresh)
+              callNextMethod()
           }
       })
 
@@ -99,11 +98,14 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
 setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           function(name, source, path, latest_only = FALSE, param, forceRefresh=FALSE)
       {
-          oldwd = getwd()
-          on.exit(setwd(oldwd))
+
           if(!file.exists(path))
               dir.create(path, recursive = TRUE)
-          setwd(path)
+          oldwd = setwd(path)
+          if(!is.null(oldwd))
+              on.exit(setwd(oldwd))
+          else
+              warning("working directory returned as NULL, unable to reset it after creating pkg directory")
           sdir = location(source)
           if(file.exists(name) &&
              file.exists(file.path(name, ".git"))) {
@@ -132,7 +134,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           {
               logfun(param)(name, paste("Temporary source directory successfully created:", ret))
           } 
-              
+          
           ret
       })
 ##stub for everyone else
@@ -202,14 +204,13 @@ setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
 
 setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
           function(name, source, path,  latest_only, param, forceRefresh = FALSE) {
-    oldwd = getwd()
-    on.exit(setwd(oldwd))
+
     if(file.exists(file.path(path, name)))
         unlink(file.path(path, name), recursive=TRUE, force=TRUE)
     if(!file.exists(path))
         dir.create(path, recursive = TRUE)
-    setwd(path)
-
+    oldwd = setwd(path)
+    on.exit(setwd(oldwd))
         
     if(missing(name))
         name = basename(location(source))
