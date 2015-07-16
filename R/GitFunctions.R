@@ -9,7 +9,7 @@ updateGit = function(dir, source, param)
     dirty = gitWDIsDirty(param)
     stash = FALSE
     if(curb == branch(source)) {
-        cmd = sprintf("git fetch --all; git merge orgin/%s", curb)
+        cmd = sprintf("git fetch --all; git merge origin/%s", curb)
         if(dirty) {
             stash = TRUE
             system_w_init("git stash", intern = TRUE, param = param)
