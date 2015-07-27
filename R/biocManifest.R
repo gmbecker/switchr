@@ -1,5 +1,5 @@
 ##' Create a manifest of Bioc SVN locations
-##' @param biocVers A version number for a bioc release, or \code{"devel"} to
+##' @param bioc_vers A version number for a bioc release, or \code{"devel"} to
 ##' for the current devel trunk
 ##' @param not_in_repo character. A vector of package names which are
 ##' in SVN but do not appear in the bioconductor repository
@@ -19,19 +19,22 @@
 ##' repo = lazyRepo("rtracklayer", bman)
 ##' }
 ##' @export
-BiocSVNManifest = function(biocVers = "devel", not_in_repo = character(), software_only = TRUE) {
-    if(tolower(biocVers) %in% dev_vers_aliases)
+BiocSVNManifest = function(bioc_vers = "devel", not_in_repo = character(), software_only = TRUE) {
+    if(tolower(bioc_vers) %in% dev_vers_aliases)
         vernum = develVers
     else
-        vernum = biocVers
+        vernum = bioc_vers
     reps = biocReposFromVers(vernum)
     if (software_only)
         reps = reps[1]
     pkgs = available.packages(contrib.url(reps))[,"Package"]
     pkgs = unique(c(pkgs, not_in_repo))
-    urls = makeBiocSVNURL(pkgs, biocVers)
+    urls = makeBiocSVNURL(pkgs, bioc_vers)
     PkgManifest(name = pkgs, url = urls, type = "svn")
     
         
 }    
+
+
+
     

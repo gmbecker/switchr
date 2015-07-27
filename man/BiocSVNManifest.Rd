@@ -4,11 +4,11 @@
 \alias{BiocSVNManifest}
 \title{Create a manifest of Bioc SVN locations}
 \usage{
-BiocSVNManifest(biocVers = "devel", not_in_repo = character(),
+BiocSVNManifest(bioc_vers = "devel", not_in_repo = character(),
   software_only = TRUE)
 }
 \arguments{
-\item{biocVers}{A version number for a bioc release, or \code{"devel"} to
+\item{bioc_vers}{A version number for a bioc release, or \code{"devel"} to
 for the current devel trunk}
 
 \item{not_in_repo}{character. A vector of package names which are

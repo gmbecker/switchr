@@ -53,4 +53,6 @@ Changes to version 0.9.14 (2015-16-07)
 Bugfixes
 	* further iteration on how git checkouts are updated.
 Changes to version 0.9.15 (2015-16-07)
+Bugfixes
 	* fix typo in git command
+	* findPkgDir no longer takes a repo argument, which was unused. 

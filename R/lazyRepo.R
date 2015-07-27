@@ -265,15 +265,9 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                           vers = NA
                       
                       if(pkg %in% mandf$name) {
-                          manrow = mandf[mandf$name == pkg, ]
-                          ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
-                          ## for IndelsOverlay branch
-                          src = makeSource(name = pkg,
-                              type = manrow$type,
-                              url = manrow$url, branch = manrow$branch,
-                              subdir = manrow$subdir,
-                              scm_auth = scm_auths)
-                          innerFun(src, pkg, version = vers, dir = repdir,
+                          src = sourceFromManifest(pkg, pkg_manifest)
+                    ##      innerFun(src, pkg, version = vers, dir = repdir,
+                                innerFun(src, pkg, version = vers, dir = dir,
                                    param = param,
                                    force_refresh = force_refresh) 
                       } else if(pkg %in% avail[,"Package"])

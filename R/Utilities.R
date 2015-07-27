@@ -109,11 +109,10 @@ checkIsPkgDir = function (dir)
 ##' @param rootdir The directory of the checkout
 ##' @param branch The branch to navigate to
 ##' @param subdir The subdirectory to navigate to
-##' @param repo a GRANRepository object
 ##' @param param a SwitchrParam object
 ##' @return A path to the Package sources
 ##' @export
-findPkgDir = function(rootdir, branch, subdir, repo, param)
+findPkgDir = function(rootdir, branch, subdir,param)
 {
 
     if(!length(subdir))
@@ -129,15 +128,20 @@ findPkgDir = function(rootdir, branch, subdir, repo, param)
         } else {
             ret = file.path(rootdir, "branches", branch)
         }
-    } else if(is.null(branch) || branch %in% c("master", "trunk")) {
+    } else if(file.exists(file.path(rootdir, ".git"))) {
+        if(is.null(branch) || branch == "trunk")
+            branch = master
+        gitChangeBranch(rootdir, branch, param = param)
+        ret = rootdir
+    } else if ( is.null(branch) || branch %in% c("master", "trunk")) {
         ret = rootdir
     } else {
         warning(paste0("The svn repository at ", rootdir,
                        " does not appear to have branches. ",
                        "Unable to process this source."))
-        logfun(param)(name, paste("The SVN repository does not appear to have",
-                                 "branches and a non-trunk/non-master branch",
-                                 "was selected"),  type="both")
+        logfun(param)(name, paste("The SCM repository does not appear to have",
+                                  "branches and a non-trunk/non-master branch",
+                                  "was selected"),  type="both")
         return(NULL)
     }
 
@@ -288,9 +292,11 @@ getPkgDir = function(basepath,name,  subdir, scm_type, branch)
 ##' be resolved to their physical locations? (FALSE)
 ##' @param winslash The value of winslash to be passed down to normalizePath
 ##' on windows systems
+##' @param mustWork logical. Behavior to perform in the case of a non-existent path.
+##' FALSE does nothing, TRUE throws an error, NA throws a warning.
 ##' @return The normalized path.
 ##' @export
-normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\")
+normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\", mustWork = NA)
     {
         
         if(follow.symlinks || Sys.info()["sysname"]=="Windows")
@@ -445,3 +451,19 @@ requireNamespace2 = function(...) {
 if(!exists("paste0"))
     paste0 = function(...) paste(..., sep="")
         
+
+sourceFromManifest = function(pkg, manifest, scm_auths = list(bioconductor=c("readonly", "readonly")), ...) {
+    mandf = manifest_df(manifest)
+    manrow = mandf[mandf$name == pkg, ]
+    ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
+    ## for IndelsOverlay branch
+    src = makeSource(name = pkg,
+        type = manrow$type,
+        url = manrow$url, branch = manrow$branch,
+        subdir = manrow$subdir,
+        scm_auth = scm_auths,...)
+    src
+    
+
+
+}

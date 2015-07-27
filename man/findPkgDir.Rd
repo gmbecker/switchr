@@ -4,7 +4,7 @@
 \alias{findPkgDir}
 \title{Find a package directory within an SCM checkout}
 \usage{
-findPkgDir(rootdir, branch, subdir, repo, param)
+findPkgDir(rootdir, branch, subdir, param)
 }
 \arguments{
 \item{rootdir}{The directory of the checkout}
@@ -12,8 +12,6 @@ findPkgDir(rootdir, branch, subdir, repo, param)
 \item{branch}{The branch to navigate to}
 
 \item{subdir}{The subdirectory to navigate to}
-
-\item{repo}{a GRANRepository object}
 
 \item{param}{a SwitchrParam object}
 }

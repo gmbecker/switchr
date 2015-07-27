@@ -109,5 +109,24 @@ test_ghupdate_dirty()
 
 
 
+test_.grabdeps = function() {
+    desc = read.dcf(system.file("DESCRIPTION", package="switchr"))
+    deps = .grabdeps(desc, FALSE)
+    deps2 = .grabdeps(desc, TRUE)
+    if(!identical(sort(deps), c("methods", "tools")))
+        stop("deps returned non-zero for switchr with suggests=FALSE")
+    if( !identical(sort(deps2), c("BiocInstaller", "methods", "RCurl", "RJSONIO", "tools")))
+        stop("Didn't get BiocIntaller, RCurl, and RJSONIO for deps of switchr including suggests")
+    avl = available.packages()
+    deps3 = .grabdeps(avl["switchr", , drop=FALSE], FALSE)
+    deps4 = .grabdeps(avl["switchr", , drop=FALSE], TRUE)
+    if(!identical(deps, deps3) || !identical(deps2, deps4))
+        stop(".grabdeps did not give the same behavior for consuming available pkgs matrix and description file")
+    
+    TRUE
+   
+}
+
+
 
     
