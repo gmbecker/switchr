@@ -35,6 +35,40 @@ setMethod("archive_timing<-", "SwitchrParam", function(x, value) {
                             })
 
 
+
+##' Get or set the number of seconds to wait between successive shell commands
+##'
+##' This is intended to stop intermittent install failures
+##' due to network drive latency interacting with git commands
+##'
+##' @param x A SwitchrParam object
+##' @return When getting, the number of seconds to wait,
+##' when setting, a new, updated SwitchrParam object.
+
+##' @rdname shell_timing
+##' @docType methods
+##' @export
+
+setGeneric("shell_timing", function(x) standardGeneric("shell_timing"))
+
+##' @rdname shell_timing
+##' @aliases shell_timing,SwitchrParam
+setMethod("shell_timing", "SwitchrParam", function(x) x@shell_timing)
+
+##' @rdname shell_timing
+##' @aliases shell_timing<-
+##' @export
+setGeneric("shell_timing<-", function(x, value) standardGeneric("shell_timing<-"))
+
+##' @rdname shell_timing
+##' @param value The new number of seconds to wait
+##' @aliases shell_timing<-,SwitchrParam
+setMethod("shell_timing<-", "SwitchrParam", function(x, value) {
+                                x@shell_timing = value
+                                x
+                            })
+
+
 ##' Get or set the download method for retreiving files.
 ##'
 ##' @param x A SwitchrParam object

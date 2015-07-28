@@ -9,13 +9,15 @@
 ##' @param dl_method The download method to use when retrieve package
 ##' source files. See \code{\link{download.file}} If none is specified,
 ##' the method defaults to "curl" if the RCurl package is installed and "auto" otherwise.
+##' @param shell_timing numeric. The numer of seconds to wait between certain shell commands.
+##' Defaults to 1, this should only need to be changed in the case of, e.g., networked drive latency issues.
 ##' 
 ##' @return A SwitchrParam object.
 ##' @author Gabriel Becker
 ##' @aliases SwitchrParam-class
 ##' @export
 SwitchrParam = function(logfun = function(...) NULL, shell_init= character(),
-    archive_timing = 2, archive_retries=2, dl_method) {
+    archive_timing = 2, archive_retries=2, dl_method, shell_timing = 1) {
     if(missing(dl_method)) {
         if(requireNamespace2("RCurl"))
             dl_method = "curl"
@@ -25,5 +27,5 @@ SwitchrParam = function(logfun = function(...) NULL, shell_init= character(),
     
     new("SwitchrParam", logfun = logfun, shell_init = shell_init,
         archive_timing=archive_timing, archive_retries = archive_retries,
-        dl_method = dl_method)
+        dl_method = dl_method, shell_timing=shell_timing)
 }

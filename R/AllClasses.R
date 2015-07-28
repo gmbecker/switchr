@@ -6,7 +6,8 @@ setOldClass("sessionInfo")
 ##' @export
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character",
                                         archive_timing="numeric", archive_retries="numeric",
-                                        dl_method = "character"),
+                                        dl_method = "character",
+                                        shell_timing = "numeric"),
          prototype = prototype(logfun = message, shell_init = "", archive_timing = 2, archive_retries = 2,
                           dl_method = "auto"))
 

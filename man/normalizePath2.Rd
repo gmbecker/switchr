@@ -4,7 +4,8 @@
 \alias{normalizePath2}
 \title{normalizePath2}
 \usage{
-normalizePath2(path, follow.symlinks = FALSE, winslash = "\\\\")
+normalizePath2(path, follow.symlinks = FALSE, winslash = "\\\\",
+  mustWork = NA)
 }
 \arguments{
 \item{path}{The path to normalize}
@@ -14,6 +15,9 @@ be resolved to their physical locations? (FALSE)}
 
 \item{winslash}{The value of winslash to be passed down to normalizePath
 on windows systems}
+
+\item{mustWork}{logical. Behavior to perform in the case of a non-existent path.
+FALSE does nothing, TRUE throws an error, NA throws a warning.}
 }
 \value{
 The normalized path.

@@ -130,7 +130,7 @@ findPkgDir = function(rootdir, branch, subdir,param)
         }
     } else if(file.exists(file.path(rootdir, ".git"))) {
         if(is.null(branch) || branch == "trunk")
-            branch = master
+            branch = "master"
         gitChangeBranch(rootdir, branch, param = param)
         ret = rootdir
     } else if ( is.null(branch) || branch %in% c("master", "trunk")) {
@@ -351,18 +351,32 @@ normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\", mustWork
 system_w_init = function(cmd, dir,
     init = character(), ..., param = SwitchrParam())
 {
+    pause = shell_timing(param) > 0
+
+    if(!pause && length(cmd) > 1)
+        cmd = paste(cmd, collapse=" ; ")
+    
     if(!length(init) && !is.null(param))
         init = sh_init_script(param)
-    if(length(cmd) > 1)
-        stop("cmd should be of length 1")
-    if(length(init) && nchar(init))
-        cmd = paste(paste("source", init), cmd, sep = " ; ")
+    if(length(init) && nchar(init)) 
+        cmd = paste(paste("source", init, ";"), cmd)
+    
     if(!missing(dir)) {
       oldwd  = getwd()
       setwd(dir)
       on.exit(setwd(oldwd))
     }
-    system(cmd, ...)
+    if(length(cmd) > 1) {
+        res = sapply(cmd, function(x, ...) {
+                         res = system(cmd, ...)
+                         Sys.sleep(shell_timing(param))
+                         res
+                     }, ...)
+        
+        tail(res, 1)
+    } else {
+        system(cmd, ...)
+    }
 }
 
 highestVs = c(9, 14, 2)

@@ -106,10 +106,6 @@ switchrNoUnload = function(value) {
 flushSession = function(dontunload = switchrDontUnload()) {
     
 
-    s3methtab = get(".__S3MethodsTable__.", .GlobalEnv)
-    s3meths = ls(s3methtab)
-    s3methenvs = sapply(s3meths,function(x) capture.output(print(environment(get(x, s3methtab)))))
-    s3methpkgs = gsub("<environment: namespace:([^>]*)>", "\\1", s3methenvs)
     atched = names(sessionInfo()$otherPkgs)
     if(is.null(atched))
         atched = character()
@@ -150,10 +146,6 @@ flushSession = function(dontunload = switchrDontUnload()) {
         if(!is.null(dll))
             tryCatch(library.dynam.unload(x, dirname(dirname(dll[["path"]]))), error = function(e) NULL)
     })
-
-    ## rip s3 methods out of S3MethodsTable. This is entirely unsupported by the R API!!!
-    s3meths = s3meths[s3methpkgs %in% pkgs]
-    sapply(s3meths, function(x) rm(list = x, envir = s3methtab))
 
     NULL
 }

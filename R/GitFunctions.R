@@ -9,7 +9,7 @@ updateGit = function(dir, source, param)
     dirty = gitWDIsDirty(param)
     stash = FALSE
     if(curb == branch(source)) {
-        cmd = sprintf("git fetch --all; git merge origin/%s", curb)
+        cmds = c("git fetch --all", sprintf("git merge origin/%s", curb))
         if(dirty) {
             stash = TRUE
             system_w_init("git stash", intern = TRUE, param = param)
@@ -18,17 +18,16 @@ updateGit = function(dir, source, param)
         if(dirty)
             stop("Uncommitted changes in local checkout of a different branch.  Stash or commit these before continuing")
         else
-            cmd = paste("git fetch origin ", branch(source), ":", branch(source), "; git checkout ",
-                branch(source), sep="")        
+            cmds = c(paste0("git fetch origin ", branch(source), ":", branch(source)), paste("git checkout ", branch(source)))
     }
         
 
-    out = tryCatch(system_w_init(cmd, intern=TRUE, param=param),
+    out = tryCatch(system_w_init(cmds, intern=TRUE, param=param),
         error = function(x) x)
     if(errorOrNonZero(out))
     {
         
-        logfun(param)(pkg = basename(dir), msg = paste("update of git checkout failed! cmd:", cmd),
+        logfun(param)(pkg = basename(dir), msg = paste("update of git checkout failed! cmd:", cmds),
                      type = "both")
         return(FALSE)
     }
@@ -63,7 +62,7 @@ gitCurrentBranch = function(param) {
     res = system_w_init("git branch", intern=TRUE, param = param)
     br = res[grepl("\\*", res)]
     br = gsub("\\*[[:space:]]*", "", br)
-    br
+    br 
 }
 
 gitWDIsDirty = function(param) {

@@ -14,7 +14,7 @@ checkUrlRoundtrip(tempdir())
 if(switchr:::isWindows())
     checkUrlRoundtrip("\\\\laptop\\My Documents\\")
 
-## regression test to ensure that package dependencies
+## regreossion test to ensure that package dependencies
 ## are added to the dontunload list when a package
 ## is specified
 bef = switchrDontUnload()
@@ -88,9 +88,10 @@ test_ghupdate_dirty = function() {
     unlink(pkgdir, recursive=TRUE)
     ghsourcebr = makeSource("https://github.com/gmbecker/gRAN", type = "git", scm_auth=list(), branch = "API_refactor", name = "GRANBase")
     res = makePkgDir("GRANBase", ghsourcebr, dir, FALSE)
+    oldwd = setwd(pkgdir)
     curbr = switchr:::gitCurrentBranch(SwitchrParam())
     system("git checkout master")
-    oldwd = setwd(pkgdir)
+    
     upd2 = switchr:::updateGit(pkgdir, ghsourcebr, SwitchrParam())
     if(!upd2)
         stop("Update of source checkout when currently on different branch failed")

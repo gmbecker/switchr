@@ -8,7 +8,7 @@ A contstructor for a SwitchrParam object representing a number of common
 parameters understood by the switchr framework}
 \usage{
 SwitchrParam(logfun = function(...) NULL, shell_init = character(),
-  archive_timing = 2, archive_retries = 2, dl_method)
+  archive_timing = 2, archive_retries = 2, dl_method, shell_timing = 1)
 }
 \arguments{
 \item{logfun}{The function to be called to write to logs}
@@ -23,6 +23,9 @@ be sourced before any system commands.}
 \item{dl_method}{The download method to use when retrieve package
 source files. See \code{\link{download.file}} If none is specified,
 the method defaults to "curl" if the RCurl package is installed and "auto" otherwise.}
+
+\item{shell_timing}{numeric. The numer of seconds to wait between certain shell commands.
+Defaults to 1, this should only need to be changed in the case of, e.g., networked drive latency issues.}
 }
 \value{
 A SwitchrParam object.
