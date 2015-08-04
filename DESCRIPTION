@@ -2,7 +2,7 @@ Package: switchr
 Type: Package
 Title: Installing, Managing, and Switching Between Distinct Sets of
         Installed Packages
-Version: 0.9.16
+Version: 0.9.17
 Author: Gabriel Becker[aut, cre]
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Copyright: Genentech Inc
@@ -16,6 +16,7 @@ Description: Provides an abstraction for managing, installing,
 Imports: tools
 Depends: methods
 Suggests: BiocInstaller, RJSONIO, RCurl
+SystemRequirements: git, svn
 License: Artistic-2.0
 URL: https://github.com/gmbecker/switchr
 BugReports: https://github.com/gmbecker/switchr/issues

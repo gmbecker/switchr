@@ -16,8 +16,7 @@ be resolved to their physical locations? (FALSE)}
 \item{winslash}{The value of winslash to be passed down to normalizePath
 on windows systems}
 
-\item{mustWork}{logical. Behavior to perform in the case of a non-existent path.
-FALSE does nothing, TRUE throws an error, NA throws a warning.}
+\item{mustWork}{logical. Passed to normalizePath on windows. Ignored otherwise.}
 }
 \value{
 The normalized path.

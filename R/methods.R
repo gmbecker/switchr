@@ -378,9 +378,10 @@ setMethod("attachedPkgs<-", "SwitchrCtx", function(seed, value) {
 setGeneric("announce", function(seed, reverted=FALSE) standardGeneric("announce"))
 
 setMethod("announce", "SwitchrCtx", function(seed, reverted=FALSE) {
-    message(sprintf("%s to the '%s' computing environment. %d packages are currently available.", ifelse(reverted, "Reverted", "Switched"),
+    message(sprintf("%s to the '%s' computing environment. \n%d packages are currently available.", ifelse(reverted, "Reverted", "Switched"),
                     seed@name,  nrow(seed@packages)))
-    message(sprintf("Packages installed in your site library ARE %ssuppressed.", ifelse(seed@exclude.site, "", "NOT ")))
+    if(seed@exclude.site)
+        message("Packages installed in your site library ARE suppressed.")
     message("To switch back to your previous environment type switchBack()")
 })
 

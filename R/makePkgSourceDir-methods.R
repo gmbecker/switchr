@@ -94,7 +94,6 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
                                         #setMethod("makePkgSourceDir", c(name = "ANY", source = "GitSource"), function(name, source, path,  repo) {
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,GitSource
-
 setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           function(name, source, path, latest_only = FALSE, param, forceRefresh=FALSE)
       {
@@ -108,22 +107,35 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
               warning("working directory returned as NULL, unable to reset it after creating pkg directory")
           sdir = location(source)
           if(file.exists(name) &&
-             file.exists(file.path(name, ".git"))) {
+             file.exists(file.path(name, ".git")) &&
+               file.exists(file.path(name, "DESCRIPTION"))) {
               logfun(param)(name, "Existing temporary checkout found at this location. Updating")
               up = updateGit(file.path(path, name), source, param = param)
           } else {
               if(file.exists(name))
-                  unlink(name)
-              cmd = paste("git clone", sdir, name, ";cd", name, "; git checkout", branch(source))
+                  unlink(name, recursive=TRUE )
+              cmd = paste("git clone", sdir, name)
               res = tryCatch(system_w_init(cmd, intern=TRUE, param = param),
                   error=function(x) x)
               if(is(res, "error") || (!is.null(attr(res, "status")) && attr(res, "status") > 0))
               {
-                  logfun(param)(name, paste("Failed to check out package source using command:", cmd),
+                  logfun(param)(name, paste("Failed to clone package source using command:", cmd),
                                type="both")
                   logfun(param)(name, res, type="error")
                   return(FALSE)
               }
+              medwd = setwd(name)
+              cmd2 = paste( " git checkout", branch(source))
+              res2 = tryCatch(system_w_init(cmd2, intern=TRUE, param = param), error = function(e) e)
+              setwd(medwd)
+              if(is(res, "error") || (!is.null(attr(res, "status")) && attr(res, "status") > 0))
+              {
+                logfun(param)(name, paste("Failed to check out package source using command:", cmd2),
+                              type="both")
+                logfun(param)(name, res, type="error")
+                return(FALSE)
+              }
+              
               logfun(param)(name, paste0("Successfully checked out package source from ",
                                         sdir, " on branch ", branch(source)))
           }

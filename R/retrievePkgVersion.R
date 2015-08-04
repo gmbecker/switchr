@@ -329,14 +329,8 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
         if(!ret)
             return(NULL)
     }         
-
-
-    
-
-    
     findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param = param)
-    
-        
+
 }
 
 ## destpath is the actual package directory, not the general destpath for all pkgs.
@@ -459,6 +453,47 @@ setMethod("gotoVersCommit", c(dir = "character", src= "BiocSource"),
                   untar(pkg, exdir = dirname(dir))
               dir
           })
+
+
+##' @rdname gotoVersCommit
+##' @aliases gotoVersCommit,character,GitSource
+
+setMethod("gotoVersCommit", c(dir="character", src="GitSource"),
+          function(dir, src, version, param = SwitchrParam()) {
+
+              if(is.na(version))
+                  return(dir)
+              desc = read.dcf(file.path(dir, "DESCRIPTION"), all=TRUE)
+              if(compareVersion(version, desc$Version) == 0)
+                  return(dir)
+              ret = findGitRev(src@name, version = version, codir = dir)
+              dir
+          })
+
+
+findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
+    if(!file.exists(file.path(codir, "DESCRIPTION")))
+        log("Couldn't find DESCRIPTION file in git checkout")
+    oldwd = setwd(codir)
+    on.exit(setwd(oldwd))
+    log = system_w_init("git log -p DESCRIPTION", intern = TRUE, param = param)
+    cpos = grep("commit [[:alnum:]]{40}[[:space:]]*$", log)
+    line = grep(paste("\\+[vV]ersion: *", version,"$", sep=""), log)
+    if(!length(line)) {
+        logfun(param)(pkg, sprintf("Version %s does not appear in the git commit logs on this branch. Searching across multiple branches is not currently supported", version))
+        return(NULL)
+    }
+    cpos = max(cpos[cpos<line])
+    sha = gsub("commit ([[:alnum:]]{40})[[:space:]]*$", "\\1", log[cpos])
+    cmd = sprintf("git checkout %s", sha)
+    res = tryCatch(system_w_init(cmd, param = param, intern=TRUE), error = function(e) e)
+    if(is(res, "error")) {
+        logfun(param)(pkg, sprintf("Found commit for package version but checking out that commit failed, cmd: %s",cmd), type = "both")
+        NULL
+    } else {
+        codir
+    }
+}
 
 
           

@@ -52,11 +52,16 @@ Bugfixes
 Changes to version 0.9.14 (2015-16-07)
 Bugfixes
 	* further iteration on how git checkouts are updated.
-Changes to version 0.9.16 (2015-16-07)
+Changes to version 0.9.16 (2015-28-07)
 Bugfixes
 	* fix typo in git command
 	* findPkgDir no longer takes a repo argument, which was unused. 
-* New Features
+New Features
 	* Add shell_timing slot to SwitchrParam, and add accessor
 	* Use shell_timing to split git commands
 	* add experimental makePkgCheckout function
+Changes to version 0.9.17 (2015-29-07)
+Bugfixes
+	* fix problems related to git checkouts that were breaking tests (and functionality) in Windows
+Minor API Changes
+        * Add mustWork argument to normalizePath2, passthrough on Windows

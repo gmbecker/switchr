@@ -292,15 +292,14 @@ getPkgDir = function(basepath,name,  subdir, scm_type, branch)
 ##' be resolved to their physical locations? (FALSE)
 ##' @param winslash The value of winslash to be passed down to normalizePath
 ##' on windows systems
-##' @param mustWork logical. Behavior to perform in the case of a non-existent path.
-##' FALSE does nothing, TRUE throws an error, NA throws a warning.
+##' @param mustWork logical. Passed to normalizePath on windows. Ignored otherwise.
 ##' @return The normalized path.
 ##' @export
 normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\", mustWork = NA)
     {
         
         if(follow.symlinks || Sys.info()["sysname"]=="Windows")
-            return(normalizePath(path, winslash = winslash))
+            return(normalizePath(path, winslash = winslash, mustWork = mustWork))
         else {
             if(substr(path, 1, 1) == "~")
                 path = path.expand(path)
@@ -353,7 +352,7 @@ system_w_init = function(cmd, dir,
 {
     pause = shell_timing(param) > 0
 
-    if(!pause && length(cmd) > 1)
+    if(!(pause||isWindows()) && length(cmd) > 1)
         cmd = paste(cmd, collapse=" ; ")
     
     if(!length(init) && !is.null(param))
@@ -368,7 +367,7 @@ system_w_init = function(cmd, dir,
     }
     if(length(cmd) > 1) {
         res = sapply(cmd, function(x, ...) {
-                         res = system(cmd, ...)
+                         res = system(x, ...)
                          Sys.sleep(shell_timing(param))
                          res
                      }, ...)
@@ -477,7 +476,8 @@ sourceFromManifest = function(pkg, manifest, scm_auths = list(bioconductor=c("re
         subdir = manrow$subdir,
         scm_auth = scm_auths,...)
     src
-    
+}
 
-
+isWindows = function() {
+  Sys.info()["sysname"] == "Windows"
 }
