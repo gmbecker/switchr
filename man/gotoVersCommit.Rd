@@ -7,6 +7,8 @@
 \alias{gotoVersCommit,character,BiocSource-method}
 \alias{gotoVersCommit,character,CRANSource}
 \alias{gotoVersCommit,character,CRANSource-method}
+\alias{gotoVersCommit,character,GitSource}
+\alias{gotoVersCommit,character,GitSource-method}
 \alias{gotoVersCommit,character,SVNSource}
 \alias{gotoVersCommit,character,SVNSource-method}
 \title{gotoVersCommit
@@ -21,6 +23,9 @@ gotoVersCommit(dir, src, version, param = SwitchrParam())
   param = SwitchrParam())
 
 \S4method{gotoVersCommit}{character,BiocSource}(dir, src, version,
+  param = SwitchrParam())
+
+\S4method{gotoVersCommit}{character,GitSource}(dir, src, version,
   param = SwitchrParam())
 }
 \arguments{

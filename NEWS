@@ -65,3 +65,7 @@ Bugfixes
 	* fix problems related to git checkouts that were breaking tests (and functionality) in Windows
 Minor API Changes
         * Add mustWork argument to normalizePath2, passthrough on Windows
+Changes to version 0.9.18 (2015-04-08)
+Bugfixes
+	* fix dependencies test.
+	* fix documentation
