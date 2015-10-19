@@ -33,7 +33,7 @@ getBiocReposFromRVers = function() {
     biocvers = getBiocvrFromRvr(myyaml)
     gsub("%%%%", biocvers, biocrepostmpl)
 }
-getBiocvrFromRvr = function(yaml, Rvers) {
+getBiocvrFromRvr = function(yaml, Rvers, first = TRUE) {
     if(missing(Rvers))
         Rvers = paste(R.version$major, gsub("(.*)\\..*", "\\1", R.version$minor), sep=".")
     ln = grep("^r_ver_for_bioc_ver:", yaml)
@@ -42,7 +42,11 @@ getBiocvrFromRvr = function(yaml, Rvers) {
     mylines = yaml[seq(ln+1, lnend-1)]
     mylines = cleanem(mylines)
     mymatty = do.call(rbind, strsplit(mylines, ":"))
-    row = which(mymatty[,2] == Rvers)[1] #first one, do we want first or last???
+    matches = which(mymatty[,2] == Rvers)
+    if(first)
+        row = min(matches)
+    else
+        row = max(matches)
     biocvers = mymatty[row, 1]
 }
 

@@ -58,6 +58,9 @@ ManifestRow = function(name,
 ##' @export
 makeManifest = function(..., dep_repos = defaultRepos()) {
     rows = mapply(ManifestRow, ..., SIMPLIFY=FALSE)
+    maniman = do.call(rbind.data.frame, rows)
+    maniman$url = ifelse(maniman$type == "local",
+        normalizePath2(maniman$url), maniman$url)
     PkgManifest(manifest = do.call(rbind.data.frame, rows), dep_repos = dep_repos)
 }
 

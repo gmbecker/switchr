@@ -263,7 +263,8 @@ getPkgDir = function(basepath,name,  subdir, scm_type, branch)
     if(!file.exists(file.path(basepath, name)))
         stop("directory not found")
     ##svn
-    if(file.exists(file.path(basepath, name, ".svn")))
+##    if(file.exists(file.path(basepath, name, ".svn")))
+    if(scm_type == "svn")
     {
         if(checkStdSVN(file.path(basepath, name)))
         {
@@ -341,7 +342,7 @@ normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\", mustWork
 ##' but will be changed back upon exit of system_w_init.
 ##' @param init (optional) a character value indicating the
 ##' location of an initialization shell script.
-##' @param \dots additional parameters passed directly to \code{\link{system}}.
+##' @param \dots additional parameters passed directly to \code{\link{system2}}.
 ##' @param param A SwitchrParam object. The shell initialization
 ##' script associated with this object is used when \code{init} is
 ##' not specified (length 0).
@@ -365,17 +366,20 @@ system_w_init = function(cmd, dir,
       setwd(dir)
       on.exit(setwd(oldwd))
     }
-    if(length(cmd) > 1) {
-        res = sapply(cmd, function(x, ...) {
-                         res = system(x, ...)
-                         Sys.sleep(shell_timing(param))
-                         res
-                     }, ...)
+    ## if(length(cmd) > 1) {
+    ##     res = sapply(cmd, function(x, ...) {
+    ##         res = system2(x, ...)
+    ##         Sys.sleep(shell_timing(param))
+    ##         res
+    ##     }, ...)
         
-        tail(res, 1)
-    } else {
-        system(cmd, ...)
-    }
+    ##     tail(res, 1)
+    ## } else {
+    if(exists(system2))
+        system2(cmd, ...)
+    else
+        system2fake(cmd, ...)
+    ## }
 }
 
 highestVs = c(9, 14, 2)
@@ -419,6 +423,7 @@ biocReposFromVers = function(vers = develVers) {
     af = gsub(".*/[0-9][^/]*(/.*)", "\\1", repos)
     paste0(bef, vers, af)
 }    
+
 highestBiocVers = function(repos){
     if(!requireNamespace2("BiocInstaller"))
         stop("Unable to determine bioc versions without BiocInstaller installed")
@@ -468,6 +473,9 @@ if(!exists("paste0"))
 sourceFromManifest = function(pkg, manifest, scm_auths = list(bioconductor=c("readonly", "readonly")), ...) {
     mandf = manifest_df(manifest)
     manrow = mandf[mandf$name == pkg, ]
+    if(nrow(manrow) == 0)
+        return(NULL)
+    manrow = manrow[1,]
     ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
     ## for IndelsOverlay branch
     src = makeSource(name = pkg,
@@ -480,4 +488,14 @@ sourceFromManifest = function(pkg, manifest, scm_auths = list(bioconductor=c("re
 
 isWindows = function() {
   Sys.info()["sysname"] == "Windows"
+}
+
+haveGit = function() {
+    res = tryCatch(system2("git", args = "--version"), error = function(e) e)
+    st = attr(res, "status")
+    if(is(res, "error") || (!is.null(st) && st > 0))
+        FALSE
+    else
+        TRUE
+    
 }

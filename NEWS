@@ -45,14 +45,14 @@ Miscellaneous
 	* Remove unnecessary usage of globalVariable to increase compatability with old R versions
 	* Add requireNamespace2 for backwards compatability with old Rs, switch to using that throughout package
 	* Add alternative definition of paste0 for backwards compatability with Rs old enough not to have it.
-Changes in version 0.9.13 (2015-15-07)
+Changes in version 0.9.13 (2015-07-15)
 Bugfixes
 	* refine how git existing git checkouts are updated. 
 	* Add testing of git-based makePkgDir and updateGit functions
-Changes to version 0.9.14 (2015-16-07)
+Changes to version 0.9.14 (2015-07-16)
 Bugfixes
 	* further iteration on how git checkouts are updated.
-Changes to version 0.9.16 (2015-28-07)
+Changes to version 0.9.16 (2015-07-28)
 Bugfixes
 	* fix typo in git command
 	* findPkgDir no longer takes a repo argument, which was unused. 
@@ -60,7 +60,7 @@ New Features
 	* Add shell_timing slot to SwitchrParam, and add accessor
 	* Use shell_timing to split git commands
 	* add experimental makePkgCheckout function
-Changes to version 0.9.17 (2015-29-07)
+Changes to version 0.9.17 (2015-07-29)
 Bugfixes
 	* fix problems related to git checkouts that were breaking tests (and functionality) in Windows
 Minor API Changes
@@ -69,3 +69,8 @@ Changes to version 0.9.18 (2015-04-08)
 Bugfixes
 	* fix dependencies test.
 	* fix documentation
+Changes to version 0.9.19 (2015-08-16)
+Minor API changes
+        * makeManifest() constructor now normalizes path for local packages in manifest
+Miscellaneous
+	* disable git-based tests on build systems that don't have git installed 

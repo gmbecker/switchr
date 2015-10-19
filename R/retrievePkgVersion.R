@@ -229,11 +229,11 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         if(is.null(commit))
             return(NULL)
         pkgdir = file.path(dir, name)
-        system_w_init(Rcmd("build", paste("--no-build-vignettes --no-resave-data --no-manual",
-                            pkgdir)), param = param)
+        system_w_init(Rcmd(""), args = c("build", "--no-build-vignettes", "--no-resave-data", "--no-manual",
+                            pkgdir), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
         setwd(pkgdir)
-        system_w_init("svn up", param = param) #this gets us back to the trunk
+        system_w_init("svn", args = "up", param = param) #this gets us back to the trunk
 
     }
     ret
@@ -340,23 +340,27 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
     ##setwd(file.path(destpath,  name))
     oldwd = setwd(pkgpath)
     on.exit(setwd(oldwd))
-    system_w_init(paste("svn switch --ignore-ancestry", svn_repo), param = param)
+    system_w_init(paste("svn", args = c("switch", "--ignore-ancestry", svn_repo),
+                        param = param)
 
     
     
     
     cmd0 = "svn log -r 1:HEAD --limit 1 DESCRIPTION"
-    revs = system_w_init(cmd0, intern=TRUE, param = param)
+    revs = system_w_init("svn", args = c("log", "-r 1:HEAD", "--limit 1", "DESCRIPTION"),
+                         stdout = TRUE, stderr = TRUE, param = param)
     minrev = as.numeric(gsub("r([[:digit:]]*).*", "\\1", revs[2])) #first line is -------------------
      cmd1 = "svn log -r HEAD:1 --limit 1 DESCRIPTION"
-    revs2 = system_w_init(cmd1, intern=TRUE, param = param)
+    revs2 = system_w_init("svn", args = c("log", "-r HEAD:1", "--limit 1", "DESCRIPTION"),
+                          stdout = TRUE, stderr = TRUE, param = param)
     maxrev = as.numeric(gsub("r([[:digit:]]*).*", "\\1", revs2[2]))
     
     currev = floor((maxrev+minrev)/2)
     
     commit = binRevSearch(version, currev = currev, maxrev = maxrev, minrev = minrev, found = FALSE, param = param)
     cmd2 = paste("svn switch --ignore-ancestry -r", commit, svn_repo)#repoloc)
-    system_w_init(cmd2, param = param)
+    system_w_init("svn", args = c("switch", "--ignore-ancestry", paste("-r", commit),
+                                  svn_repo), param = param)
     return(commit)
     }
 
@@ -364,7 +368,9 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
 binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
 {
     cmd = paste("svn diff --revision", paste(currev, maxrev, sep=":"), "DESCRIPTION")
-    revs = tryCatch(system_w_init(cmd, intern=TRUE, param = param), error=function(x) x)
+    revs = tryCatch(system_w_init("svn", args = c("diff", paste("--revision", currev, ":", maxrev),
+                                                  "DESCRIPTION"), stdout = TRUE, stderr = TRUE,
+                                  param = param), error=function(x) x)
     if(is(revs, "error"))
         return(NULL)
    
@@ -476,7 +482,8 @@ findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
         log("Couldn't find DESCRIPTION file in git checkout")
     oldwd = setwd(codir)
     on.exit(setwd(oldwd))
-    log = system_w_init("git log -p DESCRIPTION", intern = TRUE, param = param)
+    log = system_w_init("git", args = c("log", "-p", " DESCRIPTION"),
+                        intern = TRUE, param = param)
     cpos = grep("commit [[:alnum:]]{40}[[:space:]]*$", log)
     line = grep(paste("\\+[vV]ersion: *", version,"$", sep=""), log)
     if(!length(line)) {
@@ -486,7 +493,8 @@ findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
     cpos = max(cpos[cpos<line])
     sha = gsub("commit ([[:alnum:]]{40})[[:space:]]*$", "\\1", log[cpos])
     cmd = sprintf("git checkout %s", sha)
-    res = tryCatch(system_w_init(cmd, param = param, intern=TRUE), error = function(e) e)
+    res = tryCatch(system_w_init("git", args = c("checkout", sha),
+                                 param = param, stdout = TRUE, stderr = TRUE), error = function(e) e)
     if(is(res, "error")) {
         logfun(param)(pkg, sprintf("Found commit for package version but checking out that commit failed, cmd: %s",cmd), type = "both")
         NULL
