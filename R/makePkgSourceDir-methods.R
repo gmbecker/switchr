@@ -27,11 +27,13 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
                   ## clean up the directory if it was created from some other type of source
                   if(file.exists(name))
                       unlink(name, recursive = TRUE)
-                  cmd = paste("svn co", location(source), name, opts)
+                  cmd = "svn"
+                  args = c("co", location(source), name, opts)
                   lfun(name, paste("Attempting to create temporary source",
                                    "directory from SVN repo", location(source),
                                    "(branch", source@branch, "; cmd", cmd, ")"))
-                  out = tryCatch(system_w_init(cmd, param = param), error = function(x) x)
+                  out = tryCatch(system_w_init(cmd, args = args,
+                                               param = param), error = function(x) x)
                   if(is(out, "error"))
                   {
                       msg = c(paste("Temporary SVN checkout failed. cmd:", cmd), out$message)
@@ -114,23 +116,28 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           } else {
               if(file.exists(name))
                   unlink(name, recursive=TRUE )
-              cmd = paste("git clone", sdir, name)
-              res = tryCatch(system_w_init(cmd, intern=TRUE, param = param),
+              args = c("clone", sdir, name)
+              res = tryCatch(system_w_init("git", args = args,
+                                           intern=TRUE, param = param),
                   error=function(x) x)
               if(is(res, "error") || (!is.null(attr(res, "status")) && attr(res, "status") > 0))
               {
-                  logfun(param)(name, paste("Failed to clone package source using command:", cmd),
+                  logfun(param)(name, paste("Failed to clone package source using",
+                                            "git command with arguments:", args),
                                type="both")
                   logfun(param)(name, res, type="error")
                   return(FALSE)
               }
               medwd = setwd(name)
-              cmd2 = paste( " git checkout", branch(source))
-              res2 = tryCatch(system_w_init(cmd2, intern=TRUE, param = param), error = function(e) e)
+              args2 = c("checkout", branch(source))
+              res2 = tryCatch(system_w_init("git", args = args2, intern=TRUE,
+                                            param = param), error = function(e) e)
               setwd(medwd)
               if(is(res, "error") || (!is.null(attr(res, "status")) && attr(res, "status") > 0))
               {
-                logfun(param)(name, paste("Failed to check out package source using command:", cmd2),
+                logfun(param)(name, paste("Failed to check out package source",
+                                          "using git command with arguments:",
+                                          args2),
                               type="both")
                 logfun(param)(name, res, type="error")
                 return(FALSE)

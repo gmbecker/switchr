@@ -4,7 +4,8 @@
 \alias{system_w_init}
 \title{system_w_init}
 \usage{
-system_w_init(cmd, dir, init = character(), ..., param = SwitchrParam())
+system_w_init(cmd, dir, init = character(), args = NULL, env = NULL, ...,
+  param = SwitchrParam())
 }
 \arguments{
 \item{cmd}{The text of the command. Must be length 1.}
@@ -14,6 +15,10 @@ but will be changed back upon exit of system_w_init.}
 
 \item{init}{(optional) a character value indicating the
 location of an initialization shell script.}
+
+\item{args}{character. Arguments to be passed to the command}
+
+\item{env}{character. Environmental variables to be set when running the command}
 
 \item{param}{A SwitchrParam object. The shell initialization
 script associated with this object is used when \code{init} is

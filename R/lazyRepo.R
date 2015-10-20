@@ -234,8 +234,10 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       if(verbose)
                           message(sprintf("Building package %s", pkgname))
                       cmd = Rcmd("build")
-                      args = c("--no-resave-data", "--no-build-vignettes", file.path(pkgdir, subdir(src))
-                      res = tryCatch(system_w_init(cmd, dir = repdir, stdout = TRUE, stderr = TRUE, param = param),
+                      args = c("--no-resave-data", "--no-build-vignettes", file.path(pkgdir, subdir(src)))
+                      res = tryCatch(system_w_init(cmd, args = args,
+                                                   dir = repdir, intern=TRUE,
+                                                   param = param),
                         error = function(x) x)
                   if(is(res, "error"))
                       stop(paste("Unable to build package", res))

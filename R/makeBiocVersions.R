@@ -1,5 +1,5 @@
-biocReleaseV = "3.1"
-biocDevelV = "3.2"
+biocReleaseV = "3.2"
+biocDevelV = "3.3"
 
 ##lifted from biocLite.R
 biocrepos <- NULL

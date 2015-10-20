@@ -10,6 +10,10 @@ annotateDESCs = function(pkgs, man, type = "source") {
     desc = as.data.frame(read.dcf(fil), stringsAsFactors = FALSE)
     if (pkg %in% mandf$name) {
         row = mandf[mandf$name==pkg,]
+        if(nrow(row) > 1) {
+            warning("Manifest contained package ", pkg, "more than once. Using first match for DESCRIPTION file annotation")
+            row = row[1,]
+        }
         loc = row$url
         subdir = row$subdir
         type = row$type

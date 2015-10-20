@@ -15,8 +15,9 @@ updateSVN = function(dir, source,  param)
     if(is(source, "GitSVNSource"))
         {
             if(length(pwd) && nchar(pwd))
-                pwd = paste("echo", pwd, "| ")
-            cmd = paste(pwd,"git svn rebase", usr)
+                pwd = shQuote(paste("echo", pwd, "| "))
+            cmd = paste(pwd,"git")
+            args = c("svn rebase", usr)
         } else {
             args = c("update", args)
             cmd = "svn"
@@ -26,7 +27,7 @@ updateSVN = function(dir, source,  param)
                 args = c(args, paste("--username=", usr))
 
         }
-    out = tryCatch(system_w_init(cmd, intern=TRUE, param = param),
+    out = tryCatch(system_w_init(cmd, args = args, intern=TRUE, param = param),
         error = function(x) x)
     if(is(out, "error"))
     {

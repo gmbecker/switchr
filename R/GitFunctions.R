@@ -9,22 +9,25 @@ updateGit = function(dir, source, param)
     dirty = gitWDIsDirty(param)
     stash = FALSE
     if(curb == branch(source)) {
-        cmds = c("git fetch", sprintf("git merge origin/%s", curb))
-        args = list("--all", character())
+        cmds = "git"
+        args = list("fetch --all", sprintf("merge origin/%s", curb))
         if(dirty) {
             stash = TRUE
-            system_w_init("git stash", stdout = TRUE, stderr = TRUE, param = param)
+            system_w_init("git", args = "stash", intern = TRUE, param = param)
         }
     } else {
         if(dirty)
             stop("Uncommitted changes in local checkout of a different branch.  Stash or commit these before continuing")
         else {
-            cmds = c(paste0("git fetch origin ", branch(source), ":", branch(source)), paste("git checkout ", branch(source)))
-            args = list(character(), character()
+            cmds = "git"
+            args = list(c("fetch origin ", branch(source), ":", branch(source)),
+                        c("checkout ", branch(source)))
+            ## cmds = c(paste0("git fetch origin ", branch(source), ":", branch(source)), paste("git checkout ", branch(source)))
+            ## args = list(character(), character())
         }
     }
 
-    out = tryCatch(mapply(system_w_init, cmds, args = args, stdout = TRUE, stderr=TRUE,
+    out = tryCatch(mapply(system_w_init, cmds, args = args, intern = TRUE,
                  param = list(param)), error= function(e) e)
 
 #    out = tryCatch(system_w_init(cmds, stdout = TRUE, stderr = TRUE, param=param),
@@ -37,7 +40,7 @@ updateGit = function(dir, source, param)
         return(FALSE)
     }
     if(stash)
-        system_w_init("git stash pop", stdout = TRUE, stderr = TRUE, param = param)
+        system_w_init("git", args= "stash pop", intern = TRUE, param = param)
     
 
     TRUE
@@ -48,10 +51,10 @@ gitChangeBranch = function(codir, branch, param = SwitchrParam()) {
    
     oldwd = setwd(codir)
     on.exit(setwd(oldwd))
-    cmd=paste("git checkout", branch)
     logfun(param)(basename(codir), paste("GIT: Switching to branch", branch,
                                         "in checked out local copy."))
-    out = tryCatch(system_w_init(cmd, stdout = TRUE, stderr = TRUE, param = param),
+    out = tryCatch(system_w_init("git", args = c("checkout", branch),
+                                 intern = TRUE, param = param),
         error = function(x) x)
     if(errorOrNonZero(out)) {
         logfun(param)(basename(codir), c("GIT: switching to branch failed."),
@@ -64,14 +67,14 @@ gitChangeBranch = function(codir, branch, param = SwitchrParam()) {
 }
 
 gitCurrentBranch = function(param) {
-    res = system_w_init("git branch", stdout = TRUE, stderr = TRUE, param = param)
+    res = system_w_init("git", args = "branch", intern = TRUE, param = param)
     br = res[grepl("\\*", res)]
     br = gsub("\\*[[:space:]]*", "", br)
     br 
 }
 
 gitWDIsDirty = function(param) {
-    prstat = system_w_init("git status", args = "--porcelain", stdout = TRUE, stderr = TRUE, param = param)
+    prstat = system_w_init("git", args = c("status", "--porcelain"), intern = TRUE, param = param)
     if(length(prstat)  && !all(grepl("\\?\\?", prstat)))
         TRUE
     else

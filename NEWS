@@ -74,3 +74,13 @@ Minor API changes
         * makeManifest() constructor now normalizes path for local packages in manifest
 Miscellaneous
 	* disable git-based tests on build systems that don't have git installed 
+Changes to version 0.9.20 (2015-10-20)
+API Changes
+        * system_w_init not accepts args and env arguments a la system2, though ... still accepts system() based arguments, as that is called underneath
+	* BiocSVNManifest now uses 'svn ls' rather than available.packages to populate the manifest. not_in_repo argument removed.
+Bugfixes
+	* Updated Bioc devel and Bioc release version numbers
+	* Fixed system calls which were failing on Windows
+	* annotateDESC now protects against packages appearing in more than one place in the provided manifest
+Miscellaneous
+	* Added basic testing for svn-based ops, including makePkgSource and BiocSVNManifest

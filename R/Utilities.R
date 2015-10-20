@@ -342,45 +342,47 @@ normalizePath2 = function(path, follow.symlinks=FALSE, winslash = "\\", mustWork
 ##' but will be changed back upon exit of system_w_init.
 ##' @param init (optional) a character value indicating the
 ##' location of an initialization shell script.
-##' @param \dots additional parameters passed directly to \code{\link{system2}}.
+##' @param args character. Arguments to be passed to the command
+##' @param env character. Environmental variables to be set when running the command
+##' @param \dots additional parameters passed directly to \code{\link{system}}.
 ##' @param param A SwitchrParam object. The shell initialization
 ##' script associated with this object is used when \code{init} is
 ##' not specified (length 0).
 ##' @return Depends, see \code{\link{system}} for details.
 ##' @export
 system_w_init = function(cmd, dir,
-    init = character(), ..., param = SwitchrParam())
+    init = character(), args = NULL, env = NULL, ..., param = SwitchrParam())
 {
     pause = shell_timing(param) > 0
 
-    if(!(pause||isWindows()) && length(cmd) > 1)
-        cmd = paste(cmd, collapse=" ; ")
+    if(length(cmd) > 1)
+        stop("Vectors of commands not supported by system_w_init")
+    
     
     if(!length(init) && !is.null(param))
         init = sh_init_script(param)
-    if(length(init) && nchar(init)) 
-        cmd = paste(paste("source", init, ";"), cmd)
+
+    ## hacky barebones  recreation of system2
+    
+    if(isWindows())
+        cmd = paste( c(shQuote(cmd), env, args), collapse = " ")
+    else
+        cmd = paste( c(env, shQuote(cmd), args), collapse = " ")
+    
+    
+    if(length(init) && nchar(init))         
+        paste(shQuote(paste("source", init, ";")), cmd)
     
     if(!missing(dir)) {
-      oldwd  = getwd()
-      setwd(dir)
-      on.exit(setwd(oldwd))
+        oldwd  = getwd()
+        setwd(dir)
+        on.exit(setwd(oldwd))
     }
-    ## if(length(cmd) > 1) {
-    ##     res = sapply(cmd, function(x, ...) {
-    ##         res = system2(x, ...)
-    ##         Sys.sleep(shell_timing(param))
-    ##         res
-    ##     }, ...)
-        
-    ##     tail(res, 1)
-    ## } else {
-    if(exists(system2))
-        system2(cmd, ...)
-    else
-        system2fake(cmd, ...)
-    ## }
+    system(cmd, ...)
 }
+
+    
+
 
 highestVs = c(9, 14, 2)
 
@@ -490,12 +492,7 @@ isWindows = function() {
   Sys.info()["sysname"] == "Windows"
 }
 
-haveGit = function() {
-    res = tryCatch(system2("git", args = "--version"), error = function(e) e)
-    st = attr(res, "status")
-    if(is(res, "error") || (!is.null(st) && st > 0))
-        FALSE
-    else
-        TRUE
-    
-}
+haveGit = function() nchar(Sys.which("git")) > 0
+
+haveSVN = function() nchar(Sys.which("svn")) > 0
+

@@ -340,7 +340,7 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
     ##setwd(file.path(destpath,  name))
     oldwd = setwd(pkgpath)
     on.exit(setwd(oldwd))
-    system_w_init(paste("svn", args = c("switch", "--ignore-ancestry", svn_repo),
+    system_w_init("svn", args = c("switch", "--ignore-ancestry", svn_repo),
                         param = param)
 
     
@@ -369,7 +369,7 @@ binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
 {
     cmd = paste("svn diff --revision", paste(currev, maxrev, sep=":"), "DESCRIPTION")
     revs = tryCatch(system_w_init("svn", args = c("diff", paste("--revision", currev, ":", maxrev),
-                                                  "DESCRIPTION"), stdout = TRUE, stderr = TRUE,
+                                                  "DESCRIPTION"), intern = TRUE,
                                   param = param), error=function(x) x)
     if(is(revs, "error"))
         return(NULL)
