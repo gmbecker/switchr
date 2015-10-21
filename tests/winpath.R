@@ -1,4 +1,6 @@
 library(switchr)
+if(options("repos")$repos["CRAN"] == "@CRAN@")
+    chooseCRANmirror(ind=2)
 checkUrlRoundtrip = function(pth) {
     pth = switchr:::normalizePath2(pth)
     furl = switchr:::makeFileURL(pth)
@@ -30,6 +32,12 @@ tmplib = tempdir()
 trace(lazyRepo, stop)
 install_packages("switchr", repos = defaultRepos(), lib = tmplib)
 untrace("lazyRepo", where = getNamespace("switchr"))
+
+## regression test for DESCRIPTION annotation with dups in manifest
+## This fails on the CRAN build systems but works locally, so disabled
+## man = PkgManifest(name = c("fastdigest", "fastdigest"), type = "cran")
+## install_packages("fastdigest", man, lib = tmplib)
+
 
 ## regression test for generating empty manifest df and empty manifest
 mandf = ManifestRow()
@@ -161,7 +169,6 @@ test_svncheckout = function() {
 if(switchr:::haveSVN()) {
     test_svncheckout()
 }
-
 
 
 

@@ -4,15 +4,11 @@
 \alias{BiocSVNManifest}
 \title{Create a manifest of Bioc SVN locations}
 \usage{
-BiocSVNManifest(bioc_vers = "devel", not_in_repo = character(),
-  software_only = TRUE)
+BiocSVNManifest(bioc_vers = "devel", software_only = TRUE)
 }
 \arguments{
 \item{bioc_vers}{A version number for a bioc release, or \code{"devel"} to
 for the current devel trunk}
-
-\item{not_in_repo}{character. A vector of package names which are
-in SVN but do not appear in the bioconductor repository}
 
 \item{software_only}{logical. Should only software packages be
 included in the manifest? Defaults to TRUE}
