@@ -3,7 +3,7 @@ updateSVN = function(dir, source,  param)
     oldwd = getwd()
     setwd(dir)
     on.exit(setwd(oldwd))
-    usr = pwd = character()
+    usr = pwd = args = character()
     if(!is.na(source@user) && nchar(source@user))
         usr = source@user
     else
