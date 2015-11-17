@@ -256,7 +256,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         if(verbose)
             message(sprintf("Searching Bioc repository for release %s", biocVersFromRepo(urls)))
         
-        pkgs = as.data.frame(available.packages(urls, fields = c("Package", "Version"), type="source"), stringsAsFactors=FALSE)
+        pkgs = as.data.frame(available.packages(urls, fields = c("Package", "Version"), type="source", filters = "duplicates"), stringsAsFactors=FALSE)
         pkg = pkgs[pkgs$Package == name,]       
         
         pkgAvail = nrow(pkg) > 0
@@ -307,7 +307,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 ##' Bioc devel.
 ##' @return A vector of urls for the specified packages within the Bioconductor SVN repository
 ##' @export
-makeBiocSVNURL = function(name, biocVers = "devel") {
+makeBiocSVNURL = function(name, biocVers = getBiocvrFromRvr()) {
 
     biocVers = tolower(biocVers)
     if(biocVers == biocVersFromRepo(highestBiocVers()) || biocVers %in% dev_vers_aliases) {
@@ -332,7 +332,7 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
             return(NULL)
     }         
     res = findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param = param)
-    if(is.null(res)) {
+    if(is.null(res) && ! biocVers %in% dev_vers_aliases) {
         trrepo = makeBiocSVNURL(name, "devel") 
         res = findSVNRev(name, version, svn_repo = trrepo, pkgpath = pkgdir, param = param)
     }

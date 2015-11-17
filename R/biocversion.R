@@ -33,7 +33,7 @@ getBiocReposFromRVers = function() {
     biocvers = getBiocvrFromRvr(myyaml)
     gsub("%%%%", biocvers, biocrepostmpl)
 }
-getBiocvrFromRvr = function(yaml, Rvers, first = TRUE) {
+getBiocvrFromRvr = function(yaml  = getBiocYaml(), Rvers, first = TRUE) {
     if(missing(Rvers))
         Rvers = paste(R.version$major, gsub("(.*)\\..*", "\\1", R.version$minor), sep=".")
     ln = grep("^r_ver_for_bioc_ver:", yaml)
