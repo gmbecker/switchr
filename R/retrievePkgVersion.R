@@ -331,8 +331,12 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
         if(!ret)
             return(NULL)
     }         
-    findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param = param)
-
+    res = findSVNRev(name, version, svn_repo = repoloc, pkgpath = pkgdir, param = param)
+    if(is.null(res)) {
+        trrepo = makeBiocSVNURL(name, "devel") 
+        res = findSVNRev(name, version, svn_repo = trrepo, pkgpath = pkgdir, param = param)
+    }
+    res
 }
 
 ## destpath is the actual package directory, not the general destpath for all pkgs.
@@ -360,6 +364,8 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
     currev = floor((maxrev+minrev)/2)
     
     commit = binRevSearch(version, currev = currev, maxrev = maxrev, minrev = minrev, found = FALSE, param = param)
+    if(is.null(commit))
+        return(NULL)
     cmd2 = paste("svn switch --ignore-ancestry -r", commit, svn_repo)#repoloc)
     system_w_init("svn", args = c("switch", "--ignore-ancestry", paste("-r", commit),
                                   svn_repo), param = param)
