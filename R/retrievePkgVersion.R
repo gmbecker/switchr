@@ -349,11 +349,11 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
     
     cmd0 = "svn log -r 1:HEAD --limit 1 DESCRIPTION"
     revs = system_w_init("svn", args = c("log", "-r 1:HEAD", "--limit 1", "DESCRIPTION"),
-                         stdout = TRUE, stderr = TRUE, param = param)
+                         intern = TRUE, param = param)
     minrev = as.numeric(gsub("r([[:digit:]]*).*", "\\1", revs[2])) #first line is -------------------
      cmd1 = "svn log -r HEAD:1 --limit 1 DESCRIPTION"
     revs2 = system_w_init("svn", args = c("log", "-r HEAD:1", "--limit 1", "DESCRIPTION"),
-                          stdout = TRUE, stderr = TRUE, param = param)
+                          intern = TRUE, param = param)
     maxrev = as.numeric(gsub("r([[:digit:]]*).*", "\\1", revs2[2]))
     
     currev = floor((maxrev+minrev)/2)
@@ -495,7 +495,7 @@ findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
     sha = gsub("commit ([[:alnum:]]{40})[[:space:]]*$", "\\1", log[cpos])
     cmd = sprintf("git checkout %s", sha)
     res = tryCatch(system_w_init("git", args = c("checkout", sha),
-                                 param = param, stdout = TRUE, stderr = TRUE), error = function(e) e)
+                                 param = param, intern = TRUE), error = function(e) e)
     if(is(res, "error")) {
         logfun(param)(pkg, sprintf("Found commit for package version but checking out that commit failed, cmd: %s",cmd), type = "both")
         NULL

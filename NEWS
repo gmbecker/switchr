@@ -84,6 +84,7 @@ Bugfixes
 	* annotateDESC now protects against packages appearing in more than one place in the provided manifest
 Miscellaneous
 	* Added basic testing for svn-based ops, including makePkgSource and BiocSVNManifest
-Changes to version 0.9.22 (2015-11-3)
+Changes to version 0.9.23 (2015-11-17)
 Bugfixes
 	* Fix svn update code by initializing args variable so function is not hit
+	* Fix code in findSVNRev to use new system_w_init api
