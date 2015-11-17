@@ -230,7 +230,8 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         if(is.null(commit))
             return(NULL)
         pkgdir = file.path(dir, name)
-        system_w_init(Rcmd(""), args = c("build", "--no-build-vignettes", "--no-resave-data", "--no-manual",
+        rbin = paste(file.path(R.home("bin"), "R"))
+        system_w_init(rbin, args = c("build", "--no-build-vignettes", "--no-resave-data", "--no-manual",
                             pkgdir), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
         setwd(pkgdir)
@@ -369,7 +370,7 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
 binRevSearch = function(version, currev, maxrev, minrev, param, found = FALSE)
 {
     cmd = paste("svn diff --revision", paste(currev, maxrev, sep=":"), "DESCRIPTION")
-    revs = tryCatch(system_w_init("svn", args = c("diff", paste("--revision", currev, ":", maxrev),
+    revs = tryCatch(system_w_init("svn", args = c("diff", "--revision", paste0(currev, ":", maxrev),
                                                   "DESCRIPTION"), intern = TRUE,
                                   param = param), error=function(x) x)
     if(is(revs, "error"))
