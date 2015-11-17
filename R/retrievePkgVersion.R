@@ -230,7 +230,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         if(is.null(commit))
             return(NULL)
         pkgdir = file.path(dir, name)
-        rbin = paste(file.path(R.home("bin"), "R"))
+        rbin = paste(file.path(R.home("bin"), "Rcmd"))
         system_w_init(rbin, args = c("build", "--no-build-vignettes", "--no-resave-data", "--no-manual",
                             pkgdir), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
