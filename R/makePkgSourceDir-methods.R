@@ -14,9 +14,9 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
               
               opts = character()
               if(length(source@user) && nchar(source@user))
-                  opts = paste(opts, "--username", source@user)
+                  opts = paste0(opts, " --username=", source@user)
               if(length(source@password) && nchar(source@password))
-                  opts = paste(opts, "--password", source@password)
+                  opts = paste0(opts, " --password=", source@password)
               
                                         #did we already check it out?
               if(file.exists(name) && file.exists(name, ".svn") && !forceRefresh)

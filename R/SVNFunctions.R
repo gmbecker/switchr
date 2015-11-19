@@ -23,10 +23,9 @@ updateSVN = function(dir, source,  param)
             args = c("update", args)
             cmd = "svn"
             if(length(pwd) && nchar(pwd) )
-                args = c(args, paste("--password=", pwd))
+                args = c(args, paste0("--password=", pwd))
             if(length(usr) && nchar(usr))
-                args = c(args, paste("--username=", usr))
-            args = c(args, ".")
+                args = c(args, paste0("--username=", usr))
         }
    
     out = tryCatch(system_w_init(cmd, args = args, intern=TRUE, param = param),
