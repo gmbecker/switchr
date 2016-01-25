@@ -74,7 +74,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
               zpfile = normalizePath(file.path(path,
                   paste(name, "-", branch(source), ".zip", sep = "")))
               if(!file.exists(zpfile) || forceRefresh)
-                  success = download.file(zipUrl, zpfile, method = "wget")
+                  success = download.file2(zipUrl, zpfile)
               else
                   success = 0
               if(success > 0)
@@ -172,7 +172,7 @@ setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, sourc
     if(!file.exists(file.path(path, name)))
         dir.create(file.path(path, name), recursive=TRUE)
     
-    pkg =  download.packages(name, destdir = path, method = "wget")[,2]
+    pkg =  download.packages2(name, destdir = path)[,2]
     untar(pkg,exdir = path)
     TRUE
     
@@ -188,7 +188,7 @@ setMethod("makePkgDir", c(name="ANY", source="BiocSource"), function(name, sourc
     if(!file.exists(file.path(path, name)))
         dir.create(file.path(path, name), recursive=TRUE)
 
-    pkg =  download.packages(name, destdir = path, method = "wget", repos = BiocInstaller::biocinstallRepos())[,2]
+    pkg =  download.packages2(name, destdir = path,  repos = BiocInstaller::biocinstallRepos())[,2]
     untar(pkg,exdir = path)
     return(TRUE)
     
@@ -206,7 +206,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
               loc = location(source)
               if(grepl("://", loc)) {
                   destfile = file.path(path, basename(loc))
-                  download.file(loc, destfile = destfile)
+                  download.file2(loc, destfile = destfile)
                   loc = destfile
               }
               untar(loc, exdir = path)

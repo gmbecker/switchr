@@ -10,7 +10,7 @@ loadManifest = function(fil) {
 
             
         newfil = tempfile(pattern = "manifest")
-        download.file(fil, newfil, method = "wget")
+        download.file2(fil, newfil)
         if(grepl("gist.github.com", fil)) {
             lnk = grep(".*raw.*manifest\\.rman", readLines(newfil),
                 value = TRUE)
@@ -19,7 +19,7 @@ loadManifest = function(fil) {
                      "\\1", lnk, ignore.case=TRUE),
                 sep="")
             newfil = tempfile(pattern = "manifest")
-            download.file(lnk, newfil, method = "wget")
+            download.file2(lnk, newfil)
         }
             
         fil = newfil

@@ -92,3 +92,4 @@ Changes to version 0.9.25 (2015-11-17)
 Bugfixes
 	* Switch R system call to Rcmd in findPkgVersionInBioc
 	* Fix code which determines bioconductor branch to search for exact bioc version.
+	* Make download method defaults more robust (on systems without wget)

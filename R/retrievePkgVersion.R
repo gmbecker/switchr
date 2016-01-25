@@ -76,7 +76,7 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
     {
         pkg = pkgs[pkgs$Package == name,]
         if(pkg$Version == version){
-            res = download.packages(name, destdir = destpath, type="source")
+            res = download.packages2(name, destdir = destpath, type="source")
             if(nrow(res) < 1)
                 stop("Package is in CRAN but download failed")
             return(res[1,2])
@@ -94,7 +94,7 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
     destfile = file.path(destpath, tarname)
     retries = 0
     while(retries < archive_retries(param)) {
-        res = tryCatch(download.file(cranurl, destfile), error = function(e) e)
+        res = tryCatch(download.file2(cranurl, destfile), error = function(e) e)
         Sys.sleep(archive_timing(param))
         if(is(res, "error") || res > 0) {
             retries = retries + 1
@@ -229,6 +229,7 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
             param = param, ret$biocVers)
         if(is.null(commit))
             return(NULL)
+        
         pkgdir = file.path(dir, name)
         rbin = paste(file.path(R.home("bin"), "Rcmd"))
         system_w_init(rbin, args = c("build", "--no-build-vignettes", "--no-resave-data", "--no-manual",
@@ -240,6 +241,9 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
     }
     ret
 }
+
+
+
 
 ## tries to download the file. Returns list with two elements (file:dl'ed file or NULL and versionToSearch:bioc version)
 ##' @importFrom utils contrib.url available.packages compareVersion download.file
@@ -269,10 +273,9 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
                     message(sprintf("Bioc repo for release %s has package version %s, earlier than desired version %s", biocVersFromRepo(urls), versAvail, version))
                 pkgAvail = FALSE
             } else if (compareVersion(versAvail, version) == 0) {
-                                        #                ret = download.packages(name, destdir = destpath, repos = urls)[1,2]
                 filname = paste0(name, "_", version, .getExt(pkg[1,"Repository"]))
                 dstfile = file.path(dir, filname)
-                ret = tryCatch(download.file(paste(pkg[1,"Repository"], filname, sep="/"), destfile=dstfile), error=function(x) x)
+                ret = tryCatch(download.file2(paste(pkg[1,"Repository"], filname, sep="/"), destfile=dstfile), error=function(x) x)
                 if(!is(ret, "error") && ret == 0) {
                     ret = dstfile
                     if(verbose)
@@ -512,4 +515,4 @@ findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
 }
 
 
-          
+

@@ -496,3 +496,43 @@ haveGit = function() nchar(Sys.which("git")) > 0
 
 haveSVN = function() nchar(Sys.which("svn")) > 0
 
+download.file2 = function(url, destfile, method, ...) {
+    if(missing(method)) {
+        lc = capabilities("libcurl")
+        if(length(lc) && lc)
+            method = "libcurl"
+        else if(nchar(Sys.which("wget")) > 0)
+            method = "wget"
+        else if(nchar(Sys.which("curl")) > 0)
+            method = "curl"
+        else
+            method = "auto"
+    }
+
+    download.file(url, destfile, method, ...)
+}
+
+
+
+download.packages2 = function(pkgs, destdir, avail = NULL,
+                              repos = getOption("repos"),
+                              contrib = contrib.url(repos, type),
+                              method, ...) {
+    if(missing(method)) {
+        lc = capabilities("libcurl")
+        if(length(lc) && lc)
+            method = "libcurl"
+        else if(nchar(Sys.which("wget")) > 0)
+            method = "wget"
+        else if(nchar(Sys.which("curl")) > 0)
+            method = "curl"
+        else
+            method = "auto"
+    }
+
+    download.packages(pkgs = pkgs, destdir = destdir, available = avail,
+                  repos = repos, contriburl = contrib,
+                  method = method, ...)
+}
+
+

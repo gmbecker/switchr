@@ -141,13 +141,14 @@ PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), 
     if(is.character(manifest)) {
         if(url.exists(manifest)) {
             fil = tempfile()
-            if(missing(dl_method)) {
-                if(requireNamespace2("RCurl"))
-                    dl_meth = "curl"
-                else
-                    dl_meth = "auto"
-            }
-            download.file(manifest, method = dl_meth, fil)
+            ## if(missing(dl_method)) {
+            ##     if(requireNamespace2("RCurl"))
+            ##         dl_meth = "curl"
+            ##     else
+            ##         dl_meth = "auto"
+            ## }
+            ## download.file2(manifest, method = dl_meth, fil)
+            download.file2(manifest, fil)
             manifest  = fil
         }
 
