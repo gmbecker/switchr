@@ -425,6 +425,18 @@ currentCompEnv = function() {
 
 
 
+##' .libpaths2
+##'
+##' A version of .libPaths which allows for excluding the site library
+##'
+##' @param fulllp The libpath to use, as in .libPaths
+##' @param exclude.site logical. Should the site library be suppressed.
+##' Defaults to TRUE
+##' @details Behaves exactly as the .libPaths function does, with the exception
+##' of optionally excluding the site library
+##' @rdname librarypath
+##' @export
+
 .libPaths2 = function(fulllp, exclude.site=TRUE) {
     fun = .libPaths
     lst = list()

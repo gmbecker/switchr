@@ -96,3 +96,6 @@ Bugfixes
 Changes to version 0.9.26 (2016-02-09)
 Bugfixes
 	* fix bug in updateSVN when user/password are not specified
+Changes to version 0.9.27 (2016-02-09)
+Minor API changes
+        * export .libPaths2

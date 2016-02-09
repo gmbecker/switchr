@@ -4,7 +4,7 @@
 \alias{Rcmd}
 \title{R executable}
 \usage{
-Rcmd(cmd = c("build", "check", "INSTALL", ""), options = "")
+Rcmd(cmd = c("build", "check", "INSTALL"), options = "")
 }
 \arguments{
 \item{cmd}{the R CMD to run. "build", "check", "INSTALL", or "" (for none)}

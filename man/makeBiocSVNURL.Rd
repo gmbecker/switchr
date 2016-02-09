@@ -4,7 +4,7 @@
 \alias{makeBiocSVNURL}
 \title{Make a Bioconductor SVN url for a package}
 \usage{
-makeBiocSVNURL(name, biocVers = "devel")
+makeBiocSVNURL(name, biocVers = getBiocvrFromRvr())
 }
 \arguments{
 \item{name}{A vector of bioconductor package names The name of the package}
