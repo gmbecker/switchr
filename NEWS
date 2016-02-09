@@ -93,3 +93,6 @@ Bugfixes
 	* Switch R system call to Rcmd in findPkgVersionInBioc
 	* Fix code which determines bioconductor branch to search for exact bioc version.
 	* Make download method defaults more robust (on systems without wget)
+Changes to version 0.9.26 (2016-02-09)
+Bugfixes
+	* fix bug in updateSVN when user/password are not specified

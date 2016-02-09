@@ -5,12 +5,12 @@ updateSVN = function(dir, source,  param)
     on.exit(setwd(oldwd))
     usr = pwd = args = character()
     ## if(nchar(source@password))
-    if(!is.na(source@password) && nchar(source@password))
+    if(length(source@password)>0 && !is.na(source@password) && nchar(source@password))
         pwd = source@password
 
-    if(!is.na(source@user) && nchar(source@user))
+    if(length(source@user)> 0 && !is.na(source@user) && nzchar(source@user))
         usr = source@user
-    else if(!is.na(pwd) && nchar(pwd))
+    else if(length(pwd) > 0 && nzchar(pwd) && !is.na(pwd))
         usr = system2("whoami", stdout = TRUE, stderr = TRUE)
     
     if(is(source, "GitSVNSource"))
@@ -22,9 +22,9 @@ updateSVN = function(dir, source,  param)
         } else {
             args = c("update", args)
             cmd = "svn"
-            if(length(pwd) && nchar(pwd) )
+            if(length(pwd) && nzchar(pwd) )
                 args = c(args, paste0("--password=", pwd))
-            if(length(usr) && nchar(usr))
+            if(length(usr) && nzchar(usr))
                 args = c(args, paste0("--username=", usr))
         }
    
