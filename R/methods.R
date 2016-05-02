@@ -119,7 +119,7 @@ setMethod("switchTo", c(name = "character", seed = "character"),
             }
             
             if(grepl("(repo|contrib)", chtype)) {
-                seed = repoFromString(seed, chtype)
+                seed = mapply(repoFromString, str = seed, type = chtype)
                 chtype = "repourl"
             }
             

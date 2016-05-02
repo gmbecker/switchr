@@ -193,3 +193,40 @@ test_.grabdeps = function() {
 test_.grabdeps()
 
     
+## Test replace argument to addPkg
+
+test_addReplace = function() {
+
+    man = makeManifest(name = c("switchr", "ggplot2"),
+                   type="cran")
+    
+    man2 = addPkg(man,
+                  name = "fastdigest",
+                  url = "http://github.com/gmbecker/fastdigest",
+                  type = "git")
+    if(nrow(man2) !=3)
+        stop("addPkg with replace=FALSE did not work for new package")
+
+    ## different order than they appear in the manifest
+    man3 = addPkg(man2,
+                  name = c("fastdigest", "switchr"),
+                  url = c("fakefd", "fakeswitchr"),
+                  replace = TRUE)
+    man3df = manifest_df(man3)
+    if(nrow(man3) != 3 ||
+       man3df$url[man3df$name == "switchr"] != "fakeswitchr" ||
+       man3df$url[man3df$name == "fastdigest"] != "fakefd")
+        stop("Replace argument in addPkgs failed when replacing multiple rows")
+
+    man4 = addPkg(man2,
+                  name = c("fastdigest", "GRANBase"),
+                  url = "fake",
+                  replace=TRUE)
+    man4df = manifest_df(man4)
+    
+    if(nrow(man4) != 4 ||
+       man4df$url[man4df$name == "fastdigest"] != "fake")
+        stop("Replace argument in addPkgs failed with mixed replace and new rows")
+       
+       
+}
