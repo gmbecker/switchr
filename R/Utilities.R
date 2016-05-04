@@ -517,7 +517,8 @@ download.file2 = function(url, destfile, method, ...) {
 download.packages2 = function(pkgs, destdir, avail = NULL,
                               repos = getOption("repos"),
                               contrib = contrib.url(repos, type),
-                              method, ...) {
+                              method, type = getOption("pkgType"),
+                              ...) {
     if(missing(method)) {
         lc = capabilities("libcurl")
         if(length(lc) && lc)
@@ -532,7 +533,7 @@ download.packages2 = function(pkgs, destdir, avail = NULL,
 
     download.packages(pkgs = pkgs, destdir = destdir, available = avail,
                   repos = repos, contriburl = contrib,
-                  method = method, ...)
+                  method = method, type=type, ...)
 }
 
 

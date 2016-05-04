@@ -1,7 +1,7 @@
 
 ##' @title archive_timing
 ##' 
-##' Get or set the number of seconds to wait after trying to
+##' @description Get or set the number of seconds to wait after trying to
 ##' retrieve a file from the CRAN Archive.
 ##'
 ##' This is intended to stop intermittent install failures
@@ -38,9 +38,9 @@ setMethod("archive_timing<-", "SwitchrParam", function(x, value) {
 
 
 
-##' Get or set the number of seconds to wait between successive shell commands
+##' @title Get or set the number of seconds to wait between successive shell commands
 ##'
-##' This is intended to stop intermittent install failures
+##' @description This is intended to stop intermittent install failures
 ##' due to network drive latency interacting with git commands
 ##'
 ##' @param x A SwitchrParam object
@@ -452,22 +452,22 @@ setMethod("logfun<-", "SwitchrParam", function(x, value) {
 
 
 
-##' @title Add/replace rows in a data.frame
-##' 
-##' Combine two dataframes together with rows in one optionally replacing
-##' those in the other when they match on a specified index column
-##'
-##' @param df data.frame. The "first" or "old" data.frame.
-##' @param newdf data.frame. The "new" data frame of rows to add to \code{df}
-##' @param replace logical. Should replacement happen when rows of \code{df} and
-##' \code{newdf} match based on \code{indexcol}. Defaults to \code{TRUE}. If
-##' \code{FALSE}, an error is thrown in the matching case.
-##' @param indexcol character. The name of the column to use for matching.
-##' Defaults to \code{"name"} for convenience of internal usage.
-##'
-##' @return A combined data.frame with only columns found in both data.frames
-##' and one row per unique value of the specified index column across both
-##' datasets.
+## @title Add/replace rows in a data.frame
+## 
+## Combine two dataframes together with rows in one optionally replacing
+## those in the other when they match on a specified index column
+##
+## @param df data.frame. The "first" or "old" data.frame.
+## @param newdf data.frame. The "new" data frame of rows to add to \code{df}
+## @param replace logical. Should replacement happen when rows of \code{df} and
+## \code{newdf} match based on \code{indexcol}. Defaults to \code{TRUE}. If
+## \code{FALSE}, an error is thrown in the matching case.
+## @param indexcol character. The name of the column to use for matching.
+## Defaults to \code{"name"} for convenience of internal usage.
+##
+## @return A combined data.frame with only columns found in both data.frames
+## and one row per unique value of the specified index column across both
+## datasets.
 addReplaceDF = function(df, newdf, replace = TRUE, indexcol = "name") {
     df = df[,intersect(names(df), names(newdf))]
     newdf = newdf[,intersect(names(df), names(newdf))]
@@ -499,6 +499,9 @@ addReplaceDF = function(df, newdf, replace = TRUE, indexcol = "name") {
 ##' @param rows An already-created data.frame to add to the manifest
 ##' @param versions A data.frame of package names and versions, if adding to
 ##' a SessionManifest, ignored otherwise
+##' @param replace logical. If true, the specified package info will replace
+##' any already in the manifest in the case of duplicates. Otherwise, an error
+##' is thrown.
 ##' @docType methods
 setGeneric("addPkg", function(x, ..., rows = makeManifest(...),
                               versions = data.frame(name = manifest_df(rows)$name,
@@ -626,7 +629,7 @@ setGeneric("notrack", function(repo) standardGeneric("notrack"))
 setMethod("notrack", "NULL", function(repo) file.path(tempdir(), "notrack"))
 
 
-##' Number of rows
+##' @description Number of rows
 ##'
 ##' @title Number of rows
 ##'
@@ -634,8 +637,13 @@ setMethod("notrack", "NULL", function(repo) file.path(tempdir(), "notrack"))
 ##' @return The number of rows in the structure
 ##' @docType methods
 ##' @export
+##' @rdname nrow
 setGeneric("nrow", nrow)
+##' @rdname nrow
+##' @aliases nrow,PkgManifest
 setMethod("nrow", "PkgManifest",
           function(x) base::nrow(manifest_df(x)))
+##' @rdname nrow
+##' @aliases nrow,SessionManifest
 setMethod("nrow", "SessionManifest",
           function(x) base::nrow(manifest_df(x)))

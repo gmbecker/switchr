@@ -3,9 +3,17 @@
 \docType{methods}
 \name{nrow}
 \alias{nrow}
+\alias{nrow,PkgManifest}
+\alias{nrow,PkgManifest-method}
+\alias{nrow,SessionManifest}
+\alias{nrow,SessionManifest-method}
 \title{Number of rows}
 \usage{
 nrow(x)
+
+\S4method{nrow}{PkgManifest}(x)
+
+\S4method{nrow}{SessionManifest}(x)
 }
 \arguments{
 \item{x}{A tabular data structure.}

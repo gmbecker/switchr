@@ -4,13 +4,17 @@
 \alias{makeBiocSVNURL}
 \title{Make a Bioconductor SVN url for a package}
 \usage{
-makeBiocSVNURL(name, biocVers = getBiocvrFromRvr())
+makeBiocSVNURL(name, biocVers = getBiocvrFromRvr(), pkgtype = "software")
 }
 \arguments{
 \item{name}{A vector of bioconductor package names The name of the package}
 
 \item{biocVers}{The version (release) of bioconductor, or \code{'trunk'} (the default) for
 Bioc devel.}
+
+\item{pkgtype}{character. Which type of packages to retrieve the SVN root url for. Should be
+\code{"software"} or \code{"data"} for software and experimental data packages,
+respectively.}
 }
 \value{
 A vector of urls for the specified packages within the Bioconductor SVN repository

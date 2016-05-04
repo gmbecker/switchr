@@ -29,6 +29,10 @@ addPkg(x, ..., rows = makeManifest(...), versions = data.frame(name =
 \item{versions}{A data.frame of package names and versions, if adding to
 a SessionManifest, ignored otherwise}
 
+\item{replace}{logical. If true, the specified package info will replace
+any already in the manifest in the case of duplicates. Otherwise, an error
+is thrown.}
+
 \item{\dots}{The information regarding the package to place in the manifest}
 }
 \description{

@@ -176,9 +176,11 @@ setMethod("lazyRepo", c(pkgs = "character", pkg_manifest = "PkgManifest"),
                       if(file.info(pkgfile)$isdir)
                           desc = file.path(pkgfile, subdir(src),"DESCRIPTION")
                       else {
-                          
-                          succ= fileFromBuiltPkg(pkgfile, files = .descInTB(src),
-                              exdir = tempdir())
+                          ## this was getting hit and "built" later but only had the
+                          ## DESCRIPTION file in it. Best to just untar the whole thing
+                          ## succ= fileFromBuiltPkg(pkgfile, files = .descInTB(src),
+                          ##     exdir = file.path(tempdir())
+                          succ = untar(pkgfile, exdir = tmpdir)
                           if(!succ)
                               desc = file.path(tmpdir, pkgname, subdir(src),"DESCRIPTION")
                           else

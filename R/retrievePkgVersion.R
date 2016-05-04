@@ -308,9 +308,12 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 ##' @param name A vector of bioconductor package names The name of the package
 ##' @param biocVers The version (release) of bioconductor, or \code{'trunk'} (the default) for
 ##' Bioc devel.
+##' @param pkgtype character. Which type of packages to retrieve the SVN root url for. Should be
+##' \code{"software"} or \code{"data"} for software and experimental data packages,
+##' respectively.
 ##' @return A vector of urls for the specified packages within the Bioconductor SVN repository
 ##' @export
-makeBiocSVNURL = function(name, biocVers = getBiocvrFromRvr()) {
+makeBiocSVNURL = function(name, biocVers = getBiocvrFromRvr(), pkgtype = "software") {
 
     biocVers = tolower(biocVers)
     if(biocVers == biocVersFromRepo(highestBiocVers()) || biocVers %in% dev_vers_aliases) {
@@ -319,9 +322,18 @@ makeBiocSVNURL = function(name, biocVers = getBiocvrFromRvr()) {
         biocVers = paste("branches/RELEASE", gsub(".", "_", biocVers, fixed=TRUE), sep="_")
     }
 
-    paste0("https://hedgehog.fhcrc.org/bioconductor/", biocVers, "/madman/Rpacks/", name)
+    lowerloc = switch(pkgtype,
+                      software = "bioconductor",
+                      data = "bioc-data",
+                      stop("Unsupported pkgtype"))
+
+    loc = switch(pkgtype,
+                 software = "madman/Rpacks",
+                 data = "experiment/pkgs",
+                 stop("Unsupported pkg type"))
+    paste("https://hedgehog.fhcrc.org", lowerloc, biocVers, loc, name, sep="/")
 }
-    
+
 findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
 {
  

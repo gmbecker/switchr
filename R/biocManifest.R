@@ -30,7 +30,7 @@ BiocSVNManifest = function(bioc_vers = "devel", software_only = TRUE) {
         exppkgs = character()
         expurls = character()
     } else {
-        experimentBase = "https://hedgehog.fhcrc.org/bioc-data/branches/RELEASE_3_2/experiment/pkgs"
+        experimentBase = makeBiocSVNURL("", bioc_vers, pkgtype="data")
         exppkgs = gsub( "/$", "",
                     system2("svn", args = c("ls", experimentBase,
                                             "--username=readonly --password=readonly"),
