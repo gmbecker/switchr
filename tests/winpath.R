@@ -151,7 +151,9 @@ test_biocsvnman = function() {
     TRUE
 }
 
-test_biocsvnman()
+## This is causing problems on a system we use switchr on, so temporarily
+## disabled
+#test_biocsvnman()
 
 
 test_svncheckout = function() {

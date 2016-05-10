@@ -159,9 +159,9 @@ Beyond package manifests, \verb@switchr@ also supports \textit{seeding manifests
 extend package manifests by indicating a subset of the packages listed in 
 the manifest, specific package-version information, or both.
 
-<<>>=
+<<eval=FALSE>>=
+## NOT RUN due to peculiarities of CRAN build system wrt installed.packages()
 lman = libManifest()
-lman
 @
 
 Package or seeding manifests can then be used to \textit{seed} switchr libraries. 

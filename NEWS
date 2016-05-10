@@ -1,3 +1,16 @@
+Changes in version 0.10.5 (2016-05-10)
+-------------------------
+
+Minor API changes
+      * Rename Rcmd function to Rcmd2 to avoid conflict in R 3.3.*
+
+Miscellaneous
+	* remove BiocSVNManifest test, as it causes problems with older systems
+	  which choke on https urls via svn.
+	* No longer evaluate libManifest chunk in vignette due to problems on
+	  CRAN build system.
+	  
+
 Changes in version 0.10.0 (2016-05-04)
 -------------------------
 

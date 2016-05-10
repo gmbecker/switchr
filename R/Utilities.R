@@ -86,15 +86,15 @@ fileFromBuiltPkg = function(archive, files, ...) {
 }
 
 
-##' R executable
-##' @param cmd the R CMD to run. "build", "check", "INSTALL", or "" (for none)
-##' @param options The options to pass to the command
-##' @export
-Rcmd = function(cmd = c("build", "check", "INSTALL"), options="") {
-    cmd = match.arg(arg=cmd)
-    cmdpart = if(nchar(cmd)) paste("CMD", cmd) else ""
-    paste(file.path(R.home("bin"), "R"), cmdpart,  options)
-}
+## ##' R executable
+## ##' @param cmd the R CMD to run. "build", "check", "INSTALL", or "" (for none)
+## ##' @param options The options to pass to the command
+## ##' @export
+## Rcmd2 = function(cmd = c("build", "check", "INSTALL"), options="") {
+##     cmd = match.arg(arg=cmd)
+##     cmdpart = if(nchar(cmd)) paste("CMD", cmd) else ""
+##     paste(file.path(R.home("bin"), "R"), cmdpart,  options)
+## }
 
 ##'Check if a directory contains package sources
 ##' @param dir The directory

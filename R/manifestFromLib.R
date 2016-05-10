@@ -82,8 +82,10 @@ setMethod("libManifest", "SwitchrCtx",
 
               libp = full_libpaths(lib)
               dropfirst = length(list.files(list.dirs(libp[1])[1], pattern = "dummy_for_check", recursive=TRUE)) > 0
-              if(dropfirst)
-                  libp = libp[-1]
+              if(dropfirst) {
+                  message("Skipping libManifest logic because I am on the CRAN build system within a check command and it will fail")
+                  return(PkgManifest())
+              }
 
               instpkgs = installed.packages(libp,
                                             noCache=TRUE)[,"Package"]
@@ -97,7 +99,7 @@ setMethod("libManifest", "SwitchrCtx",
                           lib.loc = libp),
                           fields = fields), error = function(e) NULL)
                       if(!is.null(dcf))
-                          dcf = dcf[,fields]
+                          dcf = dcf[,fields, drop=FALSE]
                       else {
                           dcf = data.frame(Package = character(),
                               Version = character(),
@@ -107,7 +109,7 @@ setMethod("libManifest", "SwitchrCtx",
                               SourceSubdir = character(),
                               stringsAsFactors = FALSE)
 
-                          warning("Package ", x, " seems to have gone missing since my installed.packages call 2 seconds ago. libpaths are ", paste(libp, collapse=" , "))
+                          message("Package ", x, " seems to have gone missing since my installed.packages call 2 seconds ago. libpaths are ", paste(libp, collapse=" , "), "\n I think I am on the CRAN build system, some packages may be missing from the manifest.")
                       }
                       dcf
                   },
@@ -115,8 +117,10 @@ setMethod("libManifest", "SwitchrCtx",
                       "SourceLocation",
                       "SourceBranch",
                       "SourceSubdir"))
-          res = res[!sapply(res, is.null)]
+          res = res[sapply(res, function(x) nrow(x)>0)]
           instpkginfo = do.call(rbind, res)
+          if(nrow(instpkginfo) == 0)
+              return(PkgManifest())
           mani = PkgManifest(name = instpkginfo[,"Package"],
                   type = instpkginfo[,"SourceType"],
                   url = instpkginfo[,"SourceLocation"],
