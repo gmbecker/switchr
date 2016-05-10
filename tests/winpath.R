@@ -141,7 +141,7 @@ if(switchr:::haveGit()) {
 
 biocman <<- tryCatch(BiocSVNManifest(), error = function(e) e)
 test_biocsvnman = function() {
-    if(is(biocman, "try-error") || nrow(biocman) == 0) {
+    if(is(biocman, "error") || nrow(biocman) == 0) {
         message("Unable to retrieve bioc manifest. problem with Https url? skipping Bioc manifest and SVN-based tests")
         return(TRUE)
     }
