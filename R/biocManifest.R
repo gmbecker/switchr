@@ -20,10 +20,12 @@
 BiocSVNManifest = function(bioc_vers = "devel", software_only = TRUE) {
 
     rpackBase = makeBiocSVNURL("", bioc_vers)
-    rpkgs = gsub( "/$", "",
-                system2("svn", args = c("ls", rpackBase,
+    svnres =    system2("svn", args = c("ls", rpackBase,
                                         "--username=readonly --password=readonly"),
-                         stdout = TRUE, stderr = TRUE))
+                         stdout = TRUE, stderr = TRUE)
+    if(!is.null(attr(svnres, "status")))
+        stop("svn ls call failed")
+    rpkgs = gsub( "/$", "", svnres)
     rpackurls = paste0(rpackBase, rpkgs)
     
     if(software_only) {
