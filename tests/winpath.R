@@ -168,7 +168,7 @@ test_svncheckout = function() {
         stop("SVN checkout test does not appear to have worked")
 }
         
-if(switchr:::haveSVN() && !is(biocman, "try-error") && nrow(biocman) > 0) {
+if(switchr:::haveSVN() && !is(biocman, "error") && nrow(biocman) > 0) {
     test_svncheckout()
 }
 
