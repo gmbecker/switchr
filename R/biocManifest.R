@@ -11,7 +11,8 @@
 ##' set of inter-dependent Bioconductor packages.
 ##' @seealso \code{\link{lazyRepo}}
 ##' @examples
-##' bman = BiocSVNManifest()
+##' ## wrapped in try because it fails on some finnicky build systems
+##' bman = try(BiocSVNManifest())
 ##' bman
 ##' \dontrun{
 ##' repo = lazyRepo("rtracklayer", bman)
