@@ -141,7 +141,11 @@ if(switchr:::haveGit()) {
 
 
 test_biocsvnman = function() {
-    biocman <<- BiocSVNManifest()
+    biocman <<- tryCatch(BiocSVNManifest(), error = function(e) e)
+    if(is(e, "try-error")) {
+        message("Unable to retrieve bioc manifest. problem with Https url? skipping Bioc manifest and SVN-based tests")
+        return(TRUE)
+    }
     if(nrow(manifest_df(biocman)) == 0)
         stop("BiocSVNManifest does not appear to have worked")
     biocman2 <- BiocSVNManifest(software_only=FALSE)
@@ -153,11 +157,10 @@ test_biocsvnman = function() {
 
 ## This is causing problems on a system we use switchr on, so temporarily
 ## disabled
-#test_biocsvnman()
+test_biocsvnman()
 
 
 test_svncheckout = function() {
-
     pkgdir2 = normalizePath2(file.path(dir, "Biobase"), mustWork = FALSE)
     unlink(pkgdir2, recursive=TRUE)
     dfile2 = file.path(pkgdir2, "DESCRIPTION")
@@ -168,7 +171,7 @@ test_svncheckout = function() {
         stop("SVN checkout test does not appear to have worked")
 }
         
-if(switchr:::haveSVN()) {
+if(switchr:::haveSVN() && !is(biocman, "try-error")) {
     test_svncheckout()
 }
 
