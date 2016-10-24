@@ -103,9 +103,9 @@ setMethod("dl_method<-", "SwitchrParam", function(x, value) {
 
 
 
-##' archive_retries
+##' @title archive_retries
 ##' 
-##' Get or set the number of times to retry downloading a file from
+##' @description Get or set the number of times to retry downloading a file from
 ##' the CRAN archive
 ##'
 ##' This is intended to stop intermittent install failures
@@ -144,9 +144,9 @@ setMethod("archive_retries<-", "SwitchrParam", function(x, value) {
 
 
 
-##' dep_repos
+##' @title dep_repos
 ##'
-##' Get or set repositories to be used to fullfill dependencies beyond packages
+##' @description Get or set repositories to be used to fullfill dependencies beyond packages
 ##' within the manifest
 ##' @return Character vector with existing repository urls
 ##' @param x A package or session manifest
@@ -188,12 +188,16 @@ setMethod("dep_repos<-", "SessionManifest", function(x, value) {
 
 
 
-##' Get or set the manifest associated with an object
-##' @export
+##' @title Get or set the manifest associated with an object
+##' 
+##'
+##' @description Get or set manifest associated with an object
+##'
 ##' @rdname manifest_methods
 ##' @param x An object which contains a manifest
 ##' @docType methods
 ##' @return A PkgManifest or SessionManifest object
+##' @export
 setGeneric("manifest", function(x) standardGeneric("manifest"))
 ##setMethod("manifest", "PkgManifest", function(x) x@manifest)
 

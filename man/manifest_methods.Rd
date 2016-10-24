@@ -27,6 +27,6 @@ manifest(x) <- value
 A PkgManifest or SessionManifest object
 }
 \description{
-Get or set the manifest associated with an object
+Get or set manifest associated with an object
 }
 

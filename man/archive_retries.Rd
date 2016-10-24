@@ -30,8 +30,7 @@ when setting, a new, updated SwitchrParam object.
 \description{
 Get or set the number of times to retry downloading a file from
 the CRAN archive
-}
-\details{
+
 This is intended to stop intermittent install failures
 due to failing to retrieve files that *are* in the
 archive but are not downloading properly when a larger 

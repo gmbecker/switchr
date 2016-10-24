@@ -2,15 +2,14 @@
 % Please edit documentation in R/cmethods.R
 \docType{methods}
 \name{c,SessionManifest-method}
-\alias{c,PkgManifest}
 \alias{c,PkgManifest-method}
 \alias{c,SessionManifest-method}
 \title{cmethods
 Combine 2 or more manifests of the same type (PkgManifest or SessionManifest)}
 \usage{
-\S4method{c}{SessionManifest}(x, ..., recursive = FALSE)
+\S4method{c}{SessionManifest}(x, ..., recursive)
 
-\S4method{c}{PkgManifest}(x, ..., recursive = FALSE)
+\S4method{c}{PkgManifest}(x, ...)
 }
 \arguments{
 \item{x}{An object}

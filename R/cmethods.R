@@ -39,7 +39,7 @@ setMethod("c", "SessionManifest",
           })
 
 ##' @rdname cmethods
-##' @aliases c,PkgManifest
+##' @aliases c,PkgManifest-method
 ##' @export
 setMethod("c", "PkgManifest",
           function(x,...) {
