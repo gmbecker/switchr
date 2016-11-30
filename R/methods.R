@@ -263,10 +263,10 @@ getStringType = function(str) {
             stop("When seeding with a manifest within a gist, use the URL to the raw file contents, not the overall gist URL.")
         return("manifesturl")
     }
-    if(url.exists(paste0(str, "/PACKAGES.gz")))
+    if (url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))        
+      return("repourl")
+    else if(url.exists(paste0(str, "/PACKAGES.gz")))
         return("contriburl")
-    else if (url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))
-        return("repourl")
     else if (url.exists(str))
         return("manifesturl")
     

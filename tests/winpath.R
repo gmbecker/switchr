@@ -139,6 +139,8 @@ if(switchr:::haveGit()) {
 
 
 
+
+
 biocman <<- tryCatch(BiocSVNManifest(), error = function(e) e)
 test_biocsvnman = function() {
     if(is(biocman, "error") || nrow(biocman) == 0) {
@@ -178,7 +180,7 @@ test_.grabdeps = function() {
     desc = read.dcf(system.file("DESCRIPTION", package="switchr"))
     deps = switchr:::.grabdeps(desc, FALSE)
     deps2 = switchr:::.grabdeps(desc, TRUE)
-    if(!identical(sort(deps), c("methods", "tools")))
+    if(!identical(sort(deps), c("methods", "tools", )))
         stop("deps returned non-zero for switchr with suggests=FALSE")
     if( length(deps2) != 5 || length(union(deps2, c("BiocInstaller", "RCurl", "methods", "RJSONIO", "tools"))) != 5)
         stop("Didn't get BiocIntaller, RCurl, and RJSONIO for deps of switchr including suggests, got ", paste(sort(deps2), collapse=", ") )
@@ -192,7 +194,7 @@ test_.grabdeps = function() {
     
 }
 
-test_.grabdeps()
+#test_.grabdeps()
 
     
 ## Test replace argument to addPkg
@@ -230,5 +232,8 @@ test_addReplace = function() {
        man4df$url[man4df$name == "fastdigest"] != "fake")
         stop("Replace argument in addPkgs failed with mixed replace and new rows")
        
+    TRUE
        
 }
+
+test_addReplace()

@@ -29,7 +29,7 @@ defaultRepos = function() {
     if(optrepos["CRAN"] == "@CRAN@") {
         
         if(any(grepl("cran", bioc, ignore.case=TRUE))) 
-            optrepos = optrepos[!names(optrepos) == "CRAN"]
+            optrepos = optrepos[grepl("CRAN", names(optrepos))]
         else {
 
             if(interactive())
