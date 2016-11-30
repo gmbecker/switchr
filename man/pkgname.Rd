@@ -8,7 +8,7 @@
 \alias{pkgname<-}
 \alias{pkgname<-,PkgSource}
 \alias{pkgname<-,PkgSource-method}
-\title{Get or set the package name associated with a Package Source}
+\title{pkgname}
 \usage{
 pkgname(x)
 

@@ -1,13 +1,13 @@
-##' cmethods
-##' Combine 2 or more manifests of the same type (PkgManifest or SessionManifest)
+##' @title cmethods
+##' @description Combine 2 or more manifests of the same type (PkgManifest or SessionManifest)
 ##' @rdname cmethods
 ##' @docType methods
-##' @param x An object
-##' @param recursive Unused
+##' @param x An object (indicates the type of all objects to be combined)
 ##' @param \dots more objects
+##' @param recursive Unused
 ##' @export
 setMethod("c", "SessionManifest",
-          function(x, ..., recursive) {
+          function(x, ..., recursive = FALSE) {
               ## lifted from IRanges c method
               if (missing(x)) {
                   args <- unname(list(...))
@@ -42,7 +42,7 @@ setMethod("c", "SessionManifest",
 ##' @aliases c,PkgManifest-method
 ##' @export
 setMethod("c", "PkgManifest",
-          function(x,...) {
+          function(x,..., recursive = FALSE) {
 
                             ## lifted from IRanges c method
               if (missing(x)) {

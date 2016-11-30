@@ -11,12 +11,8 @@
 \alias{PkgSource-class}
 \alias{SVNSource-class}
 \alias{TarballSource-class}
-\title{PkgSource
-An object representing the source location of a package. This is a virtual
-used exlusively through its subclasses, which are used to differentiate the
-different types of package source locations.}
+\title{PkgSource}
 \description{
-PkgSource
 An object representing the source location of a package. This is a virtual
 used exlusively through its subclasses, which are used to differentiate the
 different types of package source locations.

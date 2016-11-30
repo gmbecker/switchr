@@ -2,13 +2,10 @@
 % Please edit documentation in R/makeBiocVersions.R
 \name{BiocVers}
 \alias{BiocVers}
-\title{BiocVers
-A constructor for creating a RepoSubset object for a
-specified release of Bioconductor, which includes only the
-BiocInstaller package.}
+\title{BiocVers}
 \usage{
-BiocVers(version = biocReleaseV, name = paste("BioC", version, sep = "_"),
-  repos = biocReposForVers(version))
+BiocVers(version = getBiocReleaseVr(), name = paste("BioC", version, sep =
+  "_"), repos = biocReposForVers(version))
 }
 \arguments{
 \item{version}{The version of Bioconductor}
@@ -19,7 +16,6 @@ BiocVers(version = biocReleaseV, name = paste("BioC", version, sep = "_"),
 modified automatically to match the specified version}
 }
 \description{
-BiocVers
 A constructor for creating a RepoSubset object for a
 specified release of Bioconductor, which includes only the
 BiocInstaller package.

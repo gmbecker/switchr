@@ -7,7 +7,7 @@
 \alias{addPkg,PkgManifest-method}
 \alias{addPkg,SessionManifest}
 \alias{addPkg,SessionManifest-method}
-\title{Add a package to an object associated with a manifest}
+\title{addPkg}
 \usage{
 addPkg(x, ..., rows = makeManifest(...), versions = data.frame(name =
   manifest_df(rows)$name, version = NA_character_, stringsAsFactors = FALSE),

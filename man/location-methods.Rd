@@ -4,8 +4,7 @@
 \name{location}
 \alias{location}
 \alias{location,PkgSource-method}
-\title{location generic
-Retreive the directory associated with an object}
+\title{location}
 \usage{
 location(repo)
 
@@ -18,10 +17,7 @@ location(repo)
 a character containing the associated path
 }
 \description{
-location generic
 Retreive the directory associated with an object
-
-Retreive the local directory associated with a PkgSource object for a package in a GRAN manifest
 }
 \author{
 Gabriel Becker

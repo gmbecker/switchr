@@ -1,4 +1,5 @@
 ##' removeLib
+##' 
 ##' Remove a switchr library and update the manifest of existing libraries
 ##' @param name The name of the switchr library to remove
 ##' @param repos the url used to seed the library

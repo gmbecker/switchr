@@ -1,12 +1,17 @@
 
 basepkgs = installed.packages(priority="base")[, "Package"]
-##'switchrDeps
-##' The base packages, as well as switchr and its dependencies.
+##' @title switchrDeps
+##' 
+##' @description The base packages, as well as switchr and its dependencies.
+##'
 ##' @export
 switchDeps = c(basepkgs, "switchr", "RCurl", "bitops", "BiocInstaller", "RJSONIO")
 
-##' Get or set the packages to not unload when flushing the system
+##' @title Get or set packages to not unload when flushing the system
 ##'
+##' @description Get or set packages which should NOT be unloaded when flushing the system,
+##' e.g., when switching between libraries.
+##' 
 ##' @param value The packages to not unload when switching libraries.
 ##' @param add Should \code{value} be added to the existing list?
 ##' @note By default switchr will not attempt to unload any base packages,
@@ -65,6 +70,9 @@ switchrDontUnload = function(value, add=TRUE) {
         
 
 ##' Skip unloading of packages in session
+##'
+##' Set whether or not ANY packages are unloaded when switching libraries.
+##' 
 ##' @param value A logical value, or missing to return the current option
 ##' @return A logical indicating whether or not calling \code{flushSession} will skipped during the library switching process.
 ##' @details This should be set to TRUE  when using switchr in the context of dynamic documents such as .Rnw and .Rmd files. 
@@ -86,6 +94,7 @@ switchrNoUnload = function(value) {
 }
 
 ##' flushSession
+##' 
 ##' Unload currently loaded packages from the current R session
 ##'
 ##' @param dontunload Non-base packages to ignore (not detatch/unload)

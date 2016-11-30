@@ -2,9 +2,7 @@
 % Please edit documentation in R/crandbtmp.R
 \name{rVersionManifest}
 \alias{rVersionManifest}
-\title{rVersionManifest
-Create a Pkg manifest which points to tarballs representing the
-cohort of packages associated with a particular release of R}
+\title{rVersionManifest}
 \usage{
 rVersionManifest(vers, curr_avail = available.packages())
 }
@@ -18,7 +16,6 @@ whether the necessary version is in the CRAN archive or normal repository}
 A SessionManifest object
 }
 \description{
-rVersionManifest
 Create a Pkg manifest which points to tarballs representing the
 cohort of packages associated with a particular release of R
 }

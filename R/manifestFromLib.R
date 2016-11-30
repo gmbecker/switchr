@@ -1,5 +1,5 @@
-##' libManifest
-##' Create a Session- or PkgManifest for the contents of a switchr
+##' @title libManifest
+##' @description Create a Session- or PkgManifest for the contents of a switchr
 ##' library.
 ##' @param lib A SwitchrCtx object, or the name of a switchr library. Defaults
 ##' to the currently active switchr library.

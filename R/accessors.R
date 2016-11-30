@@ -1,6 +1,5 @@
 
 ##' @title archive_timing
-##' 
 ##' @description Get or set the number of seconds to wait after trying to
 ##' retrieve a file from the CRAN Archive.
 ##'
@@ -12,11 +11,9 @@
 ##' @param x A SwitchrParam object
 ##' @return When getting, the number of seconds to wait,
 ##' when setting, a new, updated SwitchrParam object.
-
 ##' @rdname archive_timing
 ##' @docType methods
 ##' @export
-
 setGeneric("archive_timing", function(x) standardGeneric("archive_timing"))
 
 ##' @rdname archive_timing
@@ -39,18 +36,15 @@ setMethod("archive_timing<-", "SwitchrParam", function(x, value) {
 
 
 ##' @title Get or set the number of seconds to wait between successive shell commands
-##'
 ##' @description This is intended to stop intermittent install failures
 ##' due to network drive latency interacting with git commands
 ##'
 ##' @param x A SwitchrParam object
 ##' @return When getting, the number of seconds to wait,
 ##' when setting, a new, updated SwitchrParam object.
-
 ##' @rdname shell_timing
 ##' @docType methods
 ##' @export
-
 setGeneric("shell_timing", function(x) standardGeneric("shell_timing"))
 
 ##' @rdname shell_timing
@@ -71,8 +65,8 @@ setMethod("shell_timing<-", "SwitchrParam", function(x, value) {
                             })
 
 
-##' Get or set the download method for retreiving files.
-##'
+##' @title dl_method
+##' @description Get or set the download method for retreiving files.
 ##' @param x A SwitchrParam object
 ##' @rdname dl_method
 ##' @docType methods
@@ -227,9 +221,9 @@ setMethod("manifest<-", "SessionManifest",
 
 
 
-##' manifest_df
+##' @title manifest_df
 ##'
-##' Get or set the package location manifest (data.frame) associated with an
+##' @description Get or set the package location manifest (data.frame) associated with an
 ##' object
 ##'
 ##' @rdname manifest_df
@@ -285,9 +279,9 @@ setMethod("manifest_df<-", "PkgManifest", function(x, value) {
     x
     })
 
-##' versions_df
+##' @title versions_df
 ##' 
-##' Get or set the the versions information in a SessionManifest
+##' @description Get or set the the versions information in a SessionManifest
 ##' 
 ##' @param x An object containing package version information
 ##' @rdname versions
@@ -323,7 +317,8 @@ setMethod("versions_df<-", "SessionManifest", function(x, value) {
 
 
 
-##' Get or set the branch associated with a Package Source
+##' @title branch 
+##' @description Get or set the branch associated with a Package Source
 ##' @export
 ##' @param x A source
 ##' @rdname branch
@@ -345,7 +340,8 @@ setMethod("branch<-", "PkgSource", function(x, value) {
 
 
 
-##' Get or set the package name associated with a Package Source
+##' @title pkgname
+##' @description Get or set the package name associated with a Package Source
 ##' @export
 ##' @param x A source
 ##' @rdname pkgname
@@ -367,7 +363,8 @@ setMethod("pkgname<-", "PkgSource", function(x, value) {
 
 
 
-##' subdir
+##' @title subdir
+##' @description accessor for subdirectory. 
 ##' @rdname subdir
 ##' @param x An object associated with a subdirectory, typically a PkgSource
 ##' @docType methods
@@ -391,8 +388,8 @@ setMethod("subdir<-", "PkgSource", function(x, value) {
 
 
 
-##' location generic
-##' Retreive the directory associated with an object
+##' @title location
+##' @description Retreive the directory associated with an object
 ##' @rdname location-methods
 ##' @return a character containing the associated path
 ##' @author Gabriel Becker
@@ -402,13 +399,13 @@ setMethod("subdir<-", "PkgSource", function(x, value) {
 setGeneric("location", function(repo) standardGeneric("location"))
 
 
-##' Retreive the local directory associated with a PkgSource object for a package in a GRAN manifest
 ##' @rdname location-methods
 ##' @aliases location,PkgSource-method
 ##' @export
 setMethod("location", "PkgSource", function(repo) repo@location)
 
-##' Set or Retrieve the shell initialization script for an object
+##' @title shell init
+##' @description Set or Retrieve the shell initialization script for an object
 ##' @export
 ##' @param x An object associated with a SwitchrParam object
 ##' @rdname sh_init
@@ -431,7 +428,8 @@ setMethod("sh_init_script<-", "SwitchrParam", function(x, value) {
 })
 
 
-##' Get or set the logging function in an object associated with a SwitchrParam
+##' @title logfun
+##' @description Get or set the logging function in an object associated with a SwitchrParam
 ##' @rdname logfun
 ##' @param x An object with a SwitchrParam
 ##' @docType methods
@@ -495,7 +493,8 @@ addReplaceDF = function(df, newdf, replace = TRUE, indexcol = "name") {
 
 
 
-##' Add a package to an object associated with a manifest
+##' @title addPkg
+##' @description Add a package to an object associated with a manifest
 ##' @export
 ##' @rdname addPkg
 ##' @param x A manifest or manifest-associate objec tto add the pkg 2
@@ -554,9 +553,9 @@ setMethod("addPkg", "SessionManifest",
               x
           })
 
-##' library_paths
+##' @title library_paths
 ##'
-##' Accessor for which directories an SwitchrCtx is associated with.
+##' @description Accessor for which directories an SwitchrCtx is associated with.
 ##' @param seed An SwitchrCtx
 ##' @export
 ##' @docType methods
@@ -570,9 +569,9 @@ setMethod("library_paths", "SwitchrCtx", function(seed) {
 })
 
 
-##' full_libpaths
+##' @title full_libpaths
 ##'
-##' Accessor for the full library path associate with a SwitchrCtx, including
+##' @description Accessor for the full library path associate with a SwitchrCtx, including
 ##' the R library and (if not excluded) the site library
 ##'
 ##' @param seed a SwitchrCtx
@@ -590,7 +589,8 @@ setMethod("full_libpaths", "SwitchrCtx", function(seed) {
 
 
 
-##'List the packages installed in a switchr context (library)
+##' @title packages
+##' @description List the packages installed in a switchr context (library)
 ##' @docType methods
 ##' @rdname packages
 ##' @param seed A switchr context
@@ -617,9 +617,9 @@ setMethod("update_pkgs_list", "SwitchrCtx", function(seed){
     seed
 })
 
-##' Notrack directory
+##' @title Notrack directory
 ##' 
-##' This function is not intended to be called directly by the user.
+##' @description This function is not intended to be called directly by the user.
 ##'
 ##' @param repo The object.
 ##' @return the path where retrieved package versions should be. If \code{repo}

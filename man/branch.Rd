@@ -8,7 +8,7 @@
 \alias{branch<-}
 \alias{branch<-,PkgSource}
 \alias{branch<-,PkgSource-method}
-\title{Get or set the branch associated with a Package Source}
+\title{branch}
 \usage{
 branch(x)
 

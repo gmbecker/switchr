@@ -9,9 +9,7 @@
 \alias{libManifest,character-method}
 \alias{libManifest,missing}
 \alias{libManifest,missing-method}
-\title{libManifest
-Create a Session- or PkgManifest for the contents of a switchr
-library.}
+\title{libManifest}
 \usage{
 libManifest(lib = currentCompEnv(), record_versions = TRUE,
   known_manifest = makeManifest(dep_repos = repos), repos = defaultRepos(),
@@ -47,7 +45,6 @@ location information for packages not installed via
 \item{\dots}{currently unused}
 }
 \description{
-libManifest
 Create a Session- or PkgManifest for the contents of a switchr
 library.
 }

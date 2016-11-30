@@ -20,28 +20,29 @@
 \title{switchTo}
 \usage{
 switchTo(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,
-  ...)
+  exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,character}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,SwitchrCtx}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,missing}(name, seed = NULL, reverting = FALSE,
-  ignoreRVersion = FALSE, ...)
+  ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{SwitchrCtx,ANY}(name, seed = NULL, reverting = FALSE,
-  ignoreRVersion = FALSE, ...)
+  ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,RepoSubset}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,PkgManifest}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,SessionManifest}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = exclude.site,
+  ...)
 }
 \arguments{
 \item{name}{The name associated (or to associate) with the computing
@@ -57,7 +58,10 @@ use before the current one. Typically not set directly by the user.}
 \item{ignoreRVersion}{Should the R version in use be ignored when checking
 for existing computing environmeSnts. This is experimental.}
 
-\item{...}{Passed directly to \code{installCompEnv} if an existing
+\item{exclude.site}{Should the Site library be excluded when creating
+and switching to the specified library. Defaults to \code{TRUE}}
+
+\item{...}{Passed directly to \code{makeLibraryCtx} if an existing
 computing environment is not found.}
 }
 \value{
@@ -100,5 +104,8 @@ switchBack()
 fdman = GithubManifest("gmbecker/fastdigest")
 switchTo("fastdigestlib", seed = fdman)
 }
+}
+\seealso{
+\code{\link{makeLibraryCtx}}
 }
 

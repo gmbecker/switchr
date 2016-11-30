@@ -2,8 +2,7 @@
 % Please edit documentation in R/manifest.R
 \name{makeManifest}
 \alias{makeManifest}
-\title{Manifest constructor
-Create a package manifest}
+\title{Manifest constructor}
 \usage{
 makeManifest(..., dep_repos = defaultRepos())
 }
@@ -13,7 +12,6 @@ makeManifest(..., dep_repos = defaultRepos())
 \item{dep_repos}{The dependency repos for the package.}
 }
 \description{
-Manifest constructor
 Create a package manifest
 }
 

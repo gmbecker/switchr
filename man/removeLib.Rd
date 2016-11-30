@@ -2,8 +2,7 @@
 % Please edit documentation in R/removeLibrary.R
 \name{removeLib}
 \alias{removeLib}
-\title{removeLib
-Remove a switchr library and update the manifest of existing libraries}
+\title{removeLib}
 \usage{
 removeLib(name = NULL, repos = NULL, compEnv = NULL, fromStack = FALSE)
 }
@@ -22,7 +21,6 @@ NULL, called for its side-effect of removing/destroying a switchr
 library
 }
 \description{
-removeLib
 Remove a switchr library and update the manifest of existing libraries
 }
 \note{

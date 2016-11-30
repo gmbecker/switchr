@@ -5,7 +5,7 @@
 \alias{packages}
 \alias{packages,SwitchrCtx}
 \alias{packages,SwitchrCtx-method}
-\title{List the packages installed in a switchr context (library)}
+\title{packages}
 \usage{
 packages(seed)
 

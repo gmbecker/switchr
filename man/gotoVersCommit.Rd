@@ -11,8 +11,7 @@
 \alias{gotoVersCommit,character,GitSource-method}
 \alias{gotoVersCommit,character,SVNSource}
 \alias{gotoVersCommit,character,SVNSource-method}
-\title{gotoVersCommit
-This is a low-level function not intended for direct use by the end user.}
+\title{gotoVersCommit}
 \usage{
 gotoVersCommit(dir, src, version, param = SwitchrParam())
 
@@ -38,7 +37,6 @@ gotoVersCommit(dir, src, version, param = SwitchrParam())
 \item{param}{A SwitchrParam}
 }
 \description{
-gotoVersCommit
 This is a low-level function not intended for direct use by the end user.
 }
 

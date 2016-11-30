@@ -4,22 +4,20 @@
 \name{c,SessionManifest-method}
 \alias{c,PkgManifest-method}
 \alias{c,SessionManifest-method}
-\title{cmethods
-Combine 2 or more manifests of the same type (PkgManifest or SessionManifest)}
+\title{cmethods}
 \usage{
-\S4method{c}{SessionManifest}(x, ..., recursive)
+\S4method{c}{SessionManifest}(x, ..., recursive = FALSE)
 
-\S4method{c}{PkgManifest}(x, ...)
+\S4method{c}{PkgManifest}(x, ..., recursive = FALSE)
 }
 \arguments{
-\item{x}{An object}
+\item{x}{An object (indicates the type of all objects to be combined)}
 
 \item{recursive}{Unused}
 
 \item{\dots}{more objects}
 }
 \description{
-cmethods
 Combine 2 or more manifests of the same type (PkgManifest or SessionManifest)
 }
 

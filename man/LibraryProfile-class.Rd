@@ -3,9 +3,11 @@
 \docType{class}
 \name{LibraryProfile-class}
 \alias{LibraryProfile-class}
-\title{LibraryProfile (experimental)
-Currently unused/under heavy development.}
+\title{LibraryProfile (experimental)}
 \description{
+Currently unused/under heavy development.
+}
+\details{
 An object
 }
 

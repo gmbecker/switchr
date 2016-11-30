@@ -52,6 +52,7 @@ ManifestRow = function(name,
 
 
 ##' Manifest constructor
+##' 
 ##' Create a package manifest
 ##' @param ... Vectors containing package information. Passed to \code{\link{ManifestRow}}
 ##' @param dep_repos The dependency repos for the package.

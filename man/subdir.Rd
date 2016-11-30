@@ -24,6 +24,6 @@ subdir(x) <- value
 \item{value}{The new subdirectory to associate with the object}
 }
 \description{
-subdir
+accessor for subdirectory.
 }
 

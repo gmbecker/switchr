@@ -305,6 +305,9 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
 
 
 ##' Make a Bioconductor SVN url for a package
+##'
+##' Make SVN url for a Bioconductor package given the name, bioc version, and
+##' type of package.
 ##' @param name A vector of bioconductor package names The name of the package
 ##' @param biocVers The version (release) of bioconductor, or \code{'trunk'} (the default) for
 ##' Bioc devel.

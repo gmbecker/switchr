@@ -8,7 +8,7 @@
 \alias{sh_init_script<-}
 \alias{sh_init_script<-,SwitchrParam,ANY}
 \alias{sh_init_script<-,SwitchrParam-method}
-\title{Set or Retrieve the shell initialization script for an object}
+\title{shell init}
 \usage{
 sh_init_script(x)
 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/flushSession.R
 \name{flushSession}
 \alias{flushSession}
-\title{flushSession
-Unload currently loaded packages from the current R session}
+\title{flushSession}
 \usage{
 flushSession(dontunload = switchrDontUnload())
 }
@@ -14,7 +13,6 @@ flushSession(dontunload = switchrDontUnload())
 NULL, called for its side-effect of unloading packages
 }
 \description{
-flushSession
 Unload currently loaded packages from the current R session
 }
 \details{

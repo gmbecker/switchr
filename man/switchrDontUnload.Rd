@@ -2,7 +2,7 @@
 % Please edit documentation in R/flushSession.R
 \name{switchrDontUnload}
 \alias{switchrDontUnload}
-\title{Get or set the packages to not unload when flushing the system}
+\title{Get or set packages to not unload when flushing the system}
 \usage{
 switchrDontUnload(value, add = TRUE)
 }
@@ -12,7 +12,8 @@ switchrDontUnload(value, add = TRUE)
 \item{add}{Should \code{value} be added to the existing list?}
 }
 \description{
-Get or set the packages to not unload when flushing the system
+Get or set packages which should NOT be unloaded when flushing the system,
+e.g., when switching between libraries.
 }
 \note{
 By default switchr will not attempt to unload any base packages,

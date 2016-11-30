@@ -1,4 +1,5 @@
 ##' makePkgDir
+##' 
 ##' This is an internal function not intended to be called directly by end users
 ##'
 ##' Create a directory and populate it with package source code from the
@@ -73,6 +74,7 @@ setGeneric("lazyRepo",
 
 
 ##' gotoVersCommit
+##' 
 ##' This is a low-level function not intended for direct use by the end user.
 ##' @docType methods
 ##' @param dir Directory

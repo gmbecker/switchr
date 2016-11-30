@@ -57,6 +57,14 @@ getBiocDevelVr = function() {
     develvr
 }
 
+getBiocReleaseVr = function() {
+    yaml = getBiocYaml()
+    develln = grep("^release_version:",yaml)
+    develvr = gsub('.*:.*"(.*)".*', "\\1", yaml[develln])
+    develvr
+}
+
+
 develVers = getBiocDevelVr()
 
 isCurrentDevelVr = function(vr, yaml) {

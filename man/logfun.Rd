@@ -8,7 +8,7 @@
 \alias{logfun<-}
 \alias{logfun<-,SwitchrParam}
 \alias{logfun<-,SwitchrParam-method}
-\title{Get or set the logging function in an object associated with a SwitchrParam}
+\title{logfun}
 \usage{
 logfun(x)
 

@@ -8,7 +8,7 @@
 \alias{dl_method<-}
 \alias{dl_method<-,SwitchrParam}
 \alias{dl_method<-,SwitchrParam-method}
-\title{Get or set the download method for retreiving files.}
+\title{dl_method}
 \usage{
 dl_method(x)
 

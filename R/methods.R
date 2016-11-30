@@ -19,7 +19,9 @@ Renvs= new.env()
 ##' use before the current one. Typically not set directly by the user.
 ##' @param ignoreRVersion Should the R version in use be ignored when checking
 ##' for existing computing environmeSnts. This is experimental.
-##' @param ... Passed directly to \code{installCompEnv} if an existing
+##' @param exclude.site Should the Site library be excluded when creating
+##' and switching to the specified library. Defaults to \code{TRUE}
+##' @param ... Passed directly to \code{makeLibraryCtx} if an existing
 ##' computing environment is not found.
 ##' @details This function has the side effect of unloading all loaded
 ##' packages (other than base packages, GRAN or GRANBAse,  switchr itself, and
@@ -39,6 +41,7 @@ Renvs= new.env()
 ##' when using the knitr package.
 ##' @return Invisibly returns the SwitchrCtx object representing the new
 ##' computing environment
+##' @seealso \code{\link{makeLibraryCtx}}
 ##'
 ##' @examples
 ##' \dontrun{
@@ -52,13 +55,16 @@ Renvs= new.env()
 ##' @docType methods
 ##' @rdname switchTo
 setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
-                                ignoreRVersion = FALSE,  ...)
-           standardGeneric("switchTo"))
+                                ignoreRVersion = FALSE,
+                                exclude.site = TRUE, ...)
+    standardGeneric("switchTo"),
+    signature = c("name", "seed"))
 
 ##' @rdname switchTo
 ##' @aliases switchTo,character,character
 setMethod("switchTo", c(name = "character", seed = "character"),
-          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
+                   exclude.site = TRUE, ...) {
         
     
     ## At this point seed is guaranteed to be a repo url
@@ -127,7 +133,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 stop("We should have a repository by this point. This shouldn't happen. Contact the maintainers")
             }
             
-            cenv = makeLibraryCtx(name = name, seed = seed, ...)
+            cenv = makeLibraryCtx(name = name, seed = seed,
+                                  exclude.site = exclude.site,  ...)
         } else {
             message(sprintf("Library %s already exists. Ignoring seed and switching to existing library"), name)
         }
@@ -150,7 +157,8 @@ repoFromString = function(str, type) {
 ##' @aliases switchTo,character,SwitchrCtx
 
 setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
-          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,...) {
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
+                   exclude.site= TRUE, ...) {
               
               if(ignoreRVersion)
                   rvers = NULL
@@ -179,7 +187,8 @@ setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
 ##' @aliases switchTo,character,missing
 
 setMethod("switchTo", c("character", "missing"),
-          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,...) {
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
+                   exclude.site = TRUE, ...) {
               
     if(ignoreRVersion)
         rvers = NULL
@@ -189,7 +198,7 @@ setMethod("switchTo", c("character", "missing"),
     cenv = findCompEnv(name = name, rvers = rvers)
 
     if(is.null(cenv))
-        cenv = makeLibraryCtx(name = name, ...)
+        cenv = makeLibraryCtx(name = name, exclude.site = TRUE, ...)
 
 
     if(!is.null(cenv))
@@ -209,8 +218,12 @@ getStringType = function(str) {
     if(grepl("^# R manifest", str[1]))
         return("manifesttxt")
     
-    if(length(str) > 1)
-        return(sapply(str, getStringType))
+    if(length(str) > 1) {
+        ret = unique(sapply(str, getStringType))
+        if(length(ret)  > 1)
+            stop("Got mixed string types (likely in seed). This shouldn't happen.")
+        return(ret)
+    }
 
     
     if(grepl("file://", str)) {
@@ -263,7 +276,10 @@ getStringType = function(str) {
 ##' @rdname switchTo
 ##' @aliases switchTo,SwitchrCtx,ANY
 
-setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed, reverting=FALSE, ...) {
+setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"),
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
+                   exclude.site = TRUE,
+                    ...) {
         if(is.null(Renvs$stack)) {
             paths = .libPaths()
             paths = paths[!paths %in% c(.Library.site, .Library)]
@@ -291,6 +307,7 @@ setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"), function(name, seed,
 setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, seed = NULL,
                                              reverting = FALSE,
                                              ignoreRVersion = FALSE,
+                                             exclude.site = TRUE,
                             ...) {
     if(any(c("pkgs", "repo_name") %in% names(list(...))))
         stop("Cannot specify pkgs or repo_name when switching to a RepoSubset")
@@ -300,7 +317,8 @@ setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, s
         name = seed@default_name
     }
         
-    switchTo(seed = seed@repos, name = name, pkgs = seed@pkgs, ...)
+    switchTo(seed = seed@repos, name = name, pkgs = seed@pkgs,
+             exclude.site = exclude.site, ...)
 })
 
 
@@ -308,55 +326,59 @@ setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, s
 ##' @aliases switchTo,character,PkgManifest
 
 setMethod("switchTo", c("character", seed = "PkgManifest"),
-          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
-             
-              if(ignoreRVersion)
-                  rvers = NULL
-              else
-                  rvers = paste(R.version$major, R.version$minor, sep=".")
-              exsting = findCompEnv(name = name, rvers = rvers)
-              if(!is.null(exsting)) {
-                  message("Found existing switchr context. Ignoring seed value")
-                  return(switchTo(exsting))
-              }
-              cenv = makeLibraryCtx(name = name, seed = NULL,
-                  ...)
-              oldlp = .libPaths()
-              .libPaths2(library_paths(cenv), cenv@exclude.site)
-              on.exit(.libPaths2(oldlp))
-
-              install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
+                   exclude.site = TRUE, ...) {
+    
+    if(ignoreRVersion)
+        rvers = NULL
+    else
+        rvers = paste(R.version$major, R.version$minor, sep=".")
+    exsting = findCompEnv(name = name, rvers = rvers)
+    if(!is.null(exsting)) {
+        message("Found existing switchr context. Ignoring seed value")
+        return(switchTo(exsting))
+    }
+    cenv = makeLibraryCtx(name = name, seed = NULL,
+                          exclude.site = exclude.site,
+                          ...)
+    oldlp = .libPaths()
+    .libPaths2(library_paths(cenv), cenv@exclude.site)
+    on.exit(.libPaths2(oldlp))
+    
+    install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
               cenv = update_pkgs_list(cenv)
-              .libPaths2(oldlp)
-              on.exit(NULL)
-              switchTo(cenv)
-          })
+    .libPaths2(oldlp)
+    on.exit(NULL)
+    switchTo(cenv)
+})
 
 
 ##' @rdname switchTo
 ##' @aliases switchTo,character,SessionManifest
 
 setMethod("switchTo", c("character", seed = "SessionManifest"),
-          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE, ...) {
+          function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
+                   exclude.site = exclude.site, ...) {
               
-              if(ignoreRVersion)
-                  rvers = NULL
-              else
-                  rvers = paste(R.version$major, R.version$minor, sep=".")
-              exsting = findCompEnv(name = name, rvers = rvers)
-              if(!is.null(exsting)) {
-                  message("Found existing switchr context. Ignoring seed value")
-                  return(switchTo(exsting))
-              }
-              cenv = makeLibraryCtx(name = name, seed = NULL,
-                  ...)
-              
-
-                       
-              install_packages(pkgs = seed, lib = library_paths(cenv)[1])
-              cenv = update_pkgs_list(cenv)
-              switchTo(cenv)
-          })
+    if(ignoreRVersion)
+        rvers = NULL
+    else
+        rvers = paste(R.version$major, R.version$minor, sep=".")
+    exsting = findCompEnv(name = name, rvers = rvers)
+    if(!is.null(exsting)) {
+        message("Found existing switchr context. Ignoring seed value")
+        return(switchTo(exsting))
+    }
+    cenv = makeLibraryCtx(name = name, seed = NULL,
+                          exclude.site = exclude.site,
+                          ...)
+    
+    
+    
+    install_packages(pkgs = seed, lib = library_paths(cenv)[1])
+    cenv = update_pkgs_list(cenv)
+    switchTo(cenv)
+})
 
 
 

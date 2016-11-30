@@ -1,6 +1,7 @@
 crandburl = "http://crandb.r-pkg.org/"
 
 ##' rVersionManifest
+##'
 ##' Create a Pkg manifest which points to tarballs representing the
 ##' cohort of packages associated with a particular release of R
 ##'
@@ -38,6 +39,7 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 
 
 ##' cranPkgVersManifest
+##'
 ##' Create a Pkg manifest which points to tarballs representing a particular
 ##' version of a CRAN package and versions of its (recursive) dependencies
 ##' that were contemporary on the first or last day the specified package

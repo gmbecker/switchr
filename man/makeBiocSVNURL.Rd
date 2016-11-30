@@ -20,6 +20,7 @@ respectively.}
 A vector of urls for the specified packages within the Bioconductor SVN repository
 }
 \description{
-Make a Bioconductor SVN url for a package
+Make SVN url for a Bioconductor package given the name, bioc version, and
+type of package.
 }
 

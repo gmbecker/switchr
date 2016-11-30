@@ -1,12 +1,10 @@
-biocReleaseV = "3.2"
-biocDevelV = "3.3"
 
 ##lifted from biocLite.R
 biocrepos <- NULL
 
-##' biocReposForVers
+##' @title biocReposForVers
 ##'
-##' Generate the URLs of the repositories associated with
+##' @description Generate the URLs of the repositories associated with
 ##' a specific Bioconductor release
 ##'
 ##' @param version The Bioconductor release to generate URLs for.
@@ -23,8 +21,8 @@ biocReposForVers = function(version) {
 
 
 
-##' BiocVers
-##' A constructor for creating a RepoSubset object for a
+##' @title BiocVers
+##' @description A constructor for creating a RepoSubset object for a
 ##' specified release of Bioconductor, which includes only the
 ##' BiocInstaller package.
 ##' @param version The version of Bioconductor
@@ -32,7 +30,7 @@ biocReposForVers = function(version) {
 ##' @param repos The urls of the Bioconductor repositories. these will be
 ##' modified automatically to match the specified version
 ##' @export
-BiocVers = function(version = biocReleaseV,
+BiocVers = function(version = getBiocReleaseVr(),
     name = paste("BioC", version, sep="_"),
     repos  = biocReposForVers(version)) {
 
@@ -43,14 +41,16 @@ BiocVers = function(version = biocReleaseV,
     RepoSubset(repos, pkgs = "BiocInstaller", default_name = name)
 }
 
-##' BiocRelease
+##' @title  BiocRelease
 ##'
-##' An object representing the current Bioc release. Can be passed to switchTo.
-##' @export
-BiocRelease = tryCatch(BiocVers(biocReleaseV), error = function(x) warning("Unable to create the BiocRelease object"))
+##' @description An object representing the current Bioc release. Can be passed to switchTo.
+##' @rdname BiocRelease
+##' @aliases BiocRelease
+BiocRelease = NULL
 
-##' BiocDevel
+##' @title BiocDevel
 ##'
-##' An object representing the current Bioc devel version. Can be passed to switchTo.
-##' @export
-BiocDevel = tryCatch(BiocVers(biocDevelV), error = function(x) warning("Unable to create the BiocDevel object"))
+##' @description An object representing the current Bioc devel version. Can be passed to switchTo.
+##' @rdname BiocDevel
+##' @aliases BiocDevel
+BiocDevel = NULL

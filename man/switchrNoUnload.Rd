@@ -13,7 +13,7 @@ switchrNoUnload(value)
 A logical indicating whether or not calling \code{flushSession} will skipped during the library switching process.
 }
 \description{
-Skip unloading of packages in session
+Set whether or not ANY packages are unloaded when switching libraries.
 }
 \details{
 This should be set to TRUE  when using switchr in the context of dynamic documents such as .Rnw and .Rmd files.

@@ -19,8 +19,7 @@
 \alias{makePkgDir,ANY,SVNSource-method}
 \alias{makePkgDir,ANY,TarballSource}
 \alias{makePkgDir,ANY,TarballSource-method}
-\title{makePkgDir
-This is an internal function not intended to be called directly by end users}
+\title{makePkgDir}
 \usage{
 makePkgDir(name, source, path, latest_only, param = SwitchrParam(),
   forceRefresh = FALSE)
@@ -65,6 +64,9 @@ in a SCM package without a formal checkout be used?}
 deleted/refreshed}
 }
 \description{
+This is an internal function not intended to be called directly by end users
+}
+\details{
 Create a directory and populate it with package source code from the
 specified source
 }

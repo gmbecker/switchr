@@ -2,11 +2,7 @@
 % Please edit documentation in R/crandbtmp.R
 \name{cranPkgVersManifest}
 \alias{cranPkgVersManifest}
-\title{cranPkgVersManifest
-Create a Pkg manifest which points to tarballs representing a particular
-version of a CRAN package and versions of its (recursive) dependencies
-that were contemporary on the first or last day the specified package
-version resided on CRAN}
+\title{cranPkgVersManifest}
 \usage{
 cranPkgVersManifest(pkg, vers, earliest = TRUE,
   cur_avail = available.packages(), verbose = FALSE,
@@ -41,7 +37,6 @@ to the crandb database. Defaults to 1 second}
 A SessionManifest object
 }
 \description{
-cranPkgVersManifest
 Create a Pkg manifest which points to tarballs representing a particular
 version of a CRAN package and versions of its (recursive) dependencies
 that were contemporary on the first or last day the specified package

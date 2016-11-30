@@ -4,6 +4,7 @@ NULL
 setOldClass("sessionInfo")
 
 ##' @export
+##' @rdname SwitchrParam
 setClass("SwitchrParam", representation(logfun = "function", shell_init = "character",
                                         archive_timing="numeric", archive_retries="numeric",
                                         dl_method = "character",
@@ -62,6 +63,7 @@ RepoSubset = function(repos, pkgs, default_name) {
 }
 
 ##' PkgSource
+##' 
 ##' An object representing the source location of a package. This is a virtual
 ##' used exlusively through its subclasses, which are used to differentiate the
 ##' different types of package source locations.
@@ -215,6 +217,7 @@ setClass("parsedSessionInfo", representation(version = "character",
 
 
 ##' LibraryProfile (experimental)
+##' 
 ##' Currently unused/under heavy development.
 ##'
 ##' An object

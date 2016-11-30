@@ -3,14 +3,12 @@
 \docType{data}
 \name{switchDeps}
 \alias{switchDeps}
-\title{switchrDeps
-The base packages, as well as switchr and its dependencies.}
+\title{switchrDeps}
 \format{An object of class \code{character} of length 19.}
 \usage{
 switchDeps
 }
 \description{
-switchrDeps
 The base packages, as well as switchr and its dependencies.
 }
 \keyword{datasets}
