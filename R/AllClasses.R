@@ -116,6 +116,10 @@ setAs("GitSource", "SVNSource",
 
 
 
+ensureCRANmirror = function(ind=1L) {
+    if(!interactive() && getOption("repos")["CRAN"] == "@CRAN@")
+        chooseCRANmirror(ind=ind)
+}
 
 
 
@@ -140,6 +144,7 @@ setClass("PkgManifest", representation( manifest = "data.frame",
 ##' @aliases PkgManifest-class
 ##' @importFrom utils read.table
 PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), ..., dl_method){
+    ensureCRANmirror(1L)
     if(is.character(manifest)) {
         if(url.exists(manifest)) {
             fil = tempfile()

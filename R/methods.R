@@ -358,7 +358,7 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
 
 setMethod("switchTo", c("character", seed = "SessionManifest"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
-                   exclude.site = exclude.site, ...) {
+                   exclude.site = TRUE, ...) {
               
     if(ignoreRVersion)
         rvers = NULL

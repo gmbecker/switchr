@@ -232,24 +232,26 @@ setMethod("makeSeedMan", "sessionInfo", function(x, known_manifest = PkgManifest
 ##' @rdname makeSeedMan
 ##' @aliases makeSeedMan,parsedSessionInfo
 setMethod("makeSeedMan", "parsedSessionInfo", function(x, known_manifest = PkgManifest(), ...) {
+    if(!interactive() && getOption("repos")["CRAN"] == "@CRAN@")
+        chooseCRANmirror(ind=1L)
 
-              sinfopkginfo = rbind(x@attached, x@loaded)
-              sinfopkginfo = sinfopkginfo[!sinfopkginfo[,"Package"] %in% basepkgs,]
-              mani = PkgManifest(name = sinfopkginfo[,"Package"],
-                  dep_repos  = dep_repos(known_manifest))
-
-              haveany = nrow(manifest_df(mani)) > 0
-              if(haveany)
-                  mani = .findThem(mani, known_manifest)
-              if(nrow(manifest_df(mani))) {
-                  pkg_vers = data.frame(name = sinfopkginfo[,"Package"],
-                      version = sinfopkginfo[,"Version"],
-                      stringsAsFactors = FALSE)
-                  mani = SessionManifest(manifest = mani,
-                      versions = pkg_vers)
-              }
-              mani
-
+    sinfopkginfo = rbind(x@attached, x@loaded)
+    sinfopkginfo = sinfopkginfo[!sinfopkginfo[,"Package"] %in% basepkgs,]
+    mani = PkgManifest(name = sinfopkginfo[,"Package"],
+                       dep_repos  = dep_repos(known_manifest))
+    
+    haveany = nrow(manifest_df(mani)) > 0
+    if(haveany)
+        mani = .findThem(mani, known_manifest)
+    if(nrow(manifest_df(mani))) {
+        pkg_vers = data.frame(name = sinfopkginfo[,"Package"],
+                              version = sinfopkginfo[,"Version"],
+                              stringsAsFactors = FALSE)
+        mani = SessionManifest(manifest = mani,
+                               versions = pkg_vers)
+    }
+    mani
+    
 
 
 })
