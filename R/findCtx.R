@@ -73,7 +73,10 @@ switchrManifest = function() {
 ##' metadata cache.
 ##' @importFrom utils write.table
 updateManifest = function() {
-    fils = sapply(list.dirs(switchrBaseDir(), recursive = FALSE), function(x) list.files(x, full.names = TRUE, pattern = "lib_info"), USE.NAMES = FALSE)
+    dirs = list.dirs(switchrBaseDir())
+    fils = file.path(dirs, "lib_info")
+    fils = fils[file.exists(fils)]
+                     
     man = do.call(rbind.data.frame, lapply(fils, function(x) read.table(x, stringsAsFactors = FALSE, header = TRUE)))
     if(nrow(man) > 0)
         write.table(man, file = file.path(switchrBaseDir(), "manifest.dat"))

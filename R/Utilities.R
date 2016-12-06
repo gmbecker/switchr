@@ -228,7 +228,7 @@ makeSource = function(url, type, user, password, scm_auth, prefer_svn = FALSE, .
         cran = new("CRANSource", location = url, user = "", password = "", ...),
         bioc = new("BiocSource", location = url, user = "readonly", password = "readonly", ...),
         tarball = new("TarballSource", location = url, user = "", password ="", ...),
-           stop("unsupported source type")
+           stop("unsupported source type: ", type)
            )
     if( (type=="git" || type == "github") && is.na(ret@branch))
         ret@branch = "master"
@@ -426,16 +426,16 @@ biocReposFromVers = function(vers = develVers) {
     paste0(bef, vers, af)
 }    
 
-highestBiocVers = function(repos){
-    if(!requireNamespace2("BiocInstaller"))
-        stop("Unable to determine bioc versions without BiocInstaller installed")
-    else if(missing(repos))
-        ## head -1 removes the last element
-        repos =head(BiocInstaller::biocinstallRepos(), -1)
-    majvers = length(highestVs)
-    vers = paste(majvers, highestVs[majvers], sep=".")
-    biocReposFromVers(vers = vers)
-}
+## highestBiocVers = function(repos){
+##     if(!requireNamespace2("BiocInstaller"))
+##         stop("Unable to determine bioc versions without BiocInstaller installed")
+##     else if(missing(repos))
+##         ## head -1 removes the last element
+##         repos =head(BiocInstaller::biocinstallRepos(), -1)
+##     majvers = length(highestVs)
+##     vers = paste(majvers, highestVs[majvers], sep=".")
+##     biocReposFromVers(vers = vers)
+## }
 
 
 

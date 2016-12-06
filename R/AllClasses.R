@@ -117,7 +117,7 @@ setAs("GitSource", "SVNSource",
 
 
 ensureCRANmirror = function(ind=1L) {
-    if(!interactive() && getOption("repos")["CRAN"] == "@CRAN@")
+    if(!interactive() && any(getOption("repos") == "@CRAN@"))
         chooseCRANmirror(ind=ind)
 }
 

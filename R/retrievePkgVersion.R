@@ -374,7 +374,7 @@ findSVNRev = function(name, version, svn_repo, pkgpath, param) {
     revs = system_w_init("svn", args = c("log", "-r 1:HEAD", "--limit 1", "DESCRIPTION"),
                          intern = TRUE, param = param)
     minrev = as.numeric(gsub("r([[:digit:]]*).*", "\\1", revs[2])) #first line is -------------------
-     cmd1 = "svn log -r HEAD:1 --limit 1 DESCRIPTION"
+    cmd1 = "svn log -r HEAD:1 --limit 1 DESCRIPTION"
     revs2 = system_w_init("svn", args = c("log", "-r HEAD:1", "--limit 1", "DESCRIPTION"),
                           intern = TRUE, param = param)
     maxrev = as.numeric(gsub("r([[:digit:]]*).*", "\\1", revs2[2]))

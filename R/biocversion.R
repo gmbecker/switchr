@@ -64,6 +64,11 @@ getBiocReleaseVr = function() {
     develvr
 }
 
+## alias to avoid immediate refactor
+## We want the devel version because we want to hit the
+## devel repo, if called for, I think.
+highestBiocVers = function() biocReposFromVers(getBiocDevelVr())
+
 
 develVers = getBiocDevelVr()
 
