@@ -41,8 +41,7 @@ switchTo(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,
   reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,SessionManifest}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = exclude.site,
-  ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 }
 \arguments{
 \item{name}{The name associated (or to associate) with the computing
