@@ -151,17 +151,14 @@ setMethod("install_packages", c(pkgs = "character", repos= "PkgManifest"), funct
           })
 
 ## @param man A PkgManifest
-.install_packages = function(pkgs, lazyrepo, man, ...) {
+.install_packages = function(pkgs, lazyrepo, man, type = "source", ...) {
     if ("lib" %in% list(...))
         libloc = list(...)["lib.loc"]
     else
         libloc = .libPaths()[1]
-    if("type" %in% list(...)) {
-        type = list(...)$type
-        if(type != "source")
-            warning("using type other than source is not officially supported with switchr. Use at your own risk")
-    }   else
-        type = "source"
+    if(type != "source")
+        warning("using type other than source is not officially supported with switchr. Use at your own risk")
+    
     avail1 = available.packages(lazyrepo, type = "source")
     avail2 = available.packages(contrib.url(dep_repos(man), type = type))
     new = !avail2[,"Package"] %in% avail1[,"Package"]

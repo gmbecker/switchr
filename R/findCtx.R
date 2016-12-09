@@ -73,7 +73,7 @@ switchrManifest = function() {
 ##' metadata cache.
 ##' @importFrom utils write.table
 updateManifest = function() {
-    dirs = list.dirs(switchrBaseDir(), rescursive=FALSE)
+    dirs = list.dirs(switchrBaseDir(), recursive=FALSE)
     fils = file.path(dirs, "lib_info")
     fils = fils[file.exists(fils)]
                      

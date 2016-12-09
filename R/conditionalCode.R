@@ -27,9 +27,9 @@ defaultRepos = function() {
     bioc = getBiocRepos()
     optrepos = getOption("repos")
     if(optrepos["CRAN"] == "@CRAN@") {
-        
+        ## if bioc has a cranmirror (which it should)
         if(any(grepl("cran", bioc, ignore.case=TRUE))) 
-            optrepos = optrepos[grepl("CRAN", names(optrepos))]
+            optrepos = optrepos[!grepl("CRAN", names(optrepos))]
         else {
 
             if(interactive())
@@ -43,9 +43,6 @@ defaultRepos = function() {
     } else if (!is.null(names(bioc))) 
           bioc = bioc[!names(bioc) == "CRAN"]
     
-
-        
-
     granrepos = NULL
     if(exists("defaultGRANURL")) 
         granrepos = get("defaultGRANURL")()

@@ -266,6 +266,7 @@ getStringType = function(str) {
 
     ## https://www.stats.ox.ac.uk/pub/RWin/garbage redirects to the oxford stats homepage,
     ## thus "succeeds"
+    
     if (url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))        
       return("repourl")
     else if(url.exists(paste0(str, "/PACKAGES.gz")))
