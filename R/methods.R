@@ -198,7 +198,7 @@ setMethod("switchTo", c("character", "missing"),
     cenv = findCompEnv(name = name, rvers = rvers)
 
     if(is.null(cenv))
-        cenv = makeLibraryCtx(name = name, exclude.site = TRUE, ...)
+        cenv = makeLibraryCtx(name = name, exclude.site = exclude.site, ...)
 
 
     if(!is.null(cenv))
