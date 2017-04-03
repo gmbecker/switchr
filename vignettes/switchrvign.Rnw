@@ -149,7 +149,7 @@ indicated via the argument names associated with the shorthand strings.
 
 <<>>=
 man3 = GithubManifest(redland = "ropensci/redland-bindings/R/redland")
-man
+man3
 
 @ 
 
