@@ -1,6 +1,10 @@
 annotateDESCs = function(pkgs, man, type = "source") {
     avl = available.packages(contrib.url(dep_repos(man), type = type),
                              type = type)
+    if(any(pkgs %in% switchDeps)) {
+        warning("Not annotating newly installed versions of switchr dependencies")
+        pkgs = pkgs[!pkgs %in% switchDeps]
+    }
     sapply(pkgs, .annDESC, mandf = manifest_df(man), avl = avl)
     NULL
 }
@@ -29,11 +33,12 @@ annotateDESCs = function(pkgs, man, type = "source") {
         else
             type = "repository"
     }
-
+    
     desc$SourceType = type
     desc$SourceLocation = loc
     desc$SourceBranch = branch
     desc$SourceSubdir = subdir
-    write.dcf(desc, fil)
+    tryCatch(write.dcf(desc, fil), error = function(e) warning("Failed to annotate DESCRIPTION file for package ", pkg, " with error", e))
+      
 }
 
