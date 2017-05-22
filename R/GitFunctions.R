@@ -1,4 +1,4 @@
-updateGit = function(dir, source, param)
+updateGit = function(dir, source, param, shallow = TRUE)
 {
     oldwd = setwd(dir)
     on.exit(setwd(oldwd))
@@ -10,7 +10,11 @@ updateGit = function(dir, source, param)
     stash = FALSE
     if(curb == branch(source)) {
         cmds = "git"
-        args = list("fetch --all", sprintf("merge origin/%s", curb))
+        if(shallow) {
+            args = list("fetch --depth 1", sprintf("merge origin/%s", curb))
+        } else {
+            args = list("fetch --all", sprintf("merge origin/%s", curb))
+        }
         if(dirty) {
             stash = TRUE
             system_w_init("git", args = "stash", intern = TRUE, param = param)
@@ -34,21 +38,21 @@ updateGit = function(dir, source, param)
  #       error = function(x) x)
     if(errorOrNonZero(out))
     {
-        
+
         logfun(param)(pkg = basename(dir), msg = paste("update of git checkout failed! cmd:", cmds),
                      type = "both")
         return(FALSE)
     }
     if(stash)
         system_w_init("git", args= "stash pop", intern = TRUE, param = param)
-    
+
 
     TRUE
 }
 
 
 gitChangeBranch = function(codir, branch, param = SwitchrParam()) {
-   
+
     oldwd = setwd(codir)
     on.exit(setwd(oldwd))
     logfun(param)(basename(codir), paste("GIT: Switching to branch", branch,
@@ -70,7 +74,7 @@ gitCurrentBranch = function(param) {
     res = system_w_init("git", args = "branch", intern = TRUE, param = param)
     br = res[grepl("\\*", res)]
     br = gsub("\\*[[:space:]]*", "", br)
-    br 
+    br
 }
 
 gitWDIsDirty = function(param) {
@@ -79,5 +83,5 @@ gitWDIsDirty = function(param) {
         TRUE
     else
         FALSE
-    
+
 }

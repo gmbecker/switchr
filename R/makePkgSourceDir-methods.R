@@ -1,4 +1,4 @@
-                                        #setMethod("makePkgSourceDir", c(name = "ANY", source = "SVNSource"), function(name, source, path, repo) {
+#setMethod("makePkgSourceDir", c(name = "ANY", source = "SVNSource"), function(name, source, path, repo) {
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,SVNSource
 setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
@@ -8,16 +8,16 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
               if(!file.exists(path))
                   dir.create(path, recursive = TRUE)
               oldwd = setwd(path)
-              on.exit(setwd(oldwd))              
+              on.exit(setwd(oldwd))
               if(missing(name))
                   name = basename(location(source))
-              
+
               opts = character()
               if(length(source@user) && nchar(source@user))
                   opts = paste0(opts, " --username=", source@user)
               if(length(source@password) && nchar(source@password))
                   opts = paste0(opts, " --password=", source@password)
-              
+
                                         #did we already check it out?
               if(file.exists(name) && file.exists(name, ".svn") && !forceRefresh)
               {
@@ -42,9 +42,9 @@ setMethod("makePkgDir", c(name = "ANY", source = "SVNSource"),
                   }
               }
               rtdir = file.path(path, name)
-              
+
               ret = !is.null(findPkgDir(rtdir, branch(source), source@subdir, param = param))
-              
+
                                         #success log
               if(ret)
               {
@@ -65,7 +65,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GithubSource"),
           if(latest_only) {
               ##https://github.com/gmbecker/ProteinVis/archive/IndelsOverlay.zip
               ## for IndelsOverlay branch
-              
+
               reponm = gsub("\\.git", "", location(source))
               reponm = gsub(".*/([^/]+)/{0,1}$", "\\1", reponm)
               zipUrl = paste(gsub("\\.git", "", location(source)),
@@ -116,7 +116,11 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           } else {
               if(file.exists(name))
                   unlink(name, recursive=TRUE )
-              args = c("clone", sdir, name)
+              if(latest_only) {
+                  args = c("clone --depth 1", sdir, name)
+              } else {
+                  args = c("clone", sdir, name)
+              }
               res = tryCatch(system_w_init("git", args = args,
                                            intern=TRUE, param = param),
                   error=function(x) x)
@@ -142,7 +146,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
                 logfun(param)(name, res, type="error")
                 return(FALSE)
               }
-              
+
               logfun(param)(name, paste0("Successfully checked out package source from ",
                                         sdir, " on branch ", branch(source)))
           }
@@ -152,8 +156,8 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
           if(ret)
           {
               logfun(param)(name, paste("Temporary source directory successfully created:", ret))
-          } 
-          
+          }
+
           ret
       })
 ##stub for everyone else
@@ -171,11 +175,11 @@ setMethod("makePkgDir", c(name="ANY", source="CRANSource"), function(name, sourc
 
     if(!file.exists(file.path(path, name)))
         dir.create(file.path(path, name), recursive=TRUE)
-    
+
     pkg =  download.packages2(name, destdir = path)[,2]
     untar(pkg,exdir = path)
     TRUE
-    
+
 })
 
 ##'@rdname makePkgDir
@@ -191,8 +195,8 @@ setMethod("makePkgDir", c(name="ANY", source="BiocSource"), function(name, sourc
     pkg =  download.packages2(name, destdir = path,  repos = BiocInstaller::biocinstallRepos())[,2]
     untar(pkg,exdir = path)
     return(TRUE)
-    
-    
+
+
 })
 
 
@@ -211,7 +215,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "TarballSource"),
               }
               untar(loc, exdir = path)
               file.exists(file.path(path, name))
-                 
+
           })
 
 
@@ -230,13 +234,13 @@ setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
         dir.create(path, recursive = TRUE)
     oldwd = setwd(path)
     on.exit(setwd(oldwd))
-        
+
     if(missing(name))
         name = basename(location(source))
     if(file.exists(file.path(path, name)))
         unlink(file.path(path, name), recursive=TRUE, force=TRUE)
     logfun(param)(name, "Copying local source directory into temporary checkout directory.")
-    
+
    # ok= file.copy(location(source), file.path(path, name), recursive = TRUE)
     ok = file.copy(normalizePath2(location(source)), file.path(path), recursive=TRUE)
     if(basename(location(source)) != name)
@@ -245,7 +249,7 @@ setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
         ok = file.rename(file.path(path, basename(location(source))), file.path(path, name))
     }
     ret = normalizePath2(file.path(path, name, source@subdir))
-    
+
                                         #success log
     if(ok)
     {
@@ -253,5 +257,5 @@ setMethod("makePkgDir", c(name="ANY",source="LocalSource"),
                                   ret))
     }
     ok
-    
+
 })
