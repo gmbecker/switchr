@@ -1,4 +1,4 @@
-updateGit = function(dir, source, param, shallow = TRUE)
+updateGit = function(dir, source, param, shallow = FALSE)
 {
     oldwd = setwd(dir)
     on.exit(setwd(oldwd))
