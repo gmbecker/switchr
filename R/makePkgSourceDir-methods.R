@@ -112,7 +112,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"),
              file.exists(file.path(name, ".git")) &&
                file.exists(file.path(name, "DESCRIPTION"))) {
               logfun(param)(name, "Existing temporary checkout found at this location. Updating")
-              up = updateGit(file.path(path, name), source, param = param)
+              up = updateGit(file.path(path, name), source, param = param, shallow = TRUE)
           } else {
               if(file.exists(name))
                   unlink(name, recursive=TRUE )
