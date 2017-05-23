@@ -106,8 +106,8 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
             unlink(name, recursive = TRUE)
         }
         if (latest_only) {
-            logfun(param)(name, "Fetching only latest commit for package")
-            args = c("fetch --depth 1", sdir, name)
+            logfun(param)(name, "Cloning only latest commit for package")
+            args = c("clone --depth 1 --single-branch", sdir, name)
         } else {
             args = c("clone", sdir, name)
         }
