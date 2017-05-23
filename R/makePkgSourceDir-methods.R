@@ -95,14 +95,14 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
     if (!is.null(oldwd))
         on.exit(setwd(oldwd)) else warning("working directory returned as NULL, unable to reset it after creating pkg directory")
     sdir = location(source)
-    if (file.exists(file.path(path, name)) && file.exists(file.path(path, name, ".git"))
-        && file.exists(file.path(path, name, "DESCRIPTION"))) {
-    #if (file.exists(name) && file.exists(file.path(name, ".git"))) {
+    #if (file.exists(name) && file.exists(file.path(name, ".git"))
+    #    && file.exists(file.path(name, "DESCRIPTION"))) {
+    if (file.exists(name) && file.exists(file.path(name, ".git"))) {
         logfun(param)(name, "Existing temporary checkout found at this location. Updating")
         up = updateGit(file.path(path, name), source, param = param, shallow = TRUE)
     } else {
         if (file.exists(name)) {
-            logfun(param)(name, "No .git dir or DESCRIPTION file. Deleting src package")
+            logfun(param)(name, "Dir not initialized with git. Deleting src package")
             unlink(name, recursive = TRUE)
         }
         if (latest_only) {
