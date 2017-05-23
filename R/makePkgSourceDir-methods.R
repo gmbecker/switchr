@@ -99,6 +99,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
     #    && file.exists(file.path(name, "DESCRIPTION"))) {
     if (file.exists(name) && file.exists(file.path(name, ".git"))) {
         logfun(param)(name, "Existing temporary checkout found at this location. Updating")
+        logfun(param)(name, file.path(path, name))
         up = updateGit(file.path(path, name), source, param = param, shallow = TRUE)
     } else {
         if (file.exists(name)) {
@@ -107,7 +108,6 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
         }
         if (latest_only) {
             logfun(param)(name, "Cloning only latest commit for package")
-            logfun(param)(name, oldwd)
             args = c("clone --depth 1", sdir, name)
         } else {
             args = c("clone", sdir, name)
