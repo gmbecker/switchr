@@ -19,7 +19,6 @@ updateGit = function(dir, source, param)
           cmds = "git"
           args = list(c("fetch origin ", branch(source), ":", branch(source)),
                       c("checkout ", branch(source)))
-        }
     }
 
     out = tryCatch(mapply(system_w_init, cmds, args = args, intern = TRUE,
