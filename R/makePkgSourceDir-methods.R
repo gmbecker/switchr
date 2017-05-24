@@ -95,9 +95,8 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
     if (!is.null(oldwd))
         on.exit(setwd(oldwd)) else warning("working directory returned as NULL, unable to reset it after creating pkg directory")
     sdir = location(source)
-    #if (file.exists(name) && file.exists(file.path(name, ".git"))
-    #    && file.exists(file.path(name, "DESCRIPTION"))) {
-    if (file.exists(name) && file.exists(file.path(name, ".git"))) {
+    if (file.exists(name) && file.exists(file.path(name, ".git"))
+        && file.exists(file.path(name, source@subdir, "DESCRIPTION"))) {
         logfun(param)(name, "Existing temporary checkout found at this location. Updating")
         up = updateGit(file.path(path, name), source, param = param, shallow = TRUE)
     } else {
@@ -188,9 +187,6 @@ setMethod("makePkgDir", c(name = "ANY", source = "BiocSource"), function(name, s
 
 })
 
-
-
-
 ##'@rdname makePkgDir
 ##' @aliases makePkgDir,ANY,TarballSource
 
@@ -241,8 +237,8 @@ setMethod("makePkgDir", c(name = "ANY", source = "LocalSource"), function(name, 
 
     # success log
     if (ok) {
-        logfun(param)(name, paste("Temporary source directory successfully created:",
-            ret))
+        logfun(param)(name,
+               paste("Temporary source directory successfully created:", ret))
     }
     ok
 
