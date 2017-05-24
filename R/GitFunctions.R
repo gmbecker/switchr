@@ -16,14 +16,9 @@ updateGit = function(dir, source, param)
             system_w_init("git", args = "stash", intern = TRUE, param = param)
         }
     } else {
-        if(dirty)
-            stop("Uncommitted changes in local checkout of a different branch.  Stash or commit these before continuing")
-        else {
-            cmds = "git"
-            args = list(c("fetch origin ", branch(source), ":", branch(source)),
-                        c("checkout ", branch(source)))
-            ## cmds = c(paste0("git fetch origin ", branch(source), ":", branch(source)), paste("git checkout ", branch(source)))
-            ## args = list(character(), character())
+          cmds = "git"
+          args = list(c("fetch origin ", branch(source), ":", branch(source)),
+                      c("checkout ", branch(source)))
         }
     }
 
