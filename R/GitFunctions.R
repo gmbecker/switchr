@@ -16,8 +16,9 @@ updateGit = function(dir, source, param)
             system_w_init("git", args = "stash", intern = TRUE, param = param)
         }
     } else {
-        if(dirty)
+        if(dirty) {
             stop("Uncommitted changes in local checkout of a different branch.  Stash or commit these before continuing")
+        }
         else {
             cmds = "git"
             args = list(c("fetch origin ", branch(source), ":", branch(source)),
@@ -34,21 +35,20 @@ updateGit = function(dir, source, param)
  #       error = function(x) x)
     if(errorOrNonZero(out))
     {
-        
+
         logfun(param)(pkg = basename(dir), msg = paste("update of git checkout failed! cmd:", cmds),
                      type = "both")
         return(FALSE)
     }
     if(stash)
         system_w_init("git", args= "stash pop", intern = TRUE, param = param)
-    
+
 
     TRUE
 }
 
-
 gitChangeBranch = function(codir, branch, param = SwitchrParam()) {
-   
+
     oldwd = setwd(codir)
     on.exit(setwd(oldwd))
     logfun(param)(basename(codir), paste("GIT: Switching to branch", branch,
@@ -70,7 +70,7 @@ gitCurrentBranch = function(param) {
     res = system_w_init("git", args = "branch", intern = TRUE, param = param)
     br = res[grepl("\\*", res)]
     br = gsub("\\*[[:space:]]*", "", br)
-    br 
+    br
 }
 
 gitWDIsDirty = function(param) {
@@ -79,5 +79,5 @@ gitWDIsDirty = function(param) {
         TRUE
     else
         FALSE
-    
+
 }
