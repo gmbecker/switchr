@@ -98,10 +98,10 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
     if (file.exists(name) && file.exists(file.path(name, ".git"))
         && file.exists(file.path(name, source@subdir, "DESCRIPTION"))) {
         logfun(param)(name, "Existing temporary checkout found at this location. Updating")
-        up = updateGit(file.path(path, name), source, param = param, shallow = TRUE)
+        up = updateGit(file.path(path, name), source, param = param)
     } else {
         if (file.exists(name)) {
-            logfun(param)(name, "Dir not initialized with git. Deleting src package")
+            logfun(param)(name, ".git dir & DESCRIPTION file missing. Deleting src dir")
             unlink(name, recursive = TRUE)
         }
         if (latest_only) {

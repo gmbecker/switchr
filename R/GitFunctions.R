@@ -1,4 +1,4 @@
-updateGit = function(dir, source, param, shallow = FALSE)
+updateGit = function(dir, source, param)
 {
     oldwd = setwd(dir)
     on.exit(setwd(oldwd))
@@ -10,11 +10,7 @@ updateGit = function(dir, source, param, shallow = FALSE)
     stash = FALSE
     if(curb == branch(source)) {
         cmds = "git"
-        if(shallow) {
-            args = list("fetch --depth 1", sprintf("merge origin/%s", curb))
-        } else {
-            args = list("fetch --all", sprintf("merge origin/%s", curb))
-        }
+        args = list("fetch --all", sprintf("merge origin/%s", curb))
         if(dirty) {
             stash = TRUE
             system_w_init("git", args = "stash", intern = TRUE, param = param)
