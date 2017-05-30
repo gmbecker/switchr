@@ -95,6 +95,9 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
     if (!is.null(oldwd))
         on.exit(setwd(oldwd)) else warning("working directory returned as NULL, unable to reset it after creating pkg directory")
     sdir = location(source)
+    if(identical(source@subdir, character(0))) {
+        source@subdir <- "."
+    }
     if (file.exists(name) && file.exists(file.path(name, ".git"))
         && file.exists(file.path(name, source@subdir, "DESCRIPTION"))) {
         logfun(param)(name, "Existing temporary checkout found at this location. Updating")
