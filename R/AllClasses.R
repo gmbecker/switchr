@@ -72,7 +72,8 @@ RepoSubset = function(repos, pkgs, default_name) {
 setClass("PkgSource", representation(name = "character",location="character",
                                      branch = "character",
                                      subdir = "character", user = "character",
-                                     password="character"))
+                                     password="character"),
+         prototype = list(branch = NA_character_, subdir = "."))
 ##' @export
 ##' @rdname PkgSource-class
 setClass("SVNSource", contains = "PkgSource")
