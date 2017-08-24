@@ -1,5 +1,22 @@
+## (very far backawards compatible version of list.dirs
+## list.dirs is apparently a relatively new addition, makes this function fail in R 2.12.1
+list.dirs = function(path = ".", full.names = TRUE, recursive = TRUE) {
+    if(exists(base::list.dirs))
+        dirs = base::list.dirs(path = path, full.names = full.names,
+                         recursive = recursive)
+    else {
+        dirs = list.files(path, recursive = recursive,
+                          include.dirs = TRUE, no.. = TRUE,
+                          full.names = full.names)
+        dirs = dirs[sapply(dirs, function(x) file.info(x)$isdir)]
+    }
+
+    dirs
+}
+
+
 url.exists = function(x, ...) {
-    if(requireNamespace2("RCurl"))
+    if(requireNamespace2("RCurl") && exists(RCurl::url.exists))
         RCurl::url.exists(x, ...)
     else {
         con = url(x)
