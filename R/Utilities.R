@@ -1,7 +1,7 @@
 ## (very far backawards compatible version of list.dirs
 ## list.dirs is apparently a relatively new addition, makes this function fail in R 2.12.1
 list.dirs = function(path = ".", full.names = TRUE, recursive = TRUE) {
-    if(exists(base::list.dirs))
+    if(exists("list.dirs", pos = length(search())))
         dirs = base::list.dirs(path = path, full.names = full.names,
                          recursive = recursive)
     else {
@@ -16,7 +16,8 @@ list.dirs = function(path = ".", full.names = TRUE, recursive = TRUE) {
 
 
 url.exists = function(x, ...) {
-    if(requireNamespace2("RCurl") && exists(RCurl::url.exists))
+    if(requireNamespace2("RCurl") &&
+       !is(try(RCurl::url.exists, silent = TRUE), "try-error"))
         RCurl::url.exists(x, ...)
     else {
         con = url(x)
