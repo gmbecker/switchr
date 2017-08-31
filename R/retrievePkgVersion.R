@@ -224,19 +224,23 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
             dir.create(dir, recursive=TRUE)
         oldwd = setwd(dir)
         on.exit(setwd(oldwd))
-        
-        commit = findBiocSVNRev(name, version, destpath = dir,
-            param = param, ret$biocVers)
+
+        pkgdir = file.path(dir, name)
+        ## commit = findBiocSVNRev(name, version, destpath = dir,
+        ##     param = param, ret$biocVers)
+        commit = findBiocGitRev(name, version, destpath = dir, param = param,
+                                biocVers = ret$biocVers)
         if(is.null(commit))
             return(NULL)
         
-        pkgdir = file.path(dir, name)
+        
         rbin = paste(file.path(R.home("bin"), "Rcmd"))
         system_w_init(rbin, args = c("build", "--no-build-vignettes", "--no-resave-data", "--no-manual",
                             pkgdir), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
         setwd(pkgdir)
-        system_w_init("svn", args = "up", param = param) #this gets us back to the trunk
+        ## system_w_init("svn", args = "up", param = param) #this gets us back to the trunk
+        system_w_init("git", args = "checkout master", param = param) #this gets us back to the trunk
 
     }
     ret
@@ -356,6 +360,46 @@ findBiocSVNRev = function(name, version, destpath, param, biocVers="devel")
     }
     res
 }
+
+
+
+findBiocGitRev = function(name, version, destpath, param, biocVers="devel")
+{
+
+    if(is.null(biocVers) || is.na(biocVers))
+        biocVers = "devel"
+        
+    ## I'm paranoid about that unlink(pkgdir, recursive=TRUE) call ...
+    if(is.null(name) || nchar(name) == 0 || is.na(name) || !grepl("^[[:alpha:]]", name))
+        stop("invalid name")
+    pkgdir = file.path(destpath, name)
+
+  
+    repoloc = paste0("https://git.bioconductor.org/packages/", name)
+    if(!file.exists(pkgdir) || !file.exists(file.path(pkgdir, ".git"))) {
+        if(file.exists(pkgdir)) { ## pkg dir exists but isn't a git checkout...
+            unlink(pkgdir, recursive=TRUE)
+        }
+        src = makeSource(name = name, url = repoloc, type = "git",
+                         branch = biocVersAsGitBr(biocVers))
+        ret = makePkgDir(name = name, source = src, path = destpath, latest_only = FALSE, param = param)
+        
+        if(!ret)
+            return(NULL)
+
+    }
+    
+    
+    res = findGitRev(name, version, codir = pkgdir, param = param)
+    if(is.null(res) && ! biocVers %in% dev_vers_aliases) {
+        system_w_init("git", args =  "checkout master", dir = pkgdir)
+        res = findGitRev(name, version, codir = pkgdir, param = param)
+    }
+    res
+}
+
+
+
 
 ## destpath is the actual package directory, not the general destpath for all pkgs.
 ## confusing, should change this.
