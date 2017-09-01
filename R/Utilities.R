@@ -5,8 +5,9 @@ list.dirs = function(path = ".", full.names = TRUE, recursive = TRUE) {
         dirs = base::list.dirs(path = path, full.names = full.names,
                          recursive = recursive)
     else {
+        ## very old versions of list.files don't have include.dirs or no..
+        
         dirs = list.files(path, recursive = recursive,
-                          include.dirs = TRUE, no.. = TRUE,
                           full.names = full.names)
         dirs = dirs[sapply(dirs, function(x) file.info(x)$isdir)]
     }
