@@ -516,145 +516,145 @@ download.packages2 = function(pkgs, destdir, avail = NULL,
 }
 
 
-.build_repository_package_db_update = function (dir, fields = NULL,
-                                                type = c("source", "mac.binary", 
-                                                         "win.binary"),
-                                                verbose = getOption("verbose"),
-                                                unpacked = FALSE,
-                                                cur.db) 
-{
-    if (unpacked) 
-        return(tools:::.build_repository_package_db_from_source_dirs(dir, 
-            fields, verbose))
-    type <- match.arg(type)
-    package_pattern <- switch(type, source = "_.*\\.tar\\..*$", 
-        mac.binary = "_.*\\.tgz$", win.binary = "_.*\\.zip$")
-    files <- list.files(dir, pattern = package_pattern)
+## .build_repository_package_db_update = function (dir, fields = NULL,
+##                                                 type = c("source", "mac.binary", 
+##                                                          "win.binary"),
+##                                                 verbose = getOption("verbose"),
+##                                                 unpacked = FALSE,
+##                                                 cur.db) 
+## {
+##     if (unpacked) 
+##         return(tools:::.build_repository_package_db_from_source_dirs(dir, 
+##             fields, verbose))
+##     type <- match.arg(type)
+##     package_pattern <- switch(type, source = "_.*\\.tar\\..*$", 
+##         mac.binary = "_.*\\.tgz$", win.binary = "_.*\\.zip$")
+##     files <- list.files(dir, pattern = package_pattern)
 
-    filepkgvers = gsub("(\\.tar\\..*|\\.tgz|\\.zip)$", "", basename(files))
+##     filepkgvers = gsub("(\\.tar\\..*|\\.tgz|\\.zip)$", "", basename(files))
 
-    dbpkgvers = paste(cur.db[,"Package"], cur.db[,"Version"], sep = "_")
+##     dbpkgvers = paste(cur.db[,"Package"], cur.db[,"Version"], sep = "_")
 
-    files = files[!(filepkgvers %in% dbpkgvers)]
+##     files = files[!(filepkgvers %in% dbpkgvers)]
     
     
-    if (!length(files)) 
-        return(list())
-    fields <- unique(c(tools:::.get_standard_repository_db_fields(type), 
-        fields))
-    packages <- sapply(strsplit(files, "_", fixed = TRUE), "[", 
-        1L)
-    db <- vector(length(files), mode = "list")
-    names(db) <- files
-    op <- options(warn = -1)
-    on.exit(options(op))
-    if (verbose) 
-        message("Processing packages:")
-    if (type == "win.binary") {
-        files <- file.path(dir, files)
-        for (i in seq_along(files)) {
-            if (verbose) 
-                message(paste(" ", files[i]))
-            con <- unz(files[i], file.path(packages[i], "DESCRIPTION"))
-            temp <- tryCatch(read.dcf(con, fields = fields)[1L, 
-                ], error = identity)
-            if (inherits(temp, "error")) {
-                close(con)
-                next
-            }
-            db[[i]] <- temp
-            close(con)
-        }
-    }
-    else {
-        dir <- file_path_as_absolute(dir)
-        files <- file.path(dir, files)
-        cwd <- getwd()
-        if (is.null(cwd)) 
-            stop("current working directory cannot be ascertained")
-        td <- tempfile("PACKAGES")
-        if (!dir.create(td)) 
-            stop("unable to create ", td)
-        on.exit(unlink(td, recursive = TRUE), add = TRUE)
-        setwd(td)
-        for (i in seq_along(files)) {
-            if (verbose) 
-                message(paste(" ", files[i]))
-            p <- file.path(packages[i], "DESCRIPTION")
-            temp <- try(utils::untar(files[i], files = p))
-            if (!inherits(temp, "try-error")) {
-                temp <- tryCatch(read.dcf(p, fields = fields)[1L, 
-                  ], error = identity)
-                if (!inherits(temp, "error")) {
-                  if ("NeedsCompilation" %in% fields && is.na(temp["NeedsCompilation"])) {
-                    l <- utils::untar(files[i], list = TRUE)
-                    temp["NeedsCompilation"] <- if (any(l == 
-                      file.path(packages[i], "src/"))) 
-                      "yes"
-                    else "no"
-                  }
-                  temp["MD5sum"] <- md5sum(files[i])
-                  db[[i]] <- temp
-                }
-                else {
-                  message(gettextf("reading DESCRIPTION for package %s failed with message:\n  %s", 
-                    sQuote(basename(dirname(p))), conditionMessage(temp)), 
-                    domain = NA)
-                }
-            }
-            unlink(packages[i], recursive = TRUE)
-        }
-        setwd(cwd)
-    }
-    if (verbose) 
-        message("done")
-    db
-}
+##     if (!length(files)) 
+##         return(list())
+##     fields <- unique(c(tools:::.get_standard_repository_db_fields(type), 
+##         fields))
+##     packages <- sapply(strsplit(files, "_", fixed = TRUE), "[", 
+##         1L)
+##     db <- vector(length(files), mode = "list")
+##     names(db) <- files
+##     op <- options(warn = -1)
+##     on.exit(options(op))
+##     if (verbose) 
+##         message("Processing packages:")
+##     if (type == "win.binary") {
+##         files <- file.path(dir, files)
+##         for (i in seq_along(files)) {
+##             if (verbose) 
+##                 message(paste(" ", files[i]))
+##             con <- unz(files[i], file.path(packages[i], "DESCRIPTION"))
+##             temp <- tryCatch(read.dcf(con, fields = fields)[1L, 
+##                 ], error = identity)
+##             if (inherits(temp, "error")) {
+##                 close(con)
+##                 next
+##             }
+##             db[[i]] <- temp
+##             close(con)
+##         }
+##     }
+##     else {
+##         dir <- file_path_as_absolute(dir)
+##         files <- file.path(dir, files)
+##         cwd <- getwd()
+##         if (is.null(cwd)) 
+##             stop("current working directory cannot be ascertained")
+##         td <- tempfile("PACKAGES")
+##         if (!dir.create(td)) 
+##             stop("unable to create ", td)
+##         on.exit(unlink(td, recursive = TRUE), add = TRUE)
+##         setwd(td)
+##         for (i in seq_along(files)) {
+##             if (verbose) 
+##                 message(paste(" ", files[i]))
+##             p <- file.path(packages[i], "DESCRIPTION")
+##             temp <- try(utils::untar(files[i], files = p))
+##             if (!inherits(temp, "try-error")) {
+##                 temp <- tryCatch(read.dcf(p, fields = fields)[1L, 
+##                   ], error = identity)
+##                 if (!inherits(temp, "error")) {
+##                   if ("NeedsCompilation" %in% fields && is.na(temp["NeedsCompilation"])) {
+##                     l <- utils::untar(files[i], list = TRUE)
+##                     temp["NeedsCompilation"] <- if (any(l == 
+##                       file.path(packages[i], "src/"))) 
+##                       "yes"
+##                     else "no"
+##                   }
+##                   temp["MD5sum"] <- md5sum(files[i])
+##                   db[[i]] <- temp
+##                 }
+##                 else {
+##                   message(gettextf("reading DESCRIPTION for package %s failed with message:\n  %s", 
+##                     sQuote(basename(dirname(p))), conditionMessage(temp)), 
+##                     domain = NA)
+##                 }
+##             }
+##             unlink(packages[i], recursive = TRUE)
+##         }
+##         setwd(cwd)
+##     }
+##     if (verbose) 
+##         message("done")
+##     db
+## }
 
 
 
-update_PACKAGES = function(dir = ".", fields = NULL,
-                           type = c("source", "mac.binary", 
-                                    "win.binary"),
-                           verbose = FALSE, unpacked = FALSE,
-                           subdirs = FALSE, latestOnly = TRUE,
-                           addFiles = FALSE) {
+## update_PACKAGES = function(dir = ".", fields = NULL,
+##                            type = c("source", "mac.binary", 
+##                                     "win.binary"),
+##                            verbose = FALSE, unpacked = FALSE,
+##                            subdirs = FALSE, latestOnly = TRUE,
+##                            addFiles = FALSE) {
     
-    if(!file.exists(file.path(dir, "PACKAGES"))) {
-        if(verbose)
-            message("No existing PACKAGES file found, delegating to write_PACKAGES")
+##     if(!file.exists(file.path(dir, "PACKAGES"))) {
+##         if(verbose)
+##             message("No existing PACKAGES file found, delegating to write_PACKAGES")
         
-        ret = tools::write_PACKAGES(dir = dir, fields = fields, type = type,
-                                    verbose = verbose, unpacked = unpacked,
-                                    subdirs = subdir, latestOnly = latestOnly,
-                                    addFiles = addFiles)
-        return(ret)
-    } else if (unpacked) {
-        if(verbose)
-            message("unpacked is TRUE, delegating to write_PACKAGES")
-        ret = tools::write_PACKAGES(dir = dir, fields = fields, type = type,
-                                    verbose = verbose, unpacked = unpacked,
-                                    subdirs = subdir, latestOnly = latestOnly,
-                                    addFiles = addFiles)
-        return(ret)
-    }
+##         ret = tools::write_PACKAGES(dir = dir, fields = fields, type = type,
+##                                     verbose = verbose, unpacked = unpacked,
+##                                     subdirs = subdir, latestOnly = latestOnly,
+##                                     addFiles = addFiles)
+##         return(ret)
+##     } else if (unpacked) {
+##         if(verbose)
+##             message("unpacked is TRUE, delegating to write_PACKAGES")
+##         ret = tools::write_PACKAGES(dir = dir, fields = fields, type = type,
+##                                     verbose = verbose, unpacked = unpacked,
+##                                     subdirs = subdir, latestOnly = latestOnly,
+##                                     addFiles = addFiles)
+##         return(ret)
+##     }
     
-    type <- match.arg(type)
-    nfields <- 0
-    out <- file(file.path(dir, "PACKAGES"), "wt")
-    outgz <- gzfile(file.path(dir, "PACKAGES.gz"), "wt")
+##     type <- match.arg(type)
+##     nfields <- 0
+##     out <- file(file.path(dir, "PACKAGES"), "wt")
+##     outgz <- gzfile(file.path(dir, "PACKAGES.gz"), "wt")
 
-    paths <- ""
-    existing = read.dcf(out)
-    if (is.logical(subdirs) && subdirs) {
-        owd <- setwd(dir)
-        paths <- list.dirs(".")
-        setwd(owd)
-        paths <- c("", paths[paths != "."])
-    }
-    else if (is.character(subdirs)) 
-        paths <- c("", subdirs)
+##     paths <- ""
+##     existing = read.dcf(out)
+##     if (is.logical(subdirs) && subdirs) {
+##         owd <- setwd(dir)
+##         paths <- list.dirs(".")
+##         setwd(owd)
+##         paths <- c("", paths[paths != "."])
+##     }
+##     else if (is.character(subdirs)) 
+##         paths <- c("", subdirs)
 
 
     
-}
+## }
