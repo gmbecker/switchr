@@ -172,12 +172,21 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
 biocReposFromVers = function(vers = develVers) {
-    if(!requireNamespace2("BiocInstaller"))
-        stop("Unable to manipulate bioc versions without BiocInstaller installed")
+    if(compareVersion(R.Version(), "2.14.0") < 0) {
+        if(!exists("biocinstallRepos"))
+            source("http://bioconductor.org/biocLite.R")
+        repos = biocinstallRepos()
+        repos = repos[grepl("bioconductor.org", repos)]
+    } else {
+        
+        if(!requireNamespace2("BiocInstaller"))
+            stop("Unable to manipulate bioc versions without BiocInstaller installed")
    
-    ## repos = head(BiocInstaller::biocinstallRepos(), -1)
-    repos = BiocInstaller::biocinstallRepos()
-    repos = repos[grep("BioC", names(repos))]
+        ## repos = head(BiocInstaller::biocinstallRepos(), -1)
+        repos = BiocInstaller::biocinstallRepos()
+        repos = repos[grep("BioC", names(repos))]
+    }
+
     bef= gsub("(.*/)[0-9][^/]*/.*", "\\1", repos)
     af = gsub(".*/[0-9][^/]*(/.*)", "\\1", repos)
     paste0(bef, vers, af)

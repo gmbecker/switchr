@@ -406,19 +406,6 @@ system_w_init = function(cmd, dir,
 
 
 
-## highestBiocVers = function(repos){
-##     if(!requireNamespace2("BiocInstaller"))
-##         stop("Unable to determine bioc versions without BiocInstaller installed")
-##     else if(missing(repos))
-##         ## head -1 removes the last element
-##         repos =head(BiocInstaller::biocinstallRepos(), -1)
-##     majvers = length(highestVs)
-##     vers = paste(majvers, highestVs[majvers], sep=".")
-##     biocReposFromVers(vers = vers)
-## }
-
-
-
 
 #system(..., intern=TRUE) throws an error if the the command fails,
 #and has attr(out, "status") > 0 if the called program returns non-zero status.

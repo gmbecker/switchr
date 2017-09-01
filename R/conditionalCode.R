@@ -1,7 +1,11 @@
 getBiocRepos = function() {
     if(requireNamespace2("BiocInstaller", quietly=TRUE)) {
         bioc = BiocInstaller::biocinstallRepos()
-    } else {
+    } else if(compareVersion(R.Version(), "2.14.0") < 0) {
+        if(!exists("biocinstallRepos"))
+            source("http://bioconductor.org/biocLite.R")
+        bioc = biocinstallRepos()
+    }else {
         if(is.null(defaultBiocRepos)) {
             bioc = tryCatch(getBiocReposFromRVers(), function(e) character())
             if(length(bioc) == 0)
