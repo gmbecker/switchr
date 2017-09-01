@@ -172,7 +172,7 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
 biocReposFromVers = function(vers = develVers) {
-    if(compareVersion(R.Version(), "2.14.0") < 0) {
+    if(beforeBiocInstaller()) {
         if(!exists("biocinstallRepos"))
             source("http://bioconductor.org/biocLite.R")
         repos = biocinstallRepos()

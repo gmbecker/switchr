@@ -403,8 +403,11 @@ system_w_init = function(cmd, dir,
     
 
 
-
-
+beforeBiocInstaller = function() {
+    Rver = R.Version()
+    vstr = paste(Rver$major, Rver$minor, sep = "")
+    compareVersion(vstr, "2.14.0") < 0
+}
 
 
 #system(..., intern=TRUE) throws an error if the the command fails,
