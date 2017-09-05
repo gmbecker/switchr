@@ -405,7 +405,7 @@ system_w_init = function(cmd, dir,
 
 beforeBiocInstaller = function() {
     Rver = R.Version()
-    vstr = paste(Rver$major, Rver$minor, sep = "")
+    vstr = paste(Rver$major, Rver$minor, sep = ".")
     compareVersion(vstr, "2.14.0") < 0
 }
 
