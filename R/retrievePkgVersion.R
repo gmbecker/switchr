@@ -231,10 +231,8 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         
         
         rbin = paste(file.path(R.home("bin"), "Rcmd"))
-        ## unrecognized arguments are only a warning
-        ## old versions used --no-vignettes, new versions
-        ## use --no-build-vignettes...
-        system_w_init(rbin, args = c("build", "--no-vignettes", "--no-build-vignettes", "--no-resave-data", "--no-manual",
+            
+        system_w_init(rbin, args = c("build", noVignettesArg(), "--no-resave-data", "--no-manual",
                             pkgdir), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
         setwd(pkgdir)

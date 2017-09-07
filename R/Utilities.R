@@ -507,6 +507,18 @@ download.packages2 = function(pkgs, destdir, avail = NULL,
 }
 
 
+noVignettesArg = function() {
+    Rvers = paste(R.version$major, R.version$minor, sep=".")
+    
+    if(compareVersion(Rvers, "3.1.0") < 0)
+        "--no-vignettes"
+    else
+        "--no-build-vignettes"
+}
+
+
+
+
 ## .build_repository_package_db_update = function (dir, fields = NULL,
 ##                                                 type = c("source", "mac.binary", 
 ##                                                          "win.binary"),
