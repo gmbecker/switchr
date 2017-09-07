@@ -342,17 +342,17 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
         message("Found existing switchr context. Ignoring seed value")
         return(switchTo(exsting))
     }
-    cenv = makeLibraryCtx(name = name, seed = NULL,
+    cenv = makeLibraryCtx(name = name, seed = seed,
                           exclude.site = exclude.site,
                           ...)
-    oldlp = .libPaths()
-    .libPaths2(library_paths(cenv), cenv@exclude.site)
-    on.exit(.libPaths2(oldlp))
+    ## oldlp = .libPaths()
+    ## .libPaths2(library_paths(cenv), cenv@exclude.site)
+    ## on.exit(.libPaths2(oldlp))
     
-    install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
-              cenv = update_pkgs_list(cenv)
-    .libPaths2(oldlp)
-    on.exit(NULL)
+    ## install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
+    ## cenv = update_pkgs_list(cenv)
+    ## .libPaths2(oldlp)
+    ## on.exit(NULL)
     switchTo(cenv)
 })
 
@@ -373,13 +373,13 @@ setMethod("switchTo", c("character", seed = "SessionManifest"),
         message("Found existing switchr context. Ignoring seed value")
         return(switchTo(exsting))
     }
-    cenv = makeLibraryCtx(name = name, seed = NULL,
+    cenv = makeLibraryCtx(name = name, seed = seed, #NULL,
                           exclude.site = exclude.site,
                           ...)
     
     
     
-    install_packages(pkgs = seed, lib = library_paths(cenv)[1])
+#    install_packages(pkgs = seed, lib = library_paths(cenv)[1])
     cenv = update_pkgs_list(cenv)
     switchTo(cenv)
 })
