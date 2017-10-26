@@ -3,14 +3,14 @@
 \docType{methods}
 \name{publishManifest}
 \alias{publishManifest}
-\alias{publishManifest,PkgManifest,character}
 \alias{publishManifest,PkgManifest,character-method}
-\alias{publishManifest,SessionManifest,character}
+\alias{publishManifest,PkgManifest,character}
 \alias{publishManifest,SessionManifest,character-method}
-\alias{publishManifest,SwitchrCtx,ANY}
-\alias{publishManifest,SwitchrCtx,ANY-method}
-\alias{publishManifest,missing,ANY}
+\alias{publishManifest,SessionManifest,character}
 \alias{publishManifest,missing,ANY-method}
+\alias{publishManifest,missing,ANY}
+\alias{publishManifest,SwitchrCtx,ANY-method}
+\alias{publishManifest,SwitchrCtx,ANY}
 \title{publishManifest}
 \usage{
 publishManifest(manifest, dest = "./pkg_manifest.rman", ...)
@@ -43,4 +43,3 @@ The name of the file written
 \description{
 Publish a package or session manifest to file.
 }
-

@@ -21,4 +21,3 @@ was seeded with.}
 \description{
 A constructor for class SwitchrCtx, represenging a switchr installed-package library.
 }
-

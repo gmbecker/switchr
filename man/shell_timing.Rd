@@ -3,11 +3,11 @@
 \docType{methods}
 \name{shell_timing}
 \alias{shell_timing}
-\alias{shell_timing,SwitchrParam}
 \alias{shell_timing,SwitchrParam-method}
+\alias{shell_timing,SwitchrParam}
 \alias{shell_timing<-}
-\alias{shell_timing<-,SwitchrParam}
 \alias{shell_timing<-,SwitchrParam-method}
+\alias{shell_timing<-,SwitchrParam}
 \title{Get or set the number of seconds to wait between successive shell commands}
 \usage{
 shell_timing(x)
@@ -31,4 +31,3 @@ when setting, a new, updated SwitchrParam object.
 This is intended to stop intermittent install failures
 due to network drive latency interacting with git commands
 }
-

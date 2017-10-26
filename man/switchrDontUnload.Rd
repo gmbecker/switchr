@@ -21,4 +21,3 @@ itself, or any of its dependencies. Attempting to unload any of these
 packages (e.g. \code{add=FALSE}) will result in undefined behavior and
 is not recommended.
 }
-

@@ -12,4 +12,3 @@ switchDeps
 The base packages, as well as switchr and its dependencies.
 }
 \keyword{datasets}
-

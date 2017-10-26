@@ -3,22 +3,22 @@
 \docType{methods}
 \name{makePkgDir}
 \alias{makePkgDir}
-\alias{makePkgDir,ANY,ANY}
-\alias{makePkgDir,ANY,ANY-method}
-\alias{makePkgDir,ANY,BiocSource}
-\alias{makePkgDir,ANY,BiocSource-method}
-\alias{makePkgDir,ANY,CRANSource}
-\alias{makePkgDir,ANY,CRANSource-method}
-\alias{makePkgDir,ANY,GitSource}
-\alias{makePkgDir,ANY,GitSource-method}
-\alias{makePkgDir,ANY,GithubSource}
-\alias{makePkgDir,ANY,GithubSource-method}
-\alias{makePkgDir,ANY,LocalSource}
-\alias{makePkgDir,ANY,LocalSource-method}
-\alias{makePkgDir,ANY,SVNSource}
 \alias{makePkgDir,ANY,SVNSource-method}
-\alias{makePkgDir,ANY,TarballSource}
+\alias{makePkgDir,ANY,SVNSource}
+\alias{makePkgDir,ANY,GithubSource-method}
+\alias{makePkgDir,ANY,GithubSource}
+\alias{makePkgDir,ANY,GitSource-method}
+\alias{makePkgDir,ANY,GitSource}
+\alias{makePkgDir,ANY,ANY-method}
+\alias{makePkgDir,ANY,ANY}
+\alias{makePkgDir,ANY,CRANSource-method}
+\alias{makePkgDir,ANY,CRANSource}
+\alias{makePkgDir,ANY,BiocSource-method}
+\alias{makePkgDir,ANY,BiocSource}
 \alias{makePkgDir,ANY,TarballSource-method}
+\alias{makePkgDir,ANY,TarballSource}
+\alias{makePkgDir,ANY,LocalSource-method}
+\alias{makePkgDir,ANY,LocalSource}
 \title{makePkgDir}
 \usage{
 makePkgDir(name, source, path, latest_only, param = SwitchrParam(),
@@ -70,4 +70,3 @@ This is an internal function not intended to be called directly by end users
 Create a directory and populate it with package source code from the
 specified source
 }
-

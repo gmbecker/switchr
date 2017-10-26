@@ -10,4 +10,3 @@ switchBack()
 A convenience function to switch back to the previously used computing
 environment.
 }
-

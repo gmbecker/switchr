@@ -15,4 +15,3 @@ TRUE if out is an error object, or has an attribute called "status" which is > 0
 \description{
 Identify error states from R or external programs
 }
-

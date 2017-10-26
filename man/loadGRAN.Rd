@@ -21,4 +21,3 @@ This function is a convenience to load the package GRAN<nm>, which
 will provide the contained GRAN repository as default repository within
 the switchr framework.
 }
-

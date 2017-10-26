@@ -19,4 +19,3 @@ A version of .libPaths which allows for excluding the site library
 Behaves exactly as the .libPaths function does, with the exception
 of optionally excluding the site library
 }
-

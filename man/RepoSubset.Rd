@@ -19,4 +19,3 @@ seed a switchr context}
 An object that represents a subset of packages available in a repo. When switched to, switchr will default to only installing the
 specified packages, rather than all packages in the repository.
 }
-

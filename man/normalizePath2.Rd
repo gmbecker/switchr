@@ -25,4 +25,3 @@ The normalized path.
 Attempt to normalize a relative path to an absolute one. Optionally without
 resolving symlinks on non-Windows systems
 }
-

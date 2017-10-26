@@ -10,4 +10,3 @@ Currently unused/under heavy development.
 \details{
 An object
 }
-

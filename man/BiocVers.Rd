@@ -20,4 +20,3 @@ A constructor for creating a RepoSubset object for a
 specified release of Bioconductor, which includes only the
 BiocInstaller package.
 }
-

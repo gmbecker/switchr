@@ -34,7 +34,7 @@
 ##' install_packages("fastdigest", man)
 ##'
 ##' ## install a full seeding manifest
-##' man2 = makeSeedManifest("myotherlib")
+##' man2 = makeSeedMan("myotherlib")
 ##' install_packages(man2)
 ##' }
 ##' @author Gabriel Becker

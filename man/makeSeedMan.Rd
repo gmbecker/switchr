@@ -3,12 +3,12 @@
 \docType{methods}
 \name{makeSeedMan}
 \alias{makeSeedMan}
-\alias{makeSeedMan,missing}
 \alias{makeSeedMan,missing-method}
-\alias{makeSeedMan,parsedSessionInfo}
-\alias{makeSeedMan,parsedSessionInfo-method}
-\alias{makeSeedMan,sessionInfo}
+\alias{makeSeedMan,missing}
 \alias{makeSeedMan,sessionInfo-method}
+\alias{makeSeedMan,sessionInfo}
+\alias{makeSeedMan,parsedSessionInfo-method}
+\alias{makeSeedMan,parsedSessionInfo}
 \title{makeSeedMan}
 \usage{
 makeSeedMan(x, known_manifest = PkgManifest(), ...)
@@ -36,4 +36,3 @@ makeSeedMan
 \examples{
 man = makeSeedMan()
 }
-

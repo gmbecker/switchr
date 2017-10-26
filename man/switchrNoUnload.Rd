@@ -18,4 +18,3 @@ Set whether or not ANY packages are unloaded when switching libraries.
 \details{
 This should be set to TRUE  when using switchr in the context of dynamic documents such as .Rnw and .Rmd files.
 }
-

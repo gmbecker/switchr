@@ -21,4 +21,3 @@ A path to the Package sources
 \description{
 Find a package directory within an SCM checkout
 }
-

@@ -19,4 +19,3 @@ the switchr framework is used to create or destroy a switchr library,
 but will not be updated if one is added or removed manually. In
 such cases \code{\link{updateManifest}} must be called first
 }
-

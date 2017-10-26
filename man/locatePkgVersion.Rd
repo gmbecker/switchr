@@ -40,4 +40,3 @@ repositories and during the installation of specific package versions.
 \author{
 Gabriel Becker
 }
-

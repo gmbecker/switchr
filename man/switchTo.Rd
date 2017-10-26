@@ -3,20 +3,20 @@
 \docType{methods}
 \name{switchTo}
 \alias{switchTo}
-\alias{switchTo,SwitchrCtx,ANY}
-\alias{switchTo,SwitchrCtx,ANY-method}
-\alias{switchTo,character,PkgManifest}
-\alias{switchTo,character,PkgManifest-method}
-\alias{switchTo,character,RepoSubset}
-\alias{switchTo,character,RepoSubset-method}
-\alias{switchTo,character,SessionManifest}
-\alias{switchTo,character,SessionManifest-method}
-\alias{switchTo,character,SwitchrCtx}
-\alias{switchTo,character,SwitchrCtx-method}
-\alias{switchTo,character,character}
 \alias{switchTo,character,character-method}
-\alias{switchTo,character,missing}
+\alias{switchTo,character,character}
+\alias{switchTo,character,SwitchrCtx-method}
+\alias{switchTo,character,SwitchrCtx}
 \alias{switchTo,character,missing-method}
+\alias{switchTo,character,missing}
+\alias{switchTo,SwitchrCtx,ANY-method}
+\alias{switchTo,SwitchrCtx,ANY}
+\alias{switchTo,character,RepoSubset-method}
+\alias{switchTo,character,RepoSubset}
+\alias{switchTo,character,PkgManifest-method}
+\alias{switchTo,character,PkgManifest}
+\alias{switchTo,character,SessionManifest-method}
+\alias{switchTo,character,SessionManifest}
 \title{switchTo}
 \usage{
 switchTo(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,
@@ -107,4 +107,3 @@ switchTo("fastdigestlib", seed = fdman)
 \seealso{
 \code{\link{makeLibraryCtx}}
 }
-

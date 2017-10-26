@@ -15,4 +15,3 @@ A PkgManifest or SessionManifest object
 \description{
 Load a package or session manifest from a file (local or URL)
 }
-

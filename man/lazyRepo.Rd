@@ -3,14 +3,14 @@
 \docType{methods}
 \name{lazyRepo}
 \alias{lazyRepo}
-\alias{lazyRepo,PkgManifest,ANY}
-\alias{lazyRepo,PkgManifest,ANY-method}
-\alias{lazyRepo,SessionManifest,ANY}
 \alias{lazyRepo,SessionManifest,ANY-method}
-\alias{lazyRepo,character,PkgManifest}
-\alias{lazyRepo,character,PkgManifest-method}
-\alias{lazyRepo,character,SessionManifest}
+\alias{lazyRepo,SessionManifest,ANY}
+\alias{lazyRepo,PkgManifest,ANY-method}
+\alias{lazyRepo,PkgManifest,ANY}
 \alias{lazyRepo,character,SessionManifest-method}
+\alias{lazyRepo,character,SessionManifest}
+\alias{lazyRepo,character,PkgManifest-method}
+\alias{lazyRepo,character,PkgManifest}
 \title{lazyRepo}
 \usage{
 lazyRepo(pkgs, pkg_manifest, versions = rep(NA, times = length(pkgs)),
@@ -90,4 +90,3 @@ changes WILL be reflected in the packages built into the lazy repository.
 \author{
 Gabriel Becker
 }
-

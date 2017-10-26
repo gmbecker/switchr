@@ -20,11 +20,11 @@ location of an initialization shell script.}
 
 \item{env}{character. Environmental variables to be set when running the command}
 
+\item{\dots}{additional parameters passed directly to \code{\link{system}}.}
+
 \item{param}{A SwitchrParam object. The shell initialization
 script associated with this object is used when \code{init} is
 not specified (length 0).}
-
-\item{\dots}{additional parameters passed directly to \code{\link{system}}.}
 }
 \value{
 Depends, see \code{\link{system}} for details.
@@ -33,4 +33,3 @@ Depends, see \code{\link{system}} for details.
 Run a system command with an optional intialization script (e.g. a .bashrc
 sourced first).
 }
-

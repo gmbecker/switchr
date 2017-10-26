@@ -12,4 +12,3 @@ parseSessionInfoString(string)
 \description{
 Parse text output from printing SessionInfo objects
 }
-

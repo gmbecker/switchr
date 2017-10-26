@@ -29,4 +29,3 @@ a character vector of all packages (incl. recursive dependnecies) checked out in
 \description{
 Create a checkout of a package and all it's dependencies from a manifest
 }
-

@@ -3,10 +3,10 @@
 \docType{methods}
 \name{findPkgVersionInRepo}
 \alias{findPkgVersionInRepo}
-\alias{findPkgVersionInRepo,NULL}
-\alias{findPkgVersionInRepo,NULL-method}
-\alias{findPkgVersionInRepo,character}
 \alias{findPkgVersionInRepo,character-method}
+\alias{findPkgVersionInRepo,character}
+\alias{findPkgVersionInRepo,NULL-method}
+\alias{findPkgVersionInRepo,NULL}
 \title{findPkgVersionInRepo}
 \usage{
 findPkgVersionInRepo(repo, name, version, param, dir)
@@ -32,4 +32,3 @@ A path to the downloaded tarball, or NULL
 \description{
 findPkgVersionInRepo
 }
-

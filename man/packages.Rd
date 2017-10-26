@@ -3,8 +3,8 @@
 \docType{methods}
 \name{packages}
 \alias{packages}
-\alias{packages,SwitchrCtx}
 \alias{packages,SwitchrCtx-method}
+\alias{packages,SwitchrCtx}
 \title{packages}
 \usage{
 packages(seed)
@@ -17,4 +17,3 @@ packages(seed)
 \description{
 List the packages installed in a switchr context (library)
 }
-

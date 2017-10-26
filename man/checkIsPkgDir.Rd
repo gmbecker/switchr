@@ -12,4 +12,3 @@ checkIsPkgDir(dir)
 \description{
 Check if a directory contains package sources
 }
-

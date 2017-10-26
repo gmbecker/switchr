@@ -17,4 +17,3 @@ If \code{value} is missing, the current base directory
 is returned. Otherwise the \code{value} is set as the default directory
 and returned.
 }
-

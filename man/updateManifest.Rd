@@ -13,4 +13,3 @@ metadata cache.
 \description{
 Update the cached information regarding available switchr libraries.
 }
-

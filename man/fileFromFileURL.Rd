@@ -15,4 +15,3 @@ The system directory path that \code{fileurl} points to
 \description{
 Get path from file URL
 }
-

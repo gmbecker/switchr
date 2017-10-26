@@ -3,8 +3,8 @@
 \docType{methods}
 \name{full_libpaths}
 \alias{full_libpaths}
-\alias{full_libpaths,SwitchrCtx}
 \alias{full_libpaths,SwitchrCtx-method}
+\alias{full_libpaths,SwitchrCtx}
 \title{full_libpaths}
 \usage{
 full_libpaths(seed)
@@ -18,4 +18,3 @@ full_libpaths(seed)
 Accessor for the full library path associate with a SwitchrCtx, including
 the R library and (if not excluded) the site library
 }
-

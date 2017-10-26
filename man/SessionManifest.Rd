@@ -22,4 +22,3 @@ A manifest which includes both a PkgManifest containing package source
 information, and a data.frame defining a filter with exact versions
 of some or all packages
 }
-

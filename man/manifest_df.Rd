@@ -3,15 +3,15 @@
 \docType{methods}
 \name{manifest_df}
 \alias{manifest_df}
-\alias{manifest_df,PkgManifest}
-\alias{manifest_df,PkgManifest-method}
-\alias{manifest_df,SessionManifest}
 \alias{manifest_df,SessionManifest-method}
+\alias{manifest_df,SessionManifest}
+\alias{manifest_df,PkgManifest-method}
+\alias{manifest_df,PkgManifest}
 \alias{manifest_df<-}
-\alias{manifest_df<-,PkgManifest}
-\alias{manifest_df<-,PkgManifest-method}
-\alias{manifest_df<-,SessionManifest}
 \alias{manifest_df<-,SessionManifest-method}
+\alias{manifest_df<-,SessionManifest}
+\alias{manifest_df<-,PkgManifest-method}
+\alias{manifest_df<-,PkgManifest}
 \title{manifest_df}
 \usage{
 manifest_df(x, ...)
@@ -40,4 +40,3 @@ See \code{\link{ManifestRow}}}
 Get or set the package location manifest (data.frame) associated with an
 object
 }
-

@@ -22,4 +22,3 @@ Retreive the directory associated with an object
 \author{
 Gabriel Becker
 }
-

@@ -3,11 +3,11 @@
 \docType{methods}
 \name{archive_timing}
 \alias{archive_timing}
-\alias{archive_timing,SwitchrParam}
 \alias{archive_timing,SwitchrParam-method}
+\alias{archive_timing,SwitchrParam}
 \alias{archive_timing<-}
-\alias{archive_timing<-,SwitchrParam}
 \alias{archive_timing<-,SwitchrParam-method}
+\alias{archive_timing<-,SwitchrParam}
 \title{archive_timing}
 \usage{
 archive_timing(x)
@@ -36,4 +36,3 @@ due to failing to retrieve files that *are* in the
 archive but are not downloading properly when a larger 
 number of packages is being retrieved.
 }
-

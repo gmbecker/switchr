@@ -3,11 +3,11 @@
 \docType{methods}
 \name{sh_init_script}
 \alias{sh_init_script}
-\alias{sh_init_script,SwitchrParam}
 \alias{sh_init_script,SwitchrParam-method}
+\alias{sh_init_script,SwitchrParam}
 \alias{sh_init_script<-}
-\alias{sh_init_script<-,SwitchrParam,ANY}
 \alias{sh_init_script<-,SwitchrParam-method}
+\alias{sh_init_script<-,SwitchrParam,ANY}
 \title{shell init}
 \usage{
 sh_init_script(x)
@@ -26,4 +26,3 @@ sh_init_script(x) <- value
 \description{
 Set or Retrieve the shell initialization script for an object
 }
-

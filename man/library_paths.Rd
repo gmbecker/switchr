@@ -3,8 +3,8 @@
 \docType{methods}
 \name{library_paths}
 \alias{library_paths}
-\alias{library_paths,SwitchrCtx}
 \alias{library_paths,SwitchrCtx-method}
+\alias{library_paths,SwitchrCtx}
 \title{library_paths}
 \usage{
 library_paths(seed)
@@ -17,4 +17,3 @@ library_paths(seed)
 \description{
 Accessor for which directories an SwitchrCtx is associated with.
 }
-

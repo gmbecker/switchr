@@ -3,14 +3,14 @@
 \docType{methods}
 \name{gotoVersCommit}
 \alias{gotoVersCommit}
-\alias{gotoVersCommit,character,BiocSource}
-\alias{gotoVersCommit,character,BiocSource-method}
-\alias{gotoVersCommit,character,CRANSource}
-\alias{gotoVersCommit,character,CRANSource-method}
-\alias{gotoVersCommit,character,GitSource}
-\alias{gotoVersCommit,character,GitSource-method}
-\alias{gotoVersCommit,character,SVNSource}
 \alias{gotoVersCommit,character,SVNSource-method}
+\alias{gotoVersCommit,character,SVNSource}
+\alias{gotoVersCommit,character,CRANSource-method}
+\alias{gotoVersCommit,character,CRANSource}
+\alias{gotoVersCommit,character,BiocSource-method}
+\alias{gotoVersCommit,character,BiocSource}
+\alias{gotoVersCommit,character,GitSource-method}
+\alias{gotoVersCommit,character,GitSource}
 \title{gotoVersCommit}
 \usage{
 gotoVersCommit(dir, src, version, param = SwitchrParam())
@@ -39,4 +39,3 @@ gotoVersCommit(dir, src, version, param = SwitchrParam())
 \description{
 This is a low-level function not intended for direct use by the end user.
 }
-

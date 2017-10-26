@@ -1,3 +1,4 @@
+globalVariables("biocinstallRepos", "switchr", TRUE)
 biocrepostmpl = c("http://bioconductor.org/packages/%%%%/bioc" ,
     "http://bioconductor.org/packages/%%%%/data/annotation" ,
     "http://bioconductor.org/packages/%%%%/data/experiment" ,
@@ -117,7 +118,6 @@ defaultBiocRepos = tryCatch(getBiocReposFromRVers(), error = function(e) {
                                 NULL
                             })
 
-#' @import yaml
 
 
 

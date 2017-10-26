@@ -13,4 +13,3 @@ A character vector of package repository urls
 Get default repositories for use as dependency repos and within
 install_packages
 }
-

@@ -3,15 +3,15 @@
 \docType{methods}
 \name{head}
 \alias{head}
-\alias{head,PkgManifest}
-\alias{head,PkgManifest-method}
-\alias{head,SessionManifest}
 \alias{head,SessionManifest-method}
+\alias{head,SessionManifest}
+\alias{head,PkgManifest-method}
+\alias{head,PkgManifest}
 \alias{tail}
-\alias{tail,PkgManifest}
-\alias{tail,PkgManifest-method}
-\alias{tail,SessionManifest}
 \alias{tail,SessionManifest-method}
+\alias{tail,SessionManifest}
+\alias{tail,PkgManifest-method}
+\alias{tail,PkgManifest}
 \title{Head and tail operations on manifests}
 \usage{
 head(x, ...)
@@ -46,4 +46,3 @@ packages are retained in the manifest, while all others are removed.
 In the case of a \code{SessionManifest}, \code{n} specified versions
 are retained, while the underlying \code{PkgManifest} is unchanged.
 }
-

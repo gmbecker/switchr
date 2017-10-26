@@ -3,11 +3,11 @@
 \docType{methods}
 \name{dl_method}
 \alias{dl_method}
-\alias{dl_method,SwitchrParam}
 \alias{dl_method,SwitchrParam-method}
+\alias{dl_method,SwitchrParam}
 \alias{dl_method<-}
-\alias{dl_method<-,SwitchrParam}
 \alias{dl_method<-,SwitchrParam-method}
+\alias{dl_method<-,SwitchrParam}
 \title{dl_method}
 \usage{
 dl_method(x)
@@ -26,4 +26,3 @@ dl_method(x) <- value
 \description{
 Get or set the download method for retreiving files.
 }
-

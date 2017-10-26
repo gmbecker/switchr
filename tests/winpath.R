@@ -139,40 +139,40 @@ if(switchr:::haveGit()) {
 
 
 
+## Bioconductor does not live in SVN anymore...
 
-
-biocman <<- tryCatch(BiocSVNManifest(), error = function(e) e)
-test_biocsvnman = function() {
-    if(is(biocman, "error") || nrow(biocman) == 0) {
-        message("Unable to retrieve bioc manifest. problem with Https url? skipping Bioc manifest and SVN-based tests")
-        return(TRUE)
-    }
-    biocman2 <- BiocSVNManifest(software_only=FALSE)
-    if(nrow(manifest_df(biocman)) >= nrow(manifest_df(biocman2)) - 100) #at time of writing there are ~300 experimental data packages
-        stop("BiocSVNManifest does not appear to have including experimental data packages properly")
+## biocman <<- tryCatch(BiocSVNManifest(), error = function(e) e)
+## test_biocsvnman = function() {
+##     if(is(biocman, "error") || nrow(biocman) == 0) {
+##         message("Unable to retrieve bioc manifest. problem with Https url? skipping Bioc manifest and SVN-based tests")
+##         return(TRUE)
+##     }
+##     biocman2 <- BiocSVNManifest(software_only=FALSE)
+##     if(nrow(manifest_df(biocman)) >= nrow(manifest_df(biocman2)) - 100) #at time of writing there are ~300 experimental data packages
+##         stop("BiocSVNManifest does not appear to have including experimental data packages properly")
     
-    TRUE
-}
+##     TRUE
+## }
 
-## This is causing problems on a system we use switchr on, so temporarily
-## disabled
-test_biocsvnman()
+## ## This is causing problems on a system we use switchr on, so temporarily
+## ## disabled
+## test_biocsvnman()
 
 
-test_svncheckout = function() {
-    pkgdir2 = normalizePath2(file.path(dir, "Biobase"), mustWork = FALSE)
-    unlink(pkgdir2, recursive=TRUE)
-    dfile2 = file.path(pkgdir2, "DESCRIPTION")
+## test_svncheckout = function() {
+##     pkgdir2 = normalizePath2(file.path(dir, "Biobase"), mustWork = FALSE)
+##     unlink(pkgdir2, recursive=TRUE)
+##     dfile2 = file.path(pkgdir2, "DESCRIPTION")
     
-    svnsrc = switchr:::sourceFromManifest("Biobase", biocman)
-    res = makePkgDir("Biobase", svnsrc, dir, FALSE)
-    if(!file.exists(dfile2))
-        stop("SVN checkout test does not appear to have worked")
-}
+##     svnsrc = switchr:::sourceFromManifest("Biobase", biocman)
+##     res = makePkgDir("Biobase", svnsrc, dir, FALSE)
+##     if(!file.exists(dfile2))
+##         stop("SVN checkout test does not appear to have worked")
+## }
         
-if(switchr:::haveSVN() && !is(biocman, "error") && nrow(biocman) > 0) {
-    test_svncheckout()
-}
+## if(switchr:::haveSVN() && !is(biocman, "error") && nrow(biocman) > 0) {
+##     test_svncheckout()
+## }
 
 
 
@@ -237,3 +237,4 @@ test_addReplace = function() {
 }
 
 test_addReplace()
+

@@ -37,4 +37,3 @@ repo = lazyRepo("rtracklayer", bman)
 \seealso{
 \code{\link{lazyRepo}}
 }
-

@@ -23,4 +23,3 @@ A vector of urls for the specified packages within the Bioconductor SVN reposito
 Make SVN url for a Bioconductor package given the name, bioc version, and
 type of package.
 }
-

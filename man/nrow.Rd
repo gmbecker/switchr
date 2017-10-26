@@ -3,10 +3,10 @@
 \docType{methods}
 \name{nrow}
 \alias{nrow}
-\alias{nrow,PkgManifest}
 \alias{nrow,PkgManifest-method}
-\alias{nrow,SessionManifest}
+\alias{nrow,PkgManifest}
 \alias{nrow,SessionManifest-method}
+\alias{nrow,SessionManifest}
 \title{Number of rows}
 \usage{
 nrow(x)
@@ -24,4 +24,3 @@ The number of rows in the structure
 \description{
 Number of rows
 }
-

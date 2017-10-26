@@ -2,14 +2,14 @@
 % Please edit documentation in R/AllClasses.R
 \docType{class}
 \name{PkgSource-class}
-\alias{BiocSource-class}
-\alias{CRANSource-class}
-\alias{CVSSource-class}
-\alias{GitSource-class}
-\alias{GithubSource-class}
-\alias{LocalSource-class}
 \alias{PkgSource-class}
 \alias{SVNSource-class}
+\alias{GitSource-class}
+\alias{GithubSource-class}
+\alias{CVSSource-class}
+\alias{LocalSource-class}
+\alias{CRANSource-class}
+\alias{BiocSource-class}
 \alias{TarballSource-class}
 \title{PkgSource}
 \description{
@@ -17,4 +17,3 @@ An object representing the source location of a package. This is a virtual
 used exlusively through its subclasses, which are used to differentiate the
 different types of package source locations.
 }
-

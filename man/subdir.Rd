@@ -3,11 +3,11 @@
 \docType{methods}
 \name{subdir}
 \alias{subdir}
-\alias{subdir,PkgSource}
 \alias{subdir,PkgSource-method}
+\alias{subdir,PkgSource}
 \alias{subdir<-}
-\alias{subdir<-,PkgSource}
 \alias{subdir<-,PkgSource-method}
+\alias{subdir<-,PkgSource}
 \title{subdir}
 \usage{
 subdir(x)
@@ -26,4 +26,3 @@ subdir(x) <- value
 \description{
 accessor for subdirectory.
 }
-

@@ -32,4 +32,3 @@ If name is missing, an empty (0 row) manifest data.frame
 is returned. All other fields default to values indicating no information-
  \code{NA_character} in most cases, and \code{"."} for \code{subdir}
 }
-

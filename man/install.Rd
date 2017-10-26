@@ -3,16 +3,16 @@
 \docType{methods}
 \name{install_packages}
 \alias{install_packages}
-\alias{install_packages,SessionManifest,ANY}
-\alias{install_packages,SessionManifest,ANY-method}
-\alias{install_packages,character,PkgManifest}
-\alias{install_packages,character,PkgManifest-method}
-\alias{install_packages,character,SessionManifest}
-\alias{install_packages,character,SessionManifest-method}
-\alias{install_packages,character,character}
 \alias{install_packages,character,character-method}
-\alias{install_packages,character,missing}
+\alias{install_packages,character,character}
 \alias{install_packages,character,missing-method}
+\alias{install_packages,character,missing}
+\alias{install_packages,SessionManifest,ANY-method}
+\alias{install_packages,SessionManifest,ANY}
+\alias{install_packages,character,SessionManifest-method}
+\alias{install_packages,character,SessionManifest}
+\alias{install_packages,character,PkgManifest-method}
+\alias{install_packages,character,PkgManifest}
 \title{install_packages}
 \usage{
 install_packages(pkgs, repos, versions = NULL, verbose = FALSE, ...)
@@ -74,11 +74,10 @@ man = GithubManifest("gmbecker/fastdigest")
 install_packages("fastdigest", man)
 
 ## install a full seeding manifest
-man2 = makeSeedManifest("myotherlib")
+man2 = makeSeedMan("myotherlib")
 install_packages(man2)
 }
 }
 \author{
 Gabriel Becker
 }
-

@@ -29,4 +29,3 @@ Construct pockage directory path
 Unlike \code{\link{findPkgDir}} this does not look for existing
 package source directories. It only constructs the path.
 }
-

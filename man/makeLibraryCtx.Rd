@@ -4,8 +4,8 @@
 \alias{makeLibraryCtx}
 \title{makeLibraryCtx}
 \usage{
-makeLibraryCtx(name, seed = NULL, pkgs, exclude.site = TRUE, contains,
-  rvers = NULL, verbose = FALSE)
+makeLibraryCtx(name, seed = NULL, pkgs = NULL, exclude.site = TRUE,
+  contains, rvers = NULL, verbose = FALSE)
 }
 \arguments{
 \item{name}{The name for the library}
@@ -32,4 +32,3 @@ Locate or create a specified switchr library
 This function is not intended to be called directly in most cases; switchTo
 calls it automatically.
 }
-

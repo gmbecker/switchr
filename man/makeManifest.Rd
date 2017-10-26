@@ -14,4 +14,3 @@ makeManifest(..., dep_repos = defaultRepos())
 \description{
 Create a package manifest
 }
-

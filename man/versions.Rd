@@ -3,11 +3,11 @@
 \docType{methods}
 \name{versions_df}
 \alias{versions_df}
-\alias{versions_df,SessionManifest}
 \alias{versions_df,SessionManifest-method}
+\alias{versions_df,SessionManifest}
 \alias{versions_df<-}
-\alias{versions_df<-,SessionManifest}
 \alias{versions_df<-,SessionManifest-method}
+\alias{versions_df<-,SessionManifest}
 \title{versions_df}
 \usage{
 versions_df(x)
@@ -26,4 +26,3 @@ versions_df(x) <- value
 \description{
 Get or set the the versions information in a SessionManifest
 }
-

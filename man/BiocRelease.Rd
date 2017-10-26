@@ -4,7 +4,7 @@
 \name{BiocRelease}
 \alias{BiocRelease}
 \title{BiocRelease}
-\format{An object of class \code{NULL} of length 0.}
+\format{An object of class \code{RepoSubset} of length 1.}
 \usage{
 BiocRelease
 }
@@ -12,4 +12,3 @@ BiocRelease
 An object representing the current Bioc release. Can be passed to switchTo.
 }
 \keyword{datasets}
-

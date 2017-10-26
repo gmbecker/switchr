@@ -17,4 +17,3 @@ a specific Bioconductor release
 This function will only work if some version of Bioconductor (>2.9)
 was installed when switchr was installed. It will return NULL otherwise.
 }
-

@@ -3,8 +3,8 @@
 \docType{methods}
 \name{notrack}
 \alias{notrack}
-\alias{notrack,NULL}
 \alias{notrack,NULL-method}
+\alias{notrack,NULL}
 \title{Notrack directory}
 \usage{
 notrack(repo)
@@ -21,4 +21,3 @@ is NULL, a notrack directory is constructed within a temp directory.
 \description{
 This function is not intended to be called directly by the user.
 }
-

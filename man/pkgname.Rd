@@ -3,11 +3,11 @@
 \docType{methods}
 \name{pkgname}
 \alias{pkgname}
-\alias{pkgname,PkgSource}
 \alias{pkgname,PkgSource-method}
+\alias{pkgname,PkgSource}
 \alias{pkgname<-}
-\alias{pkgname<-,PkgSource}
 \alias{pkgname<-,PkgSource-method}
+\alias{pkgname<-,PkgSource}
 \title{pkgname}
 \usage{
 pkgname(x)
@@ -26,4 +26,3 @@ pkgname(x) <- value
 \description{
 Get or set the package name associated with a Package Source
 }
-

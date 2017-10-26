@@ -7,4 +7,3 @@
 \description{
 An object representing the information in printed sessionInfo() output
 }
-

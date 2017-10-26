@@ -136,7 +136,7 @@ setMethod("switchTo", c(name = "character", seed = "character"),
             cenv = makeLibraryCtx(name = name, seed = seed,
                                   exclude.site = exclude.site,  ...)
         } else {
-            message(sprintf("Library %s already exists. Ignoring seed and switching to existing library"), name)
+            message(sprintf("Library %s already exists. Ignoring seed and switching to existing library", name))
         }
     if(!is.null(cenv))
         switchTo(name = cenv)
@@ -407,7 +407,7 @@ setMethod("announce", "SwitchrCtx", function(seed, reverted=FALSE) {
     message(sprintf("%s to the '%s' computing environment. \n%d packages are currently available.", ifelse(reverted, "Reverted", "Switched"),
                     seed@name,  nrow(seed@packages)))
     if(seed@exclude.site)
-        message("Packages installed in your site library ARE suppressed.")
+        message("Packages installed in your site library are suppressed.")
     message("To switch back to your previous environment type switchBack()")
 })
 

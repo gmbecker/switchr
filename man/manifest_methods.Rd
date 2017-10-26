@@ -3,11 +3,11 @@
 \docType{methods}
 \name{manifest}
 \alias{manifest}
-\alias{manifest,SessionManifest}
-\alias{manifest,SessionManifest-method}
 \alias{manifest<-}
-\alias{manifest<-,SessionManifest}
+\alias{manifest,SessionManifest-method}
+\alias{manifest,SessionManifest}
 \alias{manifest<-,SessionManifest-method}
+\alias{manifest<-,SessionManifest}
 \title{Get or set the manifest associated with an object}
 \usage{
 manifest(x)
@@ -29,4 +29,3 @@ A PkgManifest or SessionManifest object
 \description{
 Get or set manifest associated with an object
 }
-

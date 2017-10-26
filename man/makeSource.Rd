@@ -4,7 +4,8 @@
 \alias{makeSource}
 \title{Create a PkgSource object for a package}
 \usage{
-makeSource(url, type, user, password, scm_auth, prefer_svn = FALSE, ...)
+makeSource(url, type, user, password, scm_auth = list(), prefer_svn = FALSE,
+  ...)
 }
 \arguments{
 \item{url}{The url of the package sources}
@@ -28,4 +29,3 @@ defaults for \code{user} and \code{password}}
 \description{
 Create a PkgSource object for a package
 }
-

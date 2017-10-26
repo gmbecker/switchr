@@ -28,4 +28,3 @@ Failing to include switchr, any of its dependencies, or any base
 packages (available as a vector in the \code{\link{switchDeps}} object)
 in \code{dontunload} will result in undefined, likely erroneous behavior.
 }
-

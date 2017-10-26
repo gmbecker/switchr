@@ -3,11 +3,11 @@
 \docType{methods}
 \name{branch}
 \alias{branch}
-\alias{branch,PkgSource}
 \alias{branch,PkgSource-method}
+\alias{branch,PkgSource}
 \alias{branch<-}
-\alias{branch<-,PkgSource}
 \alias{branch<-,PkgSource-method}
+\alias{branch<-,PkgSource}
 \title{branch}
 \usage{
 branch(x)
@@ -26,4 +26,3 @@ branch(x) <- value
 \description{
 Get or set the branch associated with a Package Source
 }
-

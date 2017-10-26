@@ -3,11 +3,11 @@
 \docType{methods}
 \name{logfun}
 \alias{logfun}
-\alias{logfun,SwitchrParam}
 \alias{logfun,SwitchrParam-method}
+\alias{logfun,SwitchrParam}
 \alias{logfun<-}
-\alias{logfun<-,SwitchrParam}
 \alias{logfun<-,SwitchrParam-method}
+\alias{logfun<-,SwitchrParam}
 \title{logfun}
 \usage{
 logfun(x)
@@ -26,4 +26,3 @@ logfun(x) <- value
 \description{
 Get or set the logging function in an object associated with a SwitchrParam
 }
-

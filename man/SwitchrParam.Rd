@@ -2,6 +2,7 @@
 % Please edit documentation in R/AllClasses.R, R/SwitchrParam.R
 \docType{class}
 \name{SwitchrParam-class}
+\alias{SwitchrParam-class}
 \alias{SwitchrParam}
 \alias{SwitchrParam-class}
 \title{SwitchrParam}
@@ -36,4 +37,3 @@ parameters understood by the switchr framework
 \author{
 Gabriel Becker
 }
-

@@ -3,15 +3,15 @@
 \docType{methods}
 \name{dep_repos}
 \alias{dep_repos}
-\alias{dep_repos,PkgManifest}
 \alias{dep_repos,PkgManifest-method}
-\alias{dep_repos,SessionManifest}
+\alias{dep_repos,PkgManifest}
 \alias{dep_repos,SessionManifest-method}
+\alias{dep_repos,SessionManifest}
 \alias{dep_repos<-}
-\alias{dep_repos<-,PkgManifest}
 \alias{dep_repos<-,PkgManifest-method}
-\alias{dep_repos<-,SessionManifest}
+\alias{dep_repos<-,PkgManifest}
 \alias{dep_repos<-,SessionManifest-method}
+\alias{dep_repos<-,SessionManifest}
 \title{dep_repos}
 \usage{
 dep_repos(x)
@@ -38,4 +38,3 @@ Character vector with existing repository urls
 Get or set repositories to be used to fullfill dependencies beyond packages
 within the manifest
 }
-

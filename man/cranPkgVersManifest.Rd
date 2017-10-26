@@ -54,11 +54,10 @@ the set of package versions originally used.
 man = cranPkgVersManifest("devtools", "1.6")
 }
 }
-\author{
-Gabriel Becker
-}
 \references{
 "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
  database. R package version 1.0.0. https://github.com/metacran/crandb
 }
-
+\author{
+Gabriel Becker
+}

@@ -3,12 +3,12 @@
 \docType{methods}
 \name{libManifest}
 \alias{libManifest}
-\alias{libManifest,SwitchrCtx}
-\alias{libManifest,SwitchrCtx-method}
-\alias{libManifest,character}
-\alias{libManifest,character-method}
-\alias{libManifest,missing}
 \alias{libManifest,missing-method}
+\alias{libManifest,missing}
+\alias{libManifest,character-method}
+\alias{libManifest,character}
+\alias{libManifest,SwitchrCtx-method}
+\alias{libManifest,SwitchrCtx}
 \title{libManifest}
 \usage{
 libManifest(lib = currentCompEnv(), record_versions = TRUE,
@@ -61,4 +61,3 @@ man2 = libManifest("myotherlib")
 man2
 }
 }
-

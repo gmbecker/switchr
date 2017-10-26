@@ -3,10 +3,10 @@
 \docType{methods}
 \name{addPkg}
 \alias{addPkg}
-\alias{addPkg,PkgManifest}
 \alias{addPkg,PkgManifest-method}
-\alias{addPkg,SessionManifest}
+\alias{addPkg,PkgManifest}
 \alias{addPkg,SessionManifest-method}
+\alias{addPkg,SessionManifest}
 \title{addPkg}
 \usage{
 addPkg(x, ..., rows = makeManifest(...), versions = data.frame(name =
@@ -24,6 +24,8 @@ addPkg(x, ..., rows = makeManifest(...), versions = data.frame(name =
 \arguments{
 \item{x}{A manifest or manifest-associate objec tto add the pkg 2}
 
+\item{\dots}{The information regarding the package to place in the manifest}
+
 \item{rows}{An already-created data.frame to add to the manifest}
 
 \item{versions}{A data.frame of package names and versions, if adding to
@@ -32,10 +34,7 @@ a SessionManifest, ignored otherwise}
 \item{replace}{logical. If true, the specified package info will replace
 any already in the manifest in the case of duplicates. Otherwise, an error
 is thrown.}
-
-\item{\dots}{The information regarding the package to place in the manifest}
 }
 \description{
 Add a package to an object associated with a manifest
 }
-
