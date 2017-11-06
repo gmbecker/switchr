@@ -28,6 +28,8 @@ man
 \references{
 "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
  database. R package version 1.0.0. https://github.com/metacran/crandb
+
+Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01
 }
 \author{
 Gabriel Becker

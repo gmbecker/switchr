@@ -12,6 +12,8 @@ crandburl = "http://crandb.r-pkg.org/"
 ##' @return A SessionManifest object
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
+##'
+##' Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01 
 ##' @author Gabriel Becker
 ##' @examples
 ##' \dontrun{
@@ -65,6 +67,8 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 ##' @return A SessionManifest object
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
+##'
+##' Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01 
 ##' @note Some packages retain the same version on CRAN for long periods of
 ##' time. The cohort in the manifest represents a gross proxy for the cohort
 ##' used in conjunction within an analysis which used a the \code{vers} version

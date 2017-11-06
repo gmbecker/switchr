@@ -78,6 +78,9 @@ man2 = makeSeedMan("myotherlib")
 install_packages(man2)
 }
 }
+\references{
+Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01
+}
 \author{
 Gabriel Becker
 }

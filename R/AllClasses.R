@@ -29,6 +29,7 @@ setClass("SwitchrCtx", representation(name = "character",
 ##' @param seed An object representing the list of packages the switchr context
 ##' was seeded with.
 ##' @aliases SwitchrCtx-class
+##' @references Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01 
 ##'@export
 SwitchrCtx = function(name, libpaths, exclude.site = TRUE, seed = NULL) {
     
