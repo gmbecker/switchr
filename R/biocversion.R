@@ -1,4 +1,6 @@
-globalVariables("biocinstallRepos", "switchr", TRUE)
+if(exists("globalVariables")) {
+    globalVariables("biocinstallRepos", "switchr", TRUE)
+}
 biocrepostmpl = c("http://bioconductor.org/packages/%%%%/bioc" ,
     "http://bioconductor.org/packages/%%%%/data/annotation" ,
     "http://bioconductor.org/packages/%%%%/data/experiment" ,
