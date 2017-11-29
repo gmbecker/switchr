@@ -119,7 +119,7 @@ setMethod("libManifest", "SwitchrCtx",
                       "SourceSubdir"))
           res = res[sapply(res, function(x) nrow(x)>0)]
     instpkginfo = do.call(rbind, res)
-    instpkgs  = instpkgs[instpkgs %in% instpkginfo$Package]
+    instpkgs  = instpkgs[instpkgs %in% instpkginfo[,"Package"]]
           if(nrow(instpkginfo) == 0)
               return(PkgManifest())
           mani = PkgManifest(name = instpkginfo[,"Package"],
