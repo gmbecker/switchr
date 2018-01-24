@@ -104,12 +104,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
             logfun(param)(name, ".git dir & DESCRIPTION file missing. Deleting src dir")
             unlink(name, recursive = TRUE)
         }
-        if (latest_only) {
-            logfun(param)(name, "Cloning only latest commit for package")
-            args = c("clone --depth 1", sdir, name)
-        } else {
-            args = c("clone", sdir, name)
-        }
+        args = c("clone", sdir, name)
         res = tryCatch(system_w_init("git", args = args, intern = TRUE, param = param),
             error = function(x) x)
         if (is(res, "error") || (!is.null(attr(res, "status")) && attr(res, "status") >
