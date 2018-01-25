@@ -104,7 +104,12 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
             logfun(param)(name, ".git dir & DESCRIPTION file missing. Deleting src dir")
             unlink(name, recursive = TRUE)
         }
-        args = c("clone", sdir, name)
+        if (latest_only && (is.na(source@branch) || source@branch == "master")) {
+            logfun(param)(name, "Cloning only latest commit for package")
+            args = c("clone --depth 1", sdir, name)
+        } else {
+            args = c("clone", sdir, name)
+        }
         res = tryCatch(system_w_init("git", args = args, intern = TRUE, param = param),
             error = function(x) x)
         if (is(res, "error") || (!is.null(attr(res, "status")) && attr(res, "status") >
@@ -115,6 +120,7 @@ setMethod("makePkgDir", c(name = "ANY", source = "GitSource"), function(name, so
             return(FALSE)
         }
         medwd = setwd(name)
+        
         args2 = c("checkout", branch(source))
         res2 = tryCatch(system_w_init("git", args = args2, intern = TRUE, param = param),
             error = function(e) e)
