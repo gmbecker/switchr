@@ -46,7 +46,10 @@ getBiocYaml = doyamlsetup()
 getBiocReposFromRVers = function() {
     myyaml = getBiocYaml()
     biocvers = getBiocvrFromRvr(myyaml)
-    gsub("%%%%", biocvers, biocrepostmpl)
+    reps = gsub("%%%%", biocvers, biocrepostmpl)
+    if(!url.exists(reps[4])) ## extra repo isn't on newer repos
+        reps = reps[-4]
+    reps
 }
 
 getMultilineYamlField = function(yaml = getBiocYaml(), field) {
