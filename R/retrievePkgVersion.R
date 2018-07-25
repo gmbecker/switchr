@@ -235,9 +235,11 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
         system_w_init(rbin, args = c("build", noVignettesArg(), "--no-resave-data", "--no-manual",
                             pkgdir), param = param)
         ret = normalizePath2(list.files(pattern  = paste0(name, "_", version, ".tar.gz"), full.names=TRUE))
-        setwd(pkgdir)
+        ## XXX Once a way to reset the checkout at the correct time is figured out
+        ## fix this if it's still needed. For now we're going to wipe it anyway...
+        ##setwd(pkgdir)
         ## system_w_init("svn", args = "up", param = param) #this gets us back to the trunk
-        system_w_init("git", args = "checkout master", param = param) #this gets us back to the trunk
+        ##system_w_init("git", args = "checkout master", param = param) #this gets us back to the trunk
 
     }
     ret
@@ -373,7 +375,8 @@ findBiocGitRev = function(name, version, destpath, param, biocVers="devel")
 
   
     repoloc = paste0("https://git.bioconductor.org/packages/", name)
-    if(!file.exists(pkgdir) || !file.exists(file.path(pkgdir, ".git"))) {
+    ## XXX this is a hack. will reclone every time Figure out a better way. but not today
+    if(TRUE || !file.exists(pkgdir) || !file.exists(file.path(pkgdir, ".git"))) {
         if(file.exists(pkgdir)) { ## pkg dir exists but isn't a git checkout...
             unlink(pkgdir, recursive=TRUE)
         }
@@ -533,15 +536,18 @@ setMethod("gotoVersCommit", c(dir = "character", src= "BiocSource"),
 
 setMethod("gotoVersCommit", c(dir="character", src="GitSource"),
           function(dir, src, version, param = SwitchrParam()) {
-
-              if(is.na(version))
-                  return(dir)
-              desc = read.dcf(file.path(dir, "DESCRIPTION"), all=TRUE)
-              if(compareVersion(version, desc$Version) == 0)
-                  return(dir)
-              ret = findGitRev(src@name, version = version, codir = dir)
-              dir
-          })
+    
+    if(is.na(version))
+        return(dir)
+    desc = read.dcf(file.path(dir, "DESCRIPTION"), all=TRUE)
+    if(compareVersion(version, desc$Version) == 0)
+        return(dir)
+    ret = findGitRev(src@name, version = version, codir = dir)
+    oldwd = setwd(dir)
+    on.exit(setwd(oldwd))
+    
+    dir
+})
 
 
 findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
@@ -562,6 +568,12 @@ findGitRev = function(pkg, version, codir, param = SwitchrParam()) {
     cmd = sprintf("git checkout %s", sha)
     res = tryCatch(system_w_init("git", args = c("checkout", sha),
                                  param = param, intern = TRUE), error = function(e) e)
+    out = system_w_init("git", args = c("clean","-f", "."),
+                                 intern = TRUE, param = param)
+
+    out2 = system_w_init("git", args = c("reset","--hard"),
+                                 intern = TRUE, param = param)
+
     if(is(res, "error")) {
         logfun(param)(pkg, sprintf("Found commit for package version but checking out that commit failed, cmd: %s",cmd), type = "both")
         NULL
