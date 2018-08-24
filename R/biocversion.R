@@ -124,7 +124,20 @@ defaultBiocRepos = tryCatch(getBiocReposFromRVers(), error = function(e) {
                             })
 
 
-
+biocreposfactory = function() {
+    bcrepos = NULL
+    function() {
+        if(!is.null(bcrepos))
+            bcrepos
+        else if(requireNamespace("BiocManager"))
+            BiocManager::repositories()
+        else if(requireNamespace2("BiocInstaller"))
+            BiocInstaller::biocinstallRepos()
+        else
+            stop("Unable to determine bioc base repos. Please install BiocManager or BiocInstaller, depending on R version.")
+    }
+}
+biocBaseRepos = biocreposfactory()
 
 ##highestVs = c(9, 14, 2)
 allBiocReleases = function(includeDev = FALSE) {
@@ -184,11 +197,11 @@ biocReposFromVers = function(vers = develVers) {
         repos = repos[grepl("bioconductor.org", repos)]
     } else {
         
-        if(!requireNamespace2("BiocInstaller"))
-            stop("Unable to manipulate bioc versions without BiocInstaller installed")
+        ## if(!requireNamespace2("BiocInstaller"))
+        ##     stop("Unable to manipulate bioc versions without BiocInstaller installed")
    
         ## repos = head(BiocInstaller::biocinstallRepos(), -1)
-        repos = BiocInstaller::biocinstallRepos()
+        repos = biocBaseRepos()
         repos = repos[grep("BioC", names(repos))]
     }
 

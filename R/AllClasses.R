@@ -1,4 +1,8 @@
+if(!exists("globalVariables"))
+    globalVariables = function(x) NULL
 ##' @import methods
+##' @importFrom utils chooseCRANmirror
+##' 
 NULL
 
 setOldClass("sessionInfo")

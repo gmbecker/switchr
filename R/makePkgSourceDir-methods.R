@@ -174,13 +174,11 @@ setMethod("makePkgDir", c(name = "ANY", source = "CRANSource"), function(name, s
 
 setMethod("makePkgDir", c(name = "ANY", source = "BiocSource"), function(name, source,
     path, latest_only, param, forceRefresh = FALSE) {
-
-    if (!requireNamespace2("BiocInstaller", quietly = TRUE))
-        stop("Can't handle BiocSource without BiocInstaller installed")
+    repos = biocBaseRepos()
     if (!file.exists(file.path(path, name)))
         dir.create(file.path(path, name), recursive = TRUE)
 
-    pkg = download.packages2(name, destdir = path, repos = BiocInstaller::biocinstallRepos())[,
+    pkg = download.packages2(name, destdir = path, repos = repos)[,
         2]
     untar(pkg, exdir = path)
     return(TRUE)

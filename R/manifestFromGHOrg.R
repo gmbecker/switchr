@@ -3,18 +3,24 @@ getWithCache = function(url, env = ghcaches) {
     cleanurl = gsub("[^[:alnum:]]", "", url)
     if(exists(cleanurl, env))
         return(get(cleanurl, env))
-    res = getURL(url, .opts = list(useragent="switchr-r-package", ssl.verifypeer=FALSE), header = TRUE)
+    stopifnot(requireNamespace2("RCurl"))
+    res = RCurl::getURL(url, .opts = list(useragent="switchr-r-package", ssl.verifypeer=FALSE), header = TRUE)
     assign(cleanurl, res, envir = env)
     res
 }
 
 makeSearchURL = function(org, coreurl = "https://api.github.com") {
-    paste0(coreurl, "/search/code?per_page=100&q=", curlPercentEncode("filename:DESCRIPTION"), "+", curlPercentEncode("org:"), org)
+    stopifnot(requireNamespace2("RCurl"))
+    paste0(coreurl, "/search/code?per_page=100&q=", RCurl::curlPercentEncode("filename:DESCRIPTION"), "+", RCurl::curlPercentEncode("org:"), org)
 }
 
 
+globalVariables("fromJSON")
 getOrgSummary = function(orgname, coreurl = "https://api.github.com") {
-    #url = paste(coreurl, "orgs", orgname, "repos?per_page=100", sep ="/")
+                                        #url = paste(coreurl, "orgs", orgname, "repos?per_page=100", sep ="/")
+    if(!requireNamespace2("RJSONIO") || !requireNamespace2("RCurl"))
+        stop("This function requires there RJSONIO package or another package which provides a 'fromJSON' function")
+ 
     url = makeSearchURL(orgname, coreurl)
     cat(url, "\n")
     res = getWithCache(url, ghcaches)
@@ -66,12 +72,16 @@ getNextLinkURL = function(hdf) {
 }
 
 
+globalVariables("mclapply")
 manifestFromGHOrg = function(org, coreurl = "https://api.github.com", cores = 1L) {
     sresults = getOrgSummary(org, coreurl)
     repourls = vapply(sresults, function(x) x$repository$html_url, "")
     keep = !duplicated(repourls)
     sresults = sresults[keep]
-    rows = mclapply(sresults,makeGitPkgSource, mc.cores =cores)
+    if(!is.null(tryCatch(parallel::mclapply, error = function(e) NULL)))
+        rows = mclapply(sresults,makeGitPkgSource, mc.cores =cores)
+    else
+        rows = lapply(sresults,makeGitPkgSource)
     do.call(rbind, rows)
 }
 
@@ -84,13 +94,13 @@ makeGitPkgSource = function(repoinfo) {
     rurl = repoinfo$repository$html_url
     repname = repoinfo$repository$name
     if(!file.exists(repname))
-        res = switchr:::system_w_init("git", args = c("clone", rurl))
+        res = system_w_init("git", args = c("clone", rurl))
     if(!file.exists(repname))
         stop("failed to clone repo", rurl)
     desc = file.path(repname, repoinfo$path)
     descdf = read.dcf(desc)
     
-    switchr:::ManifestRow(name = descdf[,"Package"],
+    ManifestRow(name = descdf[,"Package"],
                 type= "git",
                 url = rurl,
                 subdir = if(repoinfo$path == "DESCRIPTION") "." else dirname(repoinfo$path))

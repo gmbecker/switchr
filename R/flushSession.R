@@ -5,7 +5,7 @@ basepkgs = installed.packages(priority="base")[, "Package"]
 ##' @description The base packages, as well as switchr and its dependencies.
 ##'
 ##' @export
-switchDeps = c(basepkgs, "switchr", "RCurl", "bitops", "BiocInstaller", "RJSONIO")
+switchDeps = c(basepkgs, "switchr", "RCurl", "bitops", "BiocInstaller", "BiocManager", "RJSONIO")
 
 ##' @title Get or set packages to not unload when flushing the system
 ##'

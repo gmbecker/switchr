@@ -1,3 +1,4 @@
 ^\.httr-oauth$
 ^\.travis\.yml$
 ^.*~$
+^[^/]*\.R$

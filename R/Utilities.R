@@ -225,8 +225,31 @@ makePwdFun = function(scm_auth, url)
 ##' @param \dots Passed directly to constructors for PkgSource superclasses
 ##' @export
 makeSource = function(url, type, user, password, scm_auth = list(), prefer_svn = FALSE, ...) {
-    if(is.na(type))
+    if(is.na(url) && is.na(type)) {
+        if(requireNamespace("BiocManager"))
+            repos = BiocManager::repositories()
+        else if (requireNamespace2("BiocInstaller"))
+            repos = BiocInstaller::biocinstallRepos()
+        else {
+            repos  = getOption("repos")
+            if(identical(repos, "@CRAN@") && !interactive())
+                chooseCRANmirror(ind = 1L)
+        }
+        ## name is passed in as a ... here, and usually not needed
+        ## but it is needed if we are trying to find the url/type
+        ## of a package
+        
+        name = list(...)$name
+        stopifnot(!is.null(name))
+        ## see manifestFromLib.R
+        tmp = .findIt(name, repos = repos)
+        type = tmp$type # either still NA or a real type
+        url = tmp$url # either still NA or a real url
+    }
+    
+    if(is.na(type)) {
         type = "unknown"
+    }
     type = tolower(type)
     if(missing(user))
         user = makeUserFun(scm_auth = scm_auth, url = url)

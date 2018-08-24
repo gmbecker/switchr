@@ -1,11 +1,13 @@
 getBiocRepos = function() {
-    if(requireNamespace2("BiocInstaller", quietly=TRUE)) {
+    if(requireNamespace("BiocManager", quietly = TRUE)) { 
+        bioc = BiocManager::repositories()
+    } else if(requireNamespace2("BiocInstaller", quietly = TRUE)) {
         bioc = BiocInstaller::biocinstallRepos()
     } else if(beforeBiocInstaller()) {
         if(!exists("biocinstallRepos"))
             source("http://bioconductor.org/biocLite.R")
         bioc = biocinstallRepos()
-    }else {
+    } else {
         if(is.null(defaultBiocRepos)) {
             bioc = tryCatch(getBiocReposFromRVers(), function(e) character())
             if(length(bioc) == 0)

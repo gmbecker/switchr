@@ -1,5 +1,6 @@
 
 ##' @title archive_timing
+##'
 ##' @description Get or set the number of seconds to wait after trying to
 ##' retrieve a file from the CRAN Archive.
 ##'
@@ -36,6 +37,7 @@ setMethod("archive_timing<-", "SwitchrParam", function(x, value) {
 
 
 ##' @title Get or set the number of seconds to wait between successive shell commands
+##' 
 ##' @description This is intended to stop intermittent install failures
 ##' due to network drive latency interacting with git commands
 ##'

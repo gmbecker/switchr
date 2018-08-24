@@ -9,6 +9,8 @@
 \alias{makeSeedMan,sessionInfo}
 \alias{makeSeedMan,parsedSessionInfo-method}
 \alias{makeSeedMan,parsedSessionInfo}
+\alias{makeSeedMan,data.frame-method}
+\alias{makeSeedMan,data.frame}
 \title{makeSeedMan}
 \usage{
 makeSeedMan(x, known_manifest = PkgManifest(), ...)
@@ -19,6 +21,8 @@ makeSeedMan(x, known_manifest = PkgManifest(), ...)
 
 \S4method{makeSeedMan}{parsedSessionInfo}(x, known_manifest = PkgManifest(),
   ...)
+
+\S4method{makeSeedMan}{data.frame}(x, known_manifest = PkgManifest(), ...)
 }
 \arguments{
 \item{x}{The object to generate a seeding manifest from, if missing, the

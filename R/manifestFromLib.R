@@ -164,7 +164,7 @@ setMethod("libManifest", "SwitchrCtx",
     manifest
 }
            
-.findIt = function(pkg, repos, avl) {
+.findIt = function(pkg, repos, avl = available.packages(contrib.url(repos))) {
     if(pkg == "switchr") {
         ret = ManifestRow(name = pkg,
             url = "http://github.com/gmbecker/switchr", type = "github",
@@ -187,7 +187,7 @@ setMethod("libManifest", "SwitchrCtx",
 .detectType = function(url) {
     if (grepl("bioconductor", url, ignore.case=TRUE))
         "bioc"
-    else if(grepl("cran", url, ignore.case=TRUE))
+    else if(grepl("(cran|cloud.r-project.org)", url, ignore.case=TRUE))
         "CRAN"
     else
         "repository"
@@ -233,26 +233,38 @@ setMethod("makeSeedMan", "sessionInfo", function(x, known_manifest = PkgManifest
 ##' @rdname makeSeedMan
 ##' @aliases makeSeedMan,parsedSessionInfo
 setMethod("makeSeedMan", "parsedSessionInfo", function(x, known_manifest = PkgManifest(), ...) {
-    if(!interactive() && getOption("repos")["CRAN"] == "@CRAN@")
-        chooseCRANmirror(ind=1L)
-
+   
     sinfopkginfo = rbind(x@attached, x@loaded)
     sinfopkginfo = sinfopkginfo[!sinfopkginfo[,"Package"] %in% basepkgs,]
-    mani = PkgManifest(name = sinfopkginfo[,"Package"],
+    sinfopkginfo = as.data.frame(sinfopkginfo, stringsAsFactors = FALSE)
+    names(sinfopkginfo) = c("name", "version")
+    makeSeedMan(sinfopkginfo, known_manifest = known_manifest, ...)
+    
+
+
+})
+
+##' @rdname makeSeedMan
+##' @aliases makeSeedMan,data.frame
+setMethod("makeSeedMan", "data.frame", function(x, known_manifest = PkgManifest(), ...) {
+    if(!interactive() && getOption("repos")["CRAN"] == "@CRAN@")
+        chooseCRANmirror(ind=1L)
+    stopifnot(all(c("name", "version") %in% names(x)))
+
+    x = x[!(x$name %in% basepkgs),] 
+    
+    mani = PkgManifest(name = x[,"name"],
                        dep_repos  = dep_repos(known_manifest))
     
     haveany = nrow(manifest_df(mani)) > 0
     if(haveany)
         mani = .findThem(mani, known_manifest)
     if(nrow(manifest_df(mani))) {
-        pkg_vers = data.frame(name = sinfopkginfo[,"Package"],
-                              version = sinfopkginfo[,"Version"],
+        pkg_vers = data.frame(name = x[,"name"],
+                              version = x[,"version"],
                               stringsAsFactors = FALSE)
         mani = SessionManifest(manifest = mani,
                                versions = pkg_vers)
     }
     mani
-    
-
-
 })

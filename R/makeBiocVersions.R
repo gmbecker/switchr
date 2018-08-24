@@ -38,7 +38,10 @@ BiocVers = function(version = getBiocReleaseVr(),
         stop("I don't know where the bioconductor repositories are. Unable to proceed")
     if(numeric_version(version) < "2.9")
         stop("Bioconductor versions earlier than 2.9 did not have a BiocInstaller package. Use switchTo(biocReposForVers(<version>), packages = <packages you want>, name = <name you want>) for this.")
-    RepoSubset(repos, pkgs = "BiocInstaller", default_name = name)
+    if(numeric_version(version) < "3.7")
+        RepoSubset(repos, pkgs = "BiocInstaller", default_name = name)
+    else
+        RepoSubset(repos, pkgs = "BiocManager", default_name = name)
 }
 
 ##' @title  BiocRelease
