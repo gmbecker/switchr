@@ -129,10 +129,8 @@ biocreposfactory = function() {
     function() {
         if(!is.null(bcrepos))
             bcrepos
-        else if(requireNamespace("BiocManager"))
-            BiocManager::repositories()
-        else if(requireNamespace2("BiocInstaller"))
-            BiocInstaller::biocinstallRepos()
+        else if(length(getBiocRepos()))
+            bcrepos = getBiocRepos()
         else
             stop("Unable to determine bioc base repos. Please install BiocManager or BiocInstaller, depending on R version.")
     }

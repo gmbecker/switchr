@@ -123,7 +123,9 @@ setAs("GitSource", "SVNSource",
 
 
 ensureCRANmirror = function(ind=1L) {
-    if(!interactive() && any(getOption("repos") == "@CRAN@"))
+    repopt = getOption("repos")
+    if(!interactive() &&
+       (any(repopt == "@CRAN@") || is.na(repopt[["CRAN"]])))
         chooseCRANmirror(ind=ind)
 }
 
@@ -172,6 +174,9 @@ PkgManifest = function(manifest = ManifestRow(...), dep_repos = defaultRepos(), 
             stop("invalid manifest")
     }
 
+    if(anyNA(dep_repos)) {
+        stop("dep_repos includes NAs:", paste(dep_repos, collapse = ", "))
+    }
     new("PkgManifest", manifest = manifest, dependency_repos = dep_repos)
 }
 

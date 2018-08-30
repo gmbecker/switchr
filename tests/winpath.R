@@ -66,6 +66,8 @@ mantests = function(man) {
 }
 
 
+## this tests the ability to make a seedManifest
+## including looking up the types
 sman = makeSeedMan()
 man = manifest(sman)
 mantests(sman)

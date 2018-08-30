@@ -247,8 +247,7 @@ setMethod("makeSeedMan", "parsedSessionInfo", function(x, known_manifest = PkgMa
 ##' @rdname makeSeedMan
 ##' @aliases makeSeedMan,data.frame
 setMethod("makeSeedMan", "data.frame", function(x, known_manifest = PkgManifest(), ...) {
-    if(!interactive() && getOption("repos")["CRAN"] == "@CRAN@")
-        chooseCRANmirror(ind=1L)
+    ensureCRANmirror(1L)
     stopifnot(all(c("name", "version") %in% names(x)))
 
     x = x[!(x$name %in% basepkgs),] 

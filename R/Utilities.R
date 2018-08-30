@@ -226,15 +226,12 @@ makePwdFun = function(scm_auth, url)
 ##' @export
 makeSource = function(url, type, user, password, scm_auth = list(), prefer_svn = FALSE, ...) {
     if(is.na(url) && is.na(type)) {
-        if(requireNamespace("BiocManager"))
-            repos = BiocManager::repositories()
-        else if (requireNamespace2("BiocInstaller"))
-            repos = BiocInstaller::biocinstallRepos()
-        else {
-            repos  = getOption("repos")
-            if(identical(repos, "@CRAN@") && !interactive())
-                chooseCRANmirror(ind = 1L)
-        }
+        repos = c(getOption("repos"), getBiocRepos())
+        repos = repos[!duplicated(names(repos))]
+        atcran = grep("@CRAN@", repos)
+        if(length(atcran) > 0 && !interactive())
+            chooseCRANmirror(ind = 1L)
+
         ## name is passed in as a ... here, and usually not needed
         ## but it is needed if we are trying to find the url/type
         ## of a package
