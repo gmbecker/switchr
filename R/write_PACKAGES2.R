@@ -157,8 +157,11 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         ## tarballs that don't already ahve an entry
         ## OR that mismatched their existing entry
         ## possibly needing to be added
+        if(length(notokinds))
+            oldfilenames = oldfilenames[-notokinds]
+        
         newpkgfiles = setdiff(normalizePath(pkgfiles),
-                              normalizePath(oldfilenames[-notokinds]))
+                              normalizePath(oldfilenames))
 
 
         ## If we're willing to assume the filenames are honest and
