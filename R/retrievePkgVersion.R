@@ -298,13 +298,6 @@ findPkgVersionInBioc = function(name, version, param = SwitchrParam(), dir)
     
 }
 
-.getExt = function(repourl) {
-    typ = gsub(".*/(.*)/contrib", "\\1", repourl)
-    switch(typ,
-           src = ".tar.gz",
-           win = ".zip",
-           mac = ".tgz")
-}
 
 
 ##' Make a Bioconductor SVN url for a package

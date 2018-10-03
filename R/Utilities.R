@@ -1,3 +1,23 @@
+
+## defaults to src
+
+.getExt = function(repourl = "./src/contrib", regex = FALSE) {
+    typ = gsub(".*/(.*)/contrib", "\\1", repourl)
+    res = switch(typ,
+           src = ".tar.gz",
+           win = ".zip",
+           mac = ".tgz",
+           ## XXX this assumes source unless it gets something that matches the regex
+           ## above.
+           ".tar.gz")
+    if(regex)
+        res =  gsub(".", "\\.", res, fixed = TRUE)
+    res
+}
+
+
+
+
 ## (very far backawards compatible version of list.dirs
 ## list.dirs is apparently a relatively new addition, makes this function fail in R 2.12.1
 list.dirs = function(path = ".", full.names = TRUE, recursive = TRUE) {
