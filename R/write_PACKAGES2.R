@@ -121,7 +121,7 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
 ##' @export
 ##' 
 update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.binary", 
-    "win.binary"), verbose = FALSE, unpacked = FALSE, subdirs = FALSE, 
+    "win.binary"), verbose = dryrun, unpacked = FALSE, subdirs = FALSE, 
     latestOnly = TRUE, addFiles = FALSE, rds_compress = "xz", strict = TRUE,
     dryrun = FALSE)
     {
@@ -229,7 +229,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         ## less safe than what write_PACKAGES(,latestOnly=TRUE) does
         ## which is always process everything then prune.
         
-        if(!strict) {
+        if(!strict && length(newpkgfiles) > 0) {
             #strip extension, left with pkgname_version
             newpkgtmp = gsub(ext2, "", basename(newpkgfiles))
             newpkgspl = strsplit(basename(newpkgtmp), "_")
