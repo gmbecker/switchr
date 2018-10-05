@@ -78,7 +78,7 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
 ##' @param type See \code{write_PACKAGES}
 ##' @param verbose Should informative messages be displayed throughout
 ##'     the proccess. Defaults to the value of \code{dryrun} (whose
-##'     own default is \code{FALSE})
+##'     own default is \code{FALSE}) NOT passed to \code{write_PACKAGES}
 ##' @param unpacked See \code{write_PACKAGES}
 ##' @param subdirs See \code{write_PACKAGES}
 ##' @param latestOnly See \code{write_PACKAGES}
@@ -147,25 +147,30 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
        
         
         ## call straight down to write_PACKAGES if:
-        ## 1. no PACKAGES file already exists
+        ## 1. no PACKAGES file already exists or its empty
         ## 2. unpacked == TRUE (for now)
         ## 3. subdirs (for now)
         ## 4. field not present in existing PACKAGES file
-        if(!file.exists(PKGSfile) ||
+        if(!file.exists(PKGSfile) || nrow(retdat) == 0 || 
            unpacked ||
            (!is.logical(subdirs) || subdirs) ||
-           (!is.null(fields) && !all(fields %in% okfields)))
+           (!is.null(fields) && !all(fields %in% okfields))) {
+            logfun("No PACKAGES file to update or unable to update it. Calling write_PACKAGES directly.")
             return(write_PACKAGES(dir = dir, fields = fields, type = type,
-                                  verbose = verbose, unpacked = unpacked,
+                                  verbose = FALSE, unpacked = unpacked,
                                   subdirs = subdirs, latestOnly = latestOnly,
                                   addFiles = addFiles, rds_compress = rds_compress))
-        
-        if(verbose)
-            logfun("Detected existing PACKAGES file with ", nrow(retdat), " entries.")
+        }
+        if(verbose) {
+            msg = paste("Detected existing PACKAGES file with ", nrow(retdat), " entries.")
+            logfun(msg)
+        }
         
         if(!is.null(fields))
             retdat = retdat[, fields]
-        
+
+        retdat$new = FALSE ## mark these as coming from existing PACKAGES
+
         
         ext = .getExt(dir, regex = TRUE)
         ## need to make sure we only get pkg_vers.ext.
@@ -183,9 +188,11 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             retdat$tarball = retdat$File
         
         keeprows = file.exists(retdat$tarball)
-        if(verbose)
-            logfun("Tarballs found for ", sum(keeprows), " of ",
-                    nrow(retdat), " PACKAGES entries.")
+        if(verbose) {
+            msg = paste("Tarballs found for", sum(keeprows), " of ",
+                    nrow(retdat), "PACKAGES entries.")
+            logfun(msg)
+        }
         
         ## remove entries whose files have been deleted
         retdat = retdat[keeprows,]
@@ -194,9 +201,11 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         ## check for tarballs that are too new
         tbmtimes = file.info(retdat$tarball)$mtime
         toonew = which(tbmtimes > pmtime)
-        if(verbose)
-            logfun( length(toonew), " tarball(s) matching existing entries are ",
+        if(verbose){
+            msg = paste(length(toonew), " tarball(s) matching existing entries are ",
                     "newer than PACKAGES file and must be reprocessed.")
+            logfun(msg)
+        }
         if(length(toonew) > 0)
             retdat = retdat[-toonew, ]
         
@@ -212,9 +221,11 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         ## MD5 sum didn't match what PACKAGES said it should be.
         if(strict) {
             
-            if(verbose)
-                logfun("[strict mode] Checking if MD5sums match ",
+            if(verbose) {
+                msg = paste("[strict mode] Checking if MD5sums match ",
                         "for existing tarballs")
+                logfun(msg)
+            }
             curMD5sums = md5sum(normalizePath(retdat$tarball))
             ## There are no NAs in retdat$MD5sum here, as the only data in
             ## there now is from the existing PACKAGES file.
@@ -264,7 +275,6 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             newpkgdf = .filldfcols(newpkgdf, retdat)
             ## for accounting purposes, taken back off later
             newpkgdf$new = TRUE
-            retdat$new = FALSE
             newpkgdf$tarball = newpkgfiles
             retdat = rbind(retdat, newpkgdf) 
             ## remove non-latest ones now to avoid the expensive stuff
@@ -274,15 +284,18 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             if(latestOnly)
                 retdat = findNewestPkgRows(retdat, "Package",
                                            "Version",
-                                           verbose = verbose)
+                                           verbose = verbose,
+                                           logfun = logfun)
             newpkgfiles = retdat$tarball[is.na(retdat$MD5sum)]
         }
         
         ## Do any packages/package versions need to be added?
         numnew = length(newpkgfiles)
         if(numnew > 0) {
-            if(verbose)
-                logfun("Found ", numnew, " package versions to process.")     
+            if(verbose) {
+                msg = paste("Found ", numnew, " package versions to process.")
+                logfun(msg)
+            }
             indstofix = is.na(retdat$MD5sum)
             tmpdir = .getEmptyTempDir()
             res = file.symlink(newpkgfiles, file.path(tmpdir,
@@ -293,11 +306,13 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                 stop("unable to symlink or copy new package taballs to ",
                      "temp directory.")
             
-            if(verbose)
-                logfun("Writing temporary PACKAGES files for new package versions in ",
+            if(verbose) {
+                msg = paste("Writing temporary PACKAGES files for new package versions in ",
                         tmpdir)
+                logfun(msg)
+            }
             write_PACKAGES(tmpdir, type = type,
-                           verbose = verbose, unpacked = unpacked,
+                           verbose = FALSE, unpacked = unpacked,
                            subdirs = subdirs, latestOnly = latestOnly,
                            addFiles = addFiles, rds_compress = rds_compress)
             newpkgdf = as.data.frame(read.dcf(file.path(tmpdir, "PACKAGES")),
@@ -324,9 +339,11 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                          "in temporary PACKAGES file.")
                 newpkgdf$File = newpkgfiles[inds]
             }
-            if(verbose)
-                logfun("Read ", nrow(newpkgdf), " entries from ",
+            if(verbose) {
+                msg = paste("Read ", nrow(newpkgdf), " entries from ",
                         "temporary PACKAGES file")
+                logfun(msg)
+            }
             
             ## just for accounting purposes
             ## taken back off later
@@ -336,11 +353,14 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                            newpkgdf)
             if(latestOnly) {
                 retdat = findNewestPkgRows(retdat, "Package", "Version",
-                                           verbose = verbose)
+                                           verbose = verbose,
+                                           logfun = logfun)
             }
-            ## if(verbose)
-            ##     logfun(sum(retdat$new), "entries added or updated, ",
+            ## if(verbose) {
+            ##     msg = paste(sum(retdat$new), "entries added or updated, ",
             ##             sum(!retdat$new), " entries retained unchanged.")
+            ##     logfun(msg)
+            ##  }
             ## clean up accounting column so it doesn't get
             ## written to PACKAGES file
         
@@ -355,9 +375,11 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         retdat$new = NULL
         retdat$tarball = NULL
 
-        if(verbose)
-            logfun("Final updated PACKAGES db contains ",
+        if(verbose) {
+            msg = paste("Final updated PACKAGES db contains ",
                     nrow(retdat), " entries.")
+            logfun(msg)
+        }
         
         if(dryrun) {
             if(verbose)
