@@ -387,7 +387,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         } else {
             if(verbose)
                 logfun("Writing final updated PACKAGES files.")
-            db <- retdat
+            db <- as.matrix(retdat)
             ## copied from the tail end of write_PACKAGES
             con <- file(file.path(dir, "PACKAGES"), "wt")
             write.dcf(db, con)
