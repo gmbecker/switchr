@@ -36,9 +36,31 @@ findNewestPkgInds = function(df, pkgcol = "package", verscol = "version") {
 
 ##' @rdname findnewestpkg
 ##' @export
-findNewestPkgRows = function(df, pkgcol = "package", verscol = "version") {
-    inds = findNewestPkgInds(df, pkgcol, verscol)
-    df[inds,]
+findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol = "new",
+                             verbose = FALSE) {
+    havenew = !is.null(df[[newcol]])
+    
+    numbefore = nrow(df)
+    if(havenew)
+        newbefore = sum(df$new)
+    inds = findNewestPkgInds(df, "Package", "Version")
+    retdat = df[inds,]
+    numafter = nrow(retdat)
+    if(havenew)
+        newafter = sum(retdat[[newcol]])
+    
+    if(verbose) {
+        msg = paste((numbefore - numafter), "non-latest entries pruned")
+        if(havenew)
+            msg = paste(msg, sprintf("(%d novel, %d pre-existing)",
+                                     newbefore - newafter,
+                             (numbefore - newbefore) - (numafter - newafter)))
+        
+        message(msg)
+        
+    }
+   
+    retdat
 }
 
 
@@ -48,31 +70,60 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version") {
 ##' file and only processing built package tarballs which do not
 ##' match existing entries.
 ##'
-##' \code{update_PACKAGES} can be much faster than \code{write_PACKAGES} for
-##' (relatively) small changes to large repositories.
+##' \code{update_PACKAGES} can be much faster than
+##' \code{write_PACKAGES} for (relatively) small changes to large
+##' repositories.
 ##' @param dir See \code{write_PACKAGES}
 ##' @param fields See \code{write_PACKAGES}
 ##' @param type See \code{write_PACKAGES}
-##' @param verbose See \code{write_PACKAGES}
+##' @param verbose Should informative messages be displayed throughout
+##'     the proccess. Defaults to the value of \code{dryrun} (whose
+##'     own default is \code{FALSE})
 ##' @param unpacked See \code{write_PACKAGES}
 ##' @param subdirs See \code{write_PACKAGES}
 ##' @param latestOnly See \code{write_PACKAGES}
 ##' @param addFiles See \code{write_PACKAGES}
 ##' @param rds_compress See \code{write_PACKAGES}
-##' @param strict logical. Should all package tarballs without existing matching
-##' entries (by MD5) be processed. if \code{FALSE} package name and version
-##' are extracted from the file name and assumed to be true (This saves timef
-##' for \code{latestOnly = TRUE}.
-##' @param  md5_miss_ok should processing continue if a package version has
-##' an existing PACKAGES entry and a file in \code{dir} with mismatching MD5
-##' sums. If \code{FALSE} (default) an error is thrown, otherwise a warning.
+##' @param strict logical. Should 'strict mode' be used when checking
+##'     existing PACKAGES entries. See details. Defaults to
+##'     \code{TRUE}.
+##' @param dryrun logical. Should should the necessary updates be
+##'     calculated but NOT applied. (default \code{FALSE})
+##' @details Currently \code{update_PACKAGES} calls directly down to \code{write_PACKAGES} (and thus no speedup should be expected) if any of the following conditions hold:
+##'\itemize{
+##' \item No \code{PACKAGES} file exists under \code{dir}
+##' \item \code{unpacked} is \code{TRUE}
+##' \item \code{subdirs} is anything other than \code{FALSE}
+##' \item \code{fields} is not \code{NULL} and one or more specified fields are not present in the existing \code{PACKAGES} file
+##' }
+##' 
+##' If \code{strict} mode is on, tarballs which appear by naming
+##' convention (pkgname_version.extension) to match entries in the
+##' existing \code{PACKAGES} file are checked by MD5 sum (a mismatch
+##' throws an error). Furthermore, all tarballs which do not match
+##' existing entries are fully proccessed (untarred and their
+##' \code{DESCRIPTION} files read) by the standard
+##' \code{write_PACKAGES} machinery.
+##'
+##' When strict mode is off (\code{strict = FALSE}), tarballs of the
+##' form (pkgname_version.extension) are assumed to encode correct
+##' metadata in their filenames. MD5sum checking is skipped for those
+##' matching existing entries and in the case that \code{latestOnly}
+##' is true, package-version pruning happens before processing the
+##' tarballs instead of after.
+##' 
+##' @note While both strict and nonstrict modes offer speedups when
+##'     updating small percentages of large repositories, non strict
+##'     mode is much faster and is recommended in situations where the
+##'     assumptions it makes are safe.
+##' @seealso \link[tools]{write_PACKAGES}
 ##' @importFrom tools md5sum
 ##' @export
 ##' 
 update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.binary", 
     "win.binary"), verbose = FALSE, unpacked = FALSE, subdirs = FALSE, 
     latestOnly = TRUE, addFiles = FALSE, rds_compress = "xz", strict = TRUE,
-    md5_miss_ok = FALSE, dryrun = FALSE)
+    dryrun = FALSE)
     {
         type = match.arg(type)
         PKGSfile = file.path(dir, "PACKAGES")
@@ -120,50 +171,56 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             oldfilenames = olddat$File
         
         keeprows = file.exists(oldfilenames)
-
+        if(verbose)
+            message("Tarballs found for ", sum(keeprows), " of ",
+                    nrow(olddat), " PACKAGES entries.")
+        
         ## remove entries whose files have been deleted
         retdat = olddat[keeprows,]
         retdat$tarball = oldfilenames = oldfilenames[keeprows]
         
-        
-        
-        ## check which existing tarballs match their listed MD5sums
-        ## The data for those is (assumed to be) up-to-date so those files
-        ## and entries are ignored beyond this point.
-        
-        maybeokinds = which(!is.na(retdat$MD5sum))
-        notokinds = integer()
-        if(length(maybeokinds) > 0) {
+
+        ## If in strict mode we confirm that the MD5 sums match for
+        ## tarballs which match pre-existing PACKAGES entries.
+        ##
+        ## Otherwise we skip this check for speed, assuming that
+        ## any tarball we find is the one used to create the entry.
+        ##
+        ## Note: skipping the check can lead to a 'bad' repo in rare
+        ## cases, but the installation machinery would still protect
+        ## against non-malicious cases of this by failing out when the
+        ## MD5 sum didn't match what PACKAGES said it should be.
+        if(strict) {
+
             if(verbose)
-                message("Found ", length(maybeokinds), " tarballs which match existing PACKAGES entries.",
-                        " Checking if MD5sums match.")
-            curMD5sums = md5sum(normalizePath(retdat$tarball[maybeokinds]))
-            notokinds = maybeokinds[retdat$MD5sum[maybeokinds] != curMD5sums]
+                message("[strict mode] Checking if MD5sums match ",
+                        "for existing tarballs")
+            curMD5sums = md5sum(normalizePath(retdat$tarball))
+            ## There are no NAs in retdat$MD5sum here, as the only data in
+            ## there now is from the existing PACKAGES file.
+            notokinds = which(retdat$MD5sum != curMD5sums)
             if(length(notokinds)) {
                 msg = paste0("Detected ", length(notokinds), " MD5sum mismatches",
-                        " between existing PACKAGES file and tarballs")
-                if(md5_miss_ok)
-                    warning(msg)
-                else
-                    stop(msg)
-                retdat$MD5sum[notokinds] = NA_character_
+                             " between existing PACKAGES file and tarballs")
             } else if(verbose) {
-                message("All existing entries OK.")
+                message("All existing entry MD5sums match tarballs.") 
             }
+            ## tarballs that don't already ahve an entry
+            ## OR that mismatched their existing entry
+            ## possibly needing to be added
+            if(length(notokinds))
+                oldfilenames = oldfilenames[-notokinds]
+            
         }
-
+            
         
         
-        ## tarballs that don't already ahve an entry
-        ## OR that mismatched their existing entry
-        ## possibly needing to be added
-        if(length(notokinds))
-            oldfilenames = oldfilenames[-notokinds]
+        
         
         newpkgfiles = setdiff(normalizePath(pkgfiles),
                               normalizePath(oldfilenames))
-
-
+        
+        
         ## If we're willing to assume the filenames are honest and
         ## accurate, we can skip non-newest package versions without
         ## ever untaring them and reading their DESCRIPTION files.
@@ -171,28 +228,33 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         ## this is not the default because it is technically speaking
         ## less safe than what write_PACKAGES(,latestOnly=TRUE) does
         ## which is always process everything then prune.
-                
-        if(!strict && latestOnly) {
+        
+        if(!strict) {
+            #strip extension, left with pkgname_version
             newpkgtmp = gsub(ext2, "", basename(newpkgfiles))
             newpkgspl = strsplit(basename(newpkgtmp), "_")
             newpkgdf = do.call(rbind.data.frame,c(newpkgspl,
                                                   stringsAsFactors = FALSE))
-            ## Package and Version, the rest is junk from the extension
+            ## Package and Version
             newpkgdf = newpkgdf[,1:2]
             names(newpkgdf) = c("Package", "Version")
             newpkgdf = .filldfcols(newpkgdf, retdat)
+            ## for accounting purposes, taken back off later
+            newpkgdf$new = TRUE
+            retdat$new = FALSE
             newpkgdf$tarball = newpkgfiles
+            retdat = rbind(retdat, newpkgdf) 
             ## remove non-latest ones now to avoid the expensive stuff
             ## this is non-strict because it assumes the package name and
             ## version in the filename are accurate. Technically, not
             ## guaranteed.
-            retdat = rbind(retdat, newpkgdf)
-            retdat = findNewestPkgRows(retdat, "Package", "Version")
+            if(latestOnly)
+                retdat = findNewestPkgRows(retdat, "Package",
+                                           "Version",
+                                           verbose = verbose)
             newpkgfiles = retdat$tarball[is.na(retdat$MD5sum)]
         }
-
-        ## no longer needed
-        retdat$tarball = NULL
+        
         ## Do any packages/package versions need to be added?
         numnew = length(newpkgfiles)
         if(numnew > 0) {
@@ -200,7 +262,14 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                 message("Found ", numnew, " package versions to process.")     
             indstofix = is.na(retdat$MD5sum)
             tmpdir = .getEmptyTempDir()
-            file.copy(newpkgfiles, tmpdir)
+            res = file.symlink(newpkgfiles, file.path(tmpdir,
+                                                      basename(newpkgfiles)))
+            if(!all(res)) ## fall back to copying if symlinking fails somehow
+                res = file.copy(newpkgfiles, tmpdir)
+            if(!all(res))
+                stop("unable to symlink or copy new package taballs to ",
+                     "temp directory.")
+            
             if(verbose)
                 message("Writing temporary PACKAGES files for new package versions in ",
                         tmpdir)
@@ -211,8 +280,8 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             newpkgdf = as.data.frame(read.dcf(file.path(tmpdir, "PACKAGES")),
                                      stringsAsFactors = FALSE)
             if(!identical(names(newpkgdf), names(retdat))) {
-                ## make sure we catch columns only in one or the other, regardless
-                ## of direction.
+                ## make sure we catch columns only present in one or
+                ## the other, regardless of direction.
                 ##
                 ## the order of columns that comes out of this is columns
                 ## in retdat (ie the original PACKAGES) in the order
@@ -221,50 +290,58 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                 
                 retdat = .filldfcols(retdat, newpkgdf)
                 newpkgdf = .filldfcols(newpkgdf, retdat)
-
+                
+            }
+            ## if the File field is present, fix it to point at the
+            ## right file instead of the temp symlink/copy.
+            if(!is.null(newpkgdf$File)){
+                inds = match(basename(newpkgdf$File), basename(newpkgfiles))
+                if(anyNA(inds))
+                    stop("Missing entry or unexpected, non-empty File field",
+                         "in temporary PACKAGES file.")
+                newpkgdf$File = newpkgfiles[inds]
             }
             if(verbose)
                 message("Read ", nrow(newpkgdf), " entries from ",
                         "temporary PACKAGES file")
-
+            
             ## just for accounting purposes
             ## taken back off later
             retdat$new = FALSE
             newpkgdf$new = TRUE
             retdat = rbind(retdat[!is.na(retdat$MD5sum),],
                            newpkgdf)
-            if(latestOnly)
-                retdat = findNewestPkgRows(retdat, "Package", "Version")
-            if(verbose)
-                message(sum(retdat$new), "entries added or updated, ",
-                        sum(!retdat$new), " entries unchanged.")
-            retdat$new = NULL
-
+            if(latestOnly) {
+                retdat = findNewestPkgRows(retdat, "Package", "Version",
+                                           verbose = verbose)
+            }
+            ## if(verbose)
+            ##     message(sum(retdat$new), "entries added or updated, ",
+            ##             sum(!retdat$new), " entries retained unchanged.")
+            ## clean up accounting column so it doesn't get
+            ## written to PACKAGES file
+        
             
-            ## ## have to make sure we get the right order here...
-            ## newmtch = paste(newpkgdf$Package, newpkgdf$Version)
-            ## oldmtch = paste(retdat[indstofix, "Package"],
-            ##                 retdat[indstofix, "Version"])
-            ## hits = match(oldmtch, newmtch)
-            ## if(anyNA(hits))
-            ##     stop("mismatch between temporarily written PACKAGES file",
-            ##          " and expected entries")
-            
-            ## ## below is NULL if no File column.
-            ## oldfils = retdat$File[indstofix]
-            ## retdat[ indstofix, ] = newpkgdf[ hits,]
-            ## ## fix File field to point to correct location
-            ## ## (not temporary location)
-            ## if(!is.null(oldfils))
-            ##     retdat[indstofix, "File"] = oldfils
             
         } else if (verbose) {
             message("No new package(s)/package version(s) detected")
         }
-        if(!dryrun) {
+        ## clean up temp columns (note this works even if they aren't
+        ## there so we don't need to worry about ones that are only
+        ## defined within if blocks
+        retdat$new = NULL
+        retdat$tarball = NULL
+
+        if(verbose)
+            message("Final updated PACKAGES db contains ",
+                    nrow(retdat), " entries.")
+        
+        if(dryrun) {
             if(verbose)
-                message("Writing final updated PACKAGES files containing ",
-                        nrow(retdat), " entries.")
+                message("[dryrun mode] Dryrun complete.")
+        } else {
+            if(verbose)
+                message("Writing final updated PACKAGES files.")
             db <- retdat
             ## copied from the tail end of write_PACKAGES
             con <- file(file.path(dir, "PACKAGES"), "wt")
@@ -275,8 +352,12 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             close(con)
             rownames(db) <- db[, "Package"]
             saveRDS(db, file.path(dir, "PACKAGES.rds"), compress = rds_compress)
+            if(verbose)
+                message("update_PACKAGES complete.")
         }
     }
+
+
 
 .filldfcols = function(df, srcdf) {
     newcols = setdiff(names(srcdf), names(df))

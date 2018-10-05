@@ -7,7 +7,7 @@
 update_PACKAGES(dir = ".", fields = NULL, type = c("source", "mac.binary",
   "win.binary"), verbose = FALSE, unpacked = FALSE, subdirs = FALSE,
   latestOnly = TRUE, addFiles = FALSE, rds_compress = "xz",
-  strict = TRUE, md5_miss_ok = FALSE)
+  strict = TRUE, dryrun = FALSE)
 }
 \arguments{
 \item{dir}{See \code{write_PACKAGES}}
@@ -16,7 +16,9 @@ update_PACKAGES(dir = ".", fields = NULL, type = c("source", "mac.binary",
 
 \item{type}{See \code{write_PACKAGES}}
 
-\item{verbose}{See \code{write_PACKAGES}}
+\item{verbose}{Should informative messages be displayed throughout
+the proccess. Defaults to the value of \code{dryrun} (whose
+own default is \code{FALSE})}
 
 \item{unpacked}{See \code{write_PACKAGES}}
 
@@ -28,20 +30,52 @@ update_PACKAGES(dir = ".", fields = NULL, type = c("source", "mac.binary",
 
 \item{rds_compress}{See \code{write_PACKAGES}}
 
-\item{strict}{logical. Should all package tarballs without existing matching
-entries (by MD5) be processed. if \code{FALSE} package name and version
-are extracted from the file name and assumed to be true (This saves timef
-for \code{latestOnly = TRUE}.}
+\item{strict}{logical. Should 'strict mode' be used when checking
+existing PACKAGES entries. See details. Defaults to
+\code{TRUE}.}
 
-\item{md5_miss_ok}{should processing continue if a package version has
-an existing PACKAGES entry and a file in \code{dir} with mismatching MD5
-sums. If \code{FALSE} (default) an error is thrown, otherwise a warning.}
+\item{dryrun}{logical. Should should the necessary updates be
+calculated but NOT applied. (default \code{FALSE})}
 }
 \description{
 Update an existing repository by reading the PACKAGES
 file and only processing built package tarballs which do not
 match existing entries.
 
-\code{update_PACKAGES} can be much faster than \code{write_PACKAGES} for
-(relatively) small changes to large repositories.
+\code{update_PACKAGES} can be much faster than
+\code{write_PACKAGES} for (relatively) small changes to large
+repositories.
+}
+\details{
+Currently \code{update_PACKAGES} calls directly down to \code{write_PACKAGES} (and thus no speedup should be expected) if any of the following conditions hold:
+\itemize{
+\item No \code{PACKAGES} file exists under \code{dir}
+\item \code{unpacked} is \code{TRUE}
+\item \code{subdirs} is anything other than \code{FALSE}
+\item \code{fields} is not \code{NULL} and one or more specified fields are not present in the existing \code{PACKAGES} file
+}
+
+If \code{strict} mode is on, tarballs which appear by naming
+convention (pkgname_version.extension) to match entries in the
+existing \code{PACKAGES} file are checked by MD5 sum (a mismatch
+throws an error). Furthermore, all tarballs which do not match
+existing entries are fully proccessed (untarred and their
+\code{DESCRIPTION} files read) by the standard
+\code{write_PACKAGES} machinery.
+
+When strict mode is off (\code{strict = FALSE}), tarballs of the
+form (pkgname_version.extension) are assumed to encode correct
+metadata in their filenames. MD5sum checking is skipped for those
+matching existing entries and in the case that \code{latestOnly}
+is true, package-version pruning happens before processing the
+tarballs instead of after.
+}
+\note{
+While both strict and nonstrict modes offer speedups when
+    updating small percentages of large repositories, non strict
+    mode is much faster and is recommended in situations where the
+    assumptions it makes are safe.
+}
+\seealso{
+\link[tools]{write_PACKAGES}
 }

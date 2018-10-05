@@ -7,7 +7,8 @@
 \usage{
 findNewestPkgInds(df, pkgcol = "package", verscol = "version")
 
-findNewestPkgRows(df, pkgcol = "package", verscol = "version")
+findNewestPkgRows(df, pkgcol = "package", verscol = "version",
+  newcol = "new", verbose = FALSE)
 }
 \arguments{
 \item{df}{data.frame. Table of package information}
