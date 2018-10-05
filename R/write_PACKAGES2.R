@@ -37,7 +37,7 @@ findNewestPkgInds = function(df, pkgcol = "package", verscol = "version") {
 ##' @rdname findnewestpkg
 ##' @export
 findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol = "new",
-                             verbose = FALSE) {
+                             verbose = FALSE, logfun = message) {
     havenew = !is.null(df[[newcol]])
     
     numbefore = nrow(df)
@@ -56,7 +56,7 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
                                      newbefore - newafter,
                              (numbefore - newbefore) - (numafter - newafter)))
         
-        message(msg)
+        logfun(msg)
         
     }
    
@@ -89,13 +89,17 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
 ##'     \code{TRUE}.
 ##' @param dryrun logical. Should should the necessary updates be
 ##'     calculated but NOT applied. (default \code{FALSE})
-##' @details Currently \code{update_PACKAGES} calls directly down to \code{write_PACKAGES} (and thus no speedup should be expected) if any of the following conditions hold:
-##'\itemize{
-##' \item No \code{PACKAGES} file exists under \code{dir}
-##' \item \code{unpacked} is \code{TRUE}
-##' \item \code{subdirs} is anything other than \code{FALSE}
-##' \item \code{fields} is not \code{NULL} and one or more specified fields are not present in the existing \code{PACKAGES} file
-##' }
+##'  @param logfun function. If \code{verbose} is \code{TRUE}, the
+##'     function to be used to emit the informative messages. Defaults
+##'     to \code{message}
+##' @details Currently \code{update_PACKAGES} calls directly down to
+##'     \code{write_PACKAGES} (and thus no speedup should be expected)
+##'     if any of the following conditions hold: \itemize{ \item No
+##'     \code{PACKAGES} file exists under \code{dir} \item
+##'     \code{unpacked} is \code{TRUE} \item \code{subdirs} is
+##'     anything other than \code{FALSE} \item \code{fields} is not
+##'     \code{NULL} and one or more specified fields are not present
+##'     in the existing \code{PACKAGES} file }
 ##' 
 ##' If \code{strict} mode is on, tarballs which appear by naming
 ##' convention (pkgname_version.extension) to match entries in the
@@ -123,34 +127,44 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
 update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.binary", 
     "win.binary"), verbose = dryrun, unpacked = FALSE, subdirs = FALSE, 
     latestOnly = TRUE, addFiles = FALSE, rds_compress = "xz", strict = TRUE,
-    dryrun = FALSE)
+    dryrun = FALSE, logfun = message)
     {
         type = match.arg(type)
         PKGSfile = file.path(dir, "PACKAGES")
-        ## read without fields restriction, because reducing number
-        ## of fields is ok, adding fields means we need reprocessing
-        olddat = as.data.frame(read.dcf(PKGSfile),
-                               stringsAsFactors = FALSE)
+        ## if it doesn't exist we'll be hitting the premature return
+        ## in the next if, so its ok that these don't get created.
+        ## ugly, I know.
+        if(file.exists(PKGSfile)) {
+            pmtime = file.info(PKGSfile)$mtime
+            ## read without fields restriction, because reducing number
+            ## of fields is ok, adding fields means we need reprocessing
+           
+            retdat = as.data.frame(read.dcf(PKGSfile),
+                                   stringsAsFactors = FALSE)
+            okfields = names(retdat)
+        }
+        
        
         
         ## call straight down to write_PACKAGES if:
         ## 1. no PACKAGES file already exists
         ## 2. unpacked == TRUE (for now)
         ## 3. subdirs (for now)
-        ## 4. field in fields that wasn't present in existing PACKAGES file
-        if(!file.exists(PKGSfile) || unpacked || !(is.logical(subdirs) || subdirs) ||
-           ## field not already present
-           (!is.null(fields) && !all(fields %in% names(olddat))))
+        ## 4. field not present in existing PACKAGES file
+        if(!file.exists(PKGSfile) ||
+           unpacked ||
+           (!is.logical(subdirs) || subdirs) ||
+           (!is.null(fields) && !all(fields %in% okfields)))
             return(write_PACKAGES(dir = dir, fields = fields, type = type,
                                   verbose = verbose, unpacked = unpacked,
                                   subdirs = subdirs, latestOnly = latestOnly,
                                   addFiles = addFiles, rds_compress = rds_compress))
-
+        
         if(verbose)
-            message("Detected existing PACKAGES file with ", nrow(olddat), " entries.")
+            logfun("Detected existing PACKAGES file with ", nrow(retdat), " entries.")
         
         if(!is.null(fields))
-            olddat = olddat[, fields]
+            retdat = retdat[, fields]
         
         
         ext = .getExt(dir, regex = TRUE)
@@ -162,24 +176,30 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             stop("unable to find any built package files.")
 
                 
-        oldpkgs = olddat[, "Package"]
-        oldvers = olddat[, "Version"]
         ext2 = gsub("\\.", ".", ext, fixed = TRUE)
-        if(is.null(olddat$File))
-            oldfilenames = file.path(dir,paste0(oldpkgs, "_", oldvers, ext2))
+        if(is.null(retdat$File))
+            retdat$tarball = file.path(dir,paste0(retdat$Package, "_", retdat$Version, ext2))
         else
-            oldfilenames = olddat$File
+            retdat$tarball = retdat$File
         
-        keeprows = file.exists(oldfilenames)
+        keeprows = file.exists(retdat$tarball)
         if(verbose)
-            message("Tarballs found for ", sum(keeprows), " of ",
-                    nrow(olddat), " PACKAGES entries.")
+            logfun("Tarballs found for ", sum(keeprows), " of ",
+                    nrow(retdat), " PACKAGES entries.")
         
         ## remove entries whose files have been deleted
-        retdat = olddat[keeprows,]
-        retdat$tarball = oldfilenames = oldfilenames[keeprows]
-        
+        retdat = retdat[keeprows,]
 
+
+        ## check for tarballs that are too new
+        tbmtimes = file.info(retdat$tarball)$mtime
+        toonew = which(tbmtimes > pmtime)
+        if(verbose)
+            logfun( length(toonew), " tarball(s) matching existing entries are ",
+                    "newer than PACKAGES file and must be reprocessed.")
+        if(length(toonew) > 0)
+            retdat = retdat[-toonew, ]
+        
         ## If in strict mode we confirm that the MD5 sums match for
         ## tarballs which match pre-existing PACKAGES entries.
         ##
@@ -191,9 +211,9 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         ## against non-malicious cases of this by failing out when the
         ## MD5 sum didn't match what PACKAGES said it should be.
         if(strict) {
-
+            
             if(verbose)
-                message("[strict mode] Checking if MD5sums match ",
+                logfun("[strict mode] Checking if MD5sums match ",
                         "for existing tarballs")
             curMD5sums = md5sum(normalizePath(retdat$tarball))
             ## There are no NAs in retdat$MD5sum here, as the only data in
@@ -202,23 +222,26 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             if(length(notokinds)) {
                 msg = paste0("Detected ", length(notokinds), " MD5sum mismatches",
                              " between existing PACKAGES file and tarballs")
+                if(verbose)
+                    logfun(msg)
+                warning(msg)
             } else if(verbose) {
-                message("All existing entry MD5sums match tarballs.") 
+                logfun("All existing entry MD5sums match tarballs.") 
             }
             ## tarballs that don't already ahve an entry
             ## OR that mismatched their existing entry
             ## possibly needing to be added
-            if(length(notokinds))
-                oldfilenames = oldfilenames[-notokinds]
-            
+            if(length(notokinds)) {
+                retdat = retdat[-notokinds,]
+            }
         }
-            
+        
         
         
         
         
         newpkgfiles = setdiff(normalizePath(pkgfiles),
-                              normalizePath(oldfilenames))
+                              normalizePath(retdat$tarball))
         
         
         ## If we're willing to assume the filenames are honest and
@@ -259,7 +282,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         numnew = length(newpkgfiles)
         if(numnew > 0) {
             if(verbose)
-                message("Found ", numnew, " package versions to process.")     
+                logfun("Found ", numnew, " package versions to process.")     
             indstofix = is.na(retdat$MD5sum)
             tmpdir = .getEmptyTempDir()
             res = file.symlink(newpkgfiles, file.path(tmpdir,
@@ -271,7 +294,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                      "temp directory.")
             
             if(verbose)
-                message("Writing temporary PACKAGES files for new package versions in ",
+                logfun("Writing temporary PACKAGES files for new package versions in ",
                         tmpdir)
             write_PACKAGES(tmpdir, type = type,
                            verbose = verbose, unpacked = unpacked,
@@ -302,7 +325,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                 newpkgdf$File = newpkgfiles[inds]
             }
             if(verbose)
-                message("Read ", nrow(newpkgdf), " entries from ",
+                logfun("Read ", nrow(newpkgdf), " entries from ",
                         "temporary PACKAGES file")
             
             ## just for accounting purposes
@@ -316,7 +339,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                                            verbose = verbose)
             }
             ## if(verbose)
-            ##     message(sum(retdat$new), "entries added or updated, ",
+            ##     logfun(sum(retdat$new), "entries added or updated, ",
             ##             sum(!retdat$new), " entries retained unchanged.")
             ## clean up accounting column so it doesn't get
             ## written to PACKAGES file
@@ -324,7 +347,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             
             
         } else if (verbose) {
-            message("No new package(s)/package version(s) detected")
+            logfun("No new package(s)/package version(s) detected")
         }
         ## clean up temp columns (note this works even if they aren't
         ## there so we don't need to worry about ones that are only
@@ -333,15 +356,15 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         retdat$tarball = NULL
 
         if(verbose)
-            message("Final updated PACKAGES db contains ",
+            logfun("Final updated PACKAGES db contains ",
                     nrow(retdat), " entries.")
         
         if(dryrun) {
             if(verbose)
-                message("[dryrun mode] Dryrun complete.")
+                logfun("[dryrun mode] Dryrun complete.")
         } else {
             if(verbose)
-                message("Writing final updated PACKAGES files.")
+                logfun("Writing final updated PACKAGES files.")
             db <- retdat
             ## copied from the tail end of write_PACKAGES
             con <- file(file.path(dir, "PACKAGES"), "wt")
@@ -353,7 +376,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             rownames(db) <- db[, "Package"]
             saveRDS(db, file.path(dir, "PACKAGES.rds"), compress = rds_compress)
             if(verbose)
-                message("update_PACKAGES complete.")
+                logfun("update_PACKAGES complete.")
         }
     }
 
