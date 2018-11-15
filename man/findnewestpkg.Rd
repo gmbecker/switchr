@@ -8,7 +8,7 @@
 findNewestPkgInds(df, pkgcol = "package", verscol = "version")
 
 findNewestPkgRows(df, pkgcol = "package", verscol = "version",
-  newcol = "new", verbose = FALSE)
+  newcol = "new", verbose = FALSE, logfun = message)
 }
 \arguments{
 \item{df}{data.frame. Table of package information}
@@ -16,6 +16,12 @@ findNewestPkgRows(df, pkgcol = "package", verscol = "version",
 \item{pkgcol}{string. Name of column containing package name}
 
 \item{verscol}{string. Name of column containing package version in version-string form.}
+
+\item{newcol}{character. Experimental. column name for the column indicating that the version is new.}
+
+\item{verbose}{logical. Should debugging information be written using \code{logfun} during this process.}
+
+\item{logfun}{function. Logging function (closure) which should be called to write verbose logging messages during the process.}
 }
 \value{
 a data.frame with the same columns as \code{df} which contains

@@ -4,11 +4,11 @@
 \name{SwitchrParam-class}
 \alias{SwitchrParam-class}
 \alias{SwitchrParam}
-\alias{SwitchrParam-class}
 \title{SwitchrParam}
 \usage{
 SwitchrParam(logfun = function(...) NULL, shell_init = character(),
-  archive_timing = 2, archive_retries = 2, dl_method, shell_timing = 1)
+  archive_timing = 2, archive_retries = 2, dl_method,
+  shell_timing = 1)
 }
 \arguments{
 \item{logfun}{The function to be called to write to logs}

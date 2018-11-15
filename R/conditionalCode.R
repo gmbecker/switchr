@@ -14,7 +14,8 @@ getBiocRepos = function() {
     if(sneakyreqpkg("BiocManager", quietly = TRUE)) { 
         bioc = get("repositories", asNamespace("BiocManager"))()
     } else if(sneakyreqpkg("BiocInstaller", quietly = TRUE)) {
-        bioc = BiocInstaller::biocinstallRepos()
+        bcrepofun = get("biocinstallRepos", envir = asNamespace("BiocInstaller")) 
+        bioc = bcrepofun()
     } else if(beforeBiocInstaller()) {
         if(!exists("biocinstallRepos"))
             source("http://bioconductor.org/biocLite.R")

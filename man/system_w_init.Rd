@@ -4,8 +4,8 @@
 \alias{system_w_init}
 \title{system_w_init}
 \usage{
-system_w_init(cmd, dir, init = character(), args = NULL, env = NULL, ...,
-  param = SwitchrParam())
+system_w_init(cmd, dir, init = character(), args = NULL, env = NULL,
+  ..., param = SwitchrParam())
 }
 \arguments{
 \item{cmd}{The text of the command. Must be length 1.}

@@ -17,12 +17,14 @@ makeSeedMan(x, known_manifest = PkgManifest(), ...)
 
 \S4method{makeSeedMan}{missing}(x, known_manifest = PkgManifest(), ...)
 
-\S4method{makeSeedMan}{sessionInfo}(x, known_manifest = PkgManifest(), ...)
-
-\S4method{makeSeedMan}{parsedSessionInfo}(x, known_manifest = PkgManifest(),
+\S4method{makeSeedMan}{sessionInfo}(x, known_manifest = PkgManifest(),
   ...)
 
-\S4method{makeSeedMan}{data.frame}(x, known_manifest = PkgManifest(), ...)
+\S4method{makeSeedMan}{parsedSessionInfo}(x,
+  known_manifest = PkgManifest(), ...)
+
+\S4method{makeSeedMan}{data.frame}(x, known_manifest = PkgManifest(),
+  ...)
 }
 \arguments{
 \item{x}{The object to generate a seeding manifest from, if missing, the

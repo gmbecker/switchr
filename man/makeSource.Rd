@@ -4,8 +4,8 @@
 \alias{makeSource}
 \title{Create a PkgSource object for a package}
 \usage{
-makeSource(url, type, user, password, scm_auth = list(), prefer_svn = FALSE,
-  ...)
+makeSource(url, type, user, password, scm_auth = list(),
+  prefer_svn = FALSE, ...)
 }
 \arguments{
 \item{url}{The url of the package sources}

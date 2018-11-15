@@ -35,6 +35,9 @@ findNewestPkgInds = function(df, pkgcol = "package", verscol = "version") {
 }
 
 ##' @rdname findnewestpkg
+##' @param newcol character. Experimental. column name for the column indicating that the version is new.
+##' @param verbose logical. Should debugging information be written using \code{logfun} during this process.
+##' @param logfun function. Logging function (closure) which should be called to write verbose logging messages during the process.
 ##' @export
 findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol = "new",
                              verbose = FALSE, logfun = message) {
@@ -71,8 +74,9 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
 ##' match existing entries.
 ##'
 ##' \code{update_PACKAGES} can be much faster than
-##' \code{write_PACKAGES} for (relatively) small changes to large
-##' repositories.
+##' \code{write_PACKAGES} for small-moderate changes to large
+##' repository indexes.
+##' 
 ##' @param dir See \code{write_PACKAGES}
 ##' @param fields See \code{write_PACKAGES}
 ##' @param type See \code{write_PACKAGES}
@@ -83,51 +87,79 @@ findNewestPkgRows = function(df, pkgcol = "package", verscol = "version", newcol
 ##' @param subdirs See \code{write_PACKAGES}
 ##' @param latestOnly See \code{write_PACKAGES}
 ##' @param addFiles See \code{write_PACKAGES}
-##' @param rds_compress See \code{write_PACKAGES}
 ##' @param strict logical. Should 'strict mode' be used when checking
 ##'     existing PACKAGES entries. See details. Defaults to
 ##'     \code{TRUE}.
 ##' @param dryrun logical. Should should the necessary updates be
 ##'     calculated but NOT applied. (default \code{FALSE})
-##'  @param logfun function. If \code{verbose} is \code{TRUE}, the
+##' @param logfun function. If \code{verbose} is \code{TRUE}, the
 ##'     function to be used to emit the informative messages. Defaults
 ##'     to \code{message}
-##' @details Currently \code{update_PACKAGES} calls directly down to
-##'     \code{write_PACKAGES} (and thus no speedup should be expected)
-##'     if any of the following conditions hold: \itemize{ \item No
-##'     \code{PACKAGES} file exists under \code{dir} \item
-##'     \code{unpacked} is \code{TRUE} \item \code{subdirs} is
-##'     anything other than \code{FALSE} \item \code{fields} is not
-##'     \code{NULL} and one or more specified fields are not present
-##'     in the existing \code{PACKAGES} file }
-##' 
-##' If \code{strict} mode is on, tarballs which appear by naming
-##' convention (pkgname_version.extension) to match entries in the
-##' existing \code{PACKAGES} file are checked by MD5 sum (a mismatch
-##' throws an error). Furthermore, all tarballs which do not match
-##' existing entries are fully proccessed (untarred and their
-##' \code{DESCRIPTION} files read) by the standard
-##' \code{write_PACKAGES} machinery.
+##' @param \dots Additional arguments to \code{write_PACKAGES} -  e.g., the relatively new
+##'     rds_compress argument.
+##' @details
+##' Throughout this section, \emph{package tarball} is taken to mean a tarball
+##' file in \code{dir} whose name can be interpreted as
+##' \code{<package>_<version>.<ext>} (or that is pointed to by the \code{File}
+##' field of an existing PACKAGES entry). \emph{Novel package tarballs} are
+##' those which do not match an existing \code{PACKAGES} file entry.
 ##'
-##' When strict mode is off (\code{strict = FALSE}), tarballs of the
-##' form (pkgname_version.extension) are assumed to encode correct
-##' metadata in their filenames. MD5sum checking is skipped for those
-##' matching existing entries and in the case that \code{latestOnly}
-##' is true, package-version pruning happens before processing the
-##' tarballs instead of after.
+##' \code{update_PACKAGES} avoids (re)processing package tarballs in cases where
+##' a \code{PACKAGES} file entry already exists and appears to remain valid. The
+##' logic for detecting still-valid entries is as follows:
+##' 
+##' Currently \code{update_PACKAGES} calls directly down to
+##' \code{write_PACKAGES} (and thus no speedup should be expected)
+##' if any of the following conditions hold:
+##' \itemize{
+##'     \item No \code{PACKAGES} file exists under \code{dir}
+##'     \item \code{unpacked} is \code{TRUE}
+##'     \item \code{subdirs} is anything other than \code{FALSE}
+##'     \item \code{fields} is not \code{NULL} and one or more specified fields
+##'       are not present in the existing \code{PACKAGES} file
+##'  }
+##'
+##' All package tarballs whose last modify times are later than that
+##' of the existing PACKAGES file are considered novel and no attempt
+##' is made to identify or retain any corresponding \code{PACKAGES}
+##' entries. Similarly, all \code{PACKAGES} entries which have no
+##' corresponding package tarball are definitionally invalid.
+##'
+##' When \code{strict = TRUE}, \code{PACKAGES} entries which appear to
+##' match a package tarball are confirmed via MD5 checksum; those that
+##' pass are retained as valid. All novel package tarballs are fully
+##' proccessed by the standard \code{write_PACKAGES} machinery, and
+##' the resulting entries are added. Finally, if \code{latestOnly =
+##' TRUE}, package-version pruning is performed across the entries.
+##'
+##' When \code{strict = FALSE}, package tarballs are assumed to encode
+##' correct metadata in their filenames. \code{PACKAGES} entries which
+##' appear to match a package tarball are retained as valid (No MD5sum
+##' checking occurs). If \code{latestOnly = TRUE}, package-version
+##' pruning across the full set of retained entries and novel package
+##' tarballs \emph{before} the processing of the novel tarballs, at
+##' significant computational and time savings in some
+##' situations. After the optional pruning, any relevant novel package
+##' tarballs are processed via \code{write_PACKAGES} and added to the
+##' set of retained entries.
+##'
+##' After the above process concludes, the final database of
+##' \code{PACKAGES} entries is written to all three PACKAGES files,
+##' overwriting the existing files.
 ##' 
 ##' @note While both strict and nonstrict modes offer speedups when
-##'     updating small percentages of large repositories, non strict
-##'     mode is much faster and is recommended in situations where the
+##'     updating small percentages of large repositories, non-strict
+##'     mode is \emph{much} faster and is recommended in situations where the
 ##'     assumptions it makes are safe.
 ##' @seealso \link[tools]{write_PACKAGES}
+##' @author Gabriel Becker
 ##' @importFrom tools md5sum
 ##' @export
 ##' 
 update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.binary", 
     "win.binary"), verbose = dryrun, unpacked = FALSE, subdirs = FALSE, 
-    latestOnly = TRUE, addFiles = FALSE, rds_compress = "xz", strict = TRUE,
-    dryrun = FALSE, logfun = message)
+    latestOnly = TRUE, addFiles = FALSE, strict = TRUE,
+    dryrun = FALSE, logfun = message, ...)
     {
         type = match.arg(type)
         PKGSfile = file.path(dir, "PACKAGES")
@@ -138,7 +170,9 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             pmtime = file.info(PKGSfile)$mtime
             ## read without fields restriction, because reducing number
             ## of fields is ok, adding fields means we need reprocessing
-           
+            ##
+            ## read is as data.frame. We will convert back to
+            ## a matrix before writing
             retdat = as.data.frame(read.dcf(PKGSfile),
                                    stringsAsFactors = FALSE)
             okfields = names(retdat)
@@ -159,7 +193,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             return(write_PACKAGES(dir = dir, fields = fields, type = type,
                                   verbose = FALSE, unpacked = unpacked,
                                   subdirs = subdirs, latestOnly = latestOnly,
-                                  addFiles = addFiles, rds_compress = rds_compress))
+                                  addFiles = addFiles, ...))
         }
         if(verbose) {
             msg = paste("Detected existing PACKAGES file with ", nrow(retdat), " entries.")
@@ -199,6 +233,8 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
 
 
         ## check for tarballs that are too new
+        ## remove entries which might appear to match them
+        ## because the new tarball takes precedence.
         tbmtimes = file.info(retdat$tarball)$mtime
         toonew = which(tbmtimes > pmtime)
         if(verbose){
@@ -247,13 +283,8 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             }
         }
         
-        
-        
-        
-        
         newpkgfiles = setdiff(normalizePath(pkgfiles),
                               normalizePath(retdat$tarball))
-        
         
         ## If we're willing to assume the filenames are honest and
         ## accurate, we can skip non-newest package versions without
@@ -297,6 +328,9 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
                 logfun(msg)
             }
             indstofix = is.na(retdat$MD5sum)
+            ## tempdir thats absolutely guaranteed to be empty
+            ## regardless of how many times this session this function has been
+            ## called 
             tmpdir = .getEmptyTempDir()
             res = file.symlink(newpkgfiles, file.path(tmpdir,
                                                       basename(newpkgfiles)))
@@ -314,7 +348,7 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             write_PACKAGES(tmpdir, type = type,
                            verbose = FALSE, unpacked = unpacked,
                            subdirs = subdirs, latestOnly = latestOnly,
-                           addFiles = addFiles, rds_compress = rds_compress)
+                           addFiles = addFiles, ...)
             newpkgdf = as.data.frame(read.dcf(file.path(tmpdir, "PACKAGES")),
                                      stringsAsFactors = FALSE)
             if(!identical(names(newpkgdf), names(retdat))) {
@@ -387,6 +421,8 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
         } else {
             if(verbose)
                 logfun("Writing final updated PACKAGES files.")
+            ## crucial that db is written as a matrix
+            ## otherwise available.packages, etc will fail
             db <- as.matrix(retdat)
             ## copied from the tail end of write_PACKAGES
             con <- file(file.path(dir, "PACKAGES"), "wt")
@@ -396,6 +432,9 @@ update_PACKAGES <- function(dir = ".", fields = NULL, type = c("source", "mac.bi
             write.dcf(db, con)
             close(con)
             rownames(db) <- db[, "Package"]
+	    rds_compress <- list(...)$rds_compress
+	    if(is.null(rds_compress))
+		rds_compress <- TRUE
             saveRDS(db, file.path(dir, "PACKAGES.rds"), compress = rds_compress)
             if(verbose)
                 logfun("update_PACKAGES complete.")

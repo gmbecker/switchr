@@ -12,20 +12,20 @@
 \title{libManifest}
 \usage{
 libManifest(lib = currentCompEnv(), record_versions = TRUE,
-  known_manifest = makeManifest(dep_repos = repos), repos = defaultRepos(),
-  ...)
+  known_manifest = makeManifest(dep_repos = repos),
+  repos = defaultRepos(), ...)
 
 \S4method{libManifest}{missing}(lib = currentCompEnv(),
-  record_versions = TRUE, known_manifest = makeManifest(dep_repos = repos),
-  repos = defaultRepos(), ...)
+  record_versions = TRUE, known_manifest = makeManifest(dep_repos =
+  repos), repos = defaultRepos(), ...)
 
 \S4method{libManifest}{character}(lib = currentCompEnv(),
-  record_versions = TRUE, known_manifest = makeManifest(dep_repos = repos),
-  repos = defaultRepos(), ...)
+  record_versions = TRUE, known_manifest = makeManifest(dep_repos =
+  repos), repos = defaultRepos(), ...)
 
 \S4method{libManifest}{SwitchrCtx}(lib = currentCompEnv(),
-  record_versions = TRUE, known_manifest = makeManifest(dep_repos = repos),
-  repos = defaultRepos(), ...)
+  record_versions = TRUE, known_manifest = makeManifest(dep_repos =
+  repos), repos = defaultRepos(), ...)
 }
 \arguments{
 \item{lib}{A SwitchrCtx object, or the name of a switchr library. Defaults

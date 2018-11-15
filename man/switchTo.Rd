@@ -19,29 +19,36 @@
 \alias{switchTo,character,SessionManifest}
 \title{switchTo}
 \usage{
-switchTo(name, seed = NULL, reverting = FALSE, ignoreRVersion = FALSE,
-  exclude.site = TRUE, ...)
+switchTo(name, seed = NULL, reverting = FALSE,
+  ignoreRVersion = FALSE, exclude.site = TRUE, ...)
 
 \S4method{switchTo}{character,character}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 
 \S4method{switchTo}{character,SwitchrCtx}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 
-\S4method{switchTo}{character,missing}(name, seed = NULL, reverting = FALSE,
-  ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+\S4method{switchTo}{character,missing}(name, seed = NULL,
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 
-\S4method{switchTo}{SwitchrCtx,ANY}(name, seed = NULL, reverting = FALSE,
-  ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+\S4method{switchTo}{SwitchrCtx,ANY}(name, seed = NULL,
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 
 \S4method{switchTo}{character,RepoSubset}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 
 \S4method{switchTo}{character,PkgManifest}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 
 \S4method{switchTo}{character,SessionManifest}(name, seed = NULL,
-  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE, ...)
+  reverting = FALSE, ignoreRVersion = FALSE, exclude.site = TRUE,
+  ...)
 }
 \arguments{
 \item{name}{The name associated (or to associate) with the computing

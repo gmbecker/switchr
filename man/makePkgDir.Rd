@@ -24,14 +24,14 @@
 makePkgDir(name, source, path, latest_only, param = SwitchrParam(),
   forceRefresh = FALSE)
 
-\S4method{makePkgDir}{ANY,SVNSource}(name, source, path, latest_only = FALSE,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,SVNSource}(name, source, path,
+  latest_only = FALSE, param = SwitchrParam(), forceRefresh = FALSE)
 
 \S4method{makePkgDir}{ANY,GithubSource}(name, source, path,
   latest_only = FALSE, param = SwitchrParam(), forceRefresh = FALSE)
 
-\S4method{makePkgDir}{ANY,GitSource}(name, source, path, latest_only = FALSE,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,GitSource}(name, source, path,
+  latest_only = FALSE, param = SwitchrParam(), forceRefresh = FALSE)
 
 \S4method{makePkgDir}{ANY,ANY}(name, source, path, latest_only,
   param = SwitchrParam(), forceRefresh = FALSE)
