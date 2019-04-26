@@ -701,3 +701,30 @@ noVignettesArg = function() {
 
     
 ## }
+
+## Remove a package from a GRANRepository object.
+.removePkg <- function(repo, package) {
+    not_found <- TRUE 
+    ## pkg_manifest and pkg_version
+    pm <- manifest_df(repo)
+    if (package %in% pm$name) {
+        manifest_df(repo) <- pm[pm$name != package,]
+        not_found <- FALSE 
+    }
+    pv <- versions_df(manifest(repo))
+    if (package %in% pv$name) {
+        versions_df(manifest(repo)) <- pv[pv$name != package,]
+        not_found <- FALSE 
+    }
+    ## results
+    res <- repo_results(repo)
+    if (package %in% res$name) { 
+        repo_results(repo) <- res[res$name != package,]
+        not_found <- FALSE 
+    }
+
+    if (not_found)
+        message(paste0("'", package, "' not found in repo object"))
+
+    repo
+}
