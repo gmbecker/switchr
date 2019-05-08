@@ -722,6 +722,12 @@ noVignettesArg = function() {
         repo_results(repo) <- res[res$name != package,]
         not_found <- FALSE 
     }
+    ## suspended
+    suspended <- suspended_pkgs(repo)
+    if (package %in% suspended) { 
+        suspended_pkgs(repo) <- suspended[suspended != package]
+        not_found <- FALSE
+    } 
 
     if (not_found)
         message(paste0("'", package, "' not found in repo object"))
