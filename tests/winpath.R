@@ -1,6 +1,6 @@
 library(switchr)
 if(getOption("repos")["CRAN"] == "@CRAN@")
-    chooseCRANmirror(ind=2)
+    chooseCRANmirror(ind=1L)
 checkUrlRoundtrip = function(pth) {
     pth = switchr:::normalizePath2(pth)
     furl = switchr:::makeFileURL(pth)
