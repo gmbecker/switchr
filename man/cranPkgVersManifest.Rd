@@ -6,7 +6,7 @@
 \usage{
 cranPkgVersManifest(pkg, vers, earliest = TRUE,
   cur_avail = available.packages(), verbose = FALSE,
-  suggests = c("direct", "none"), delay = 1)
+  suggests = c("direct", "none"), delay = 1, erronfail = TRUE)
 }
 \arguments{
 \item{pkg}{The package on which to base the generated manifest}
@@ -32,6 +32,8 @@ should be counted.}
 
 \item{delay}{Number of seconds to delay between successive REST calls
 to the crandb database. Defaults to 1 second}
+
+\item{erronfail}{how should connection errors be handled. \code{TRUE} (the default) throws an error, \code{NA} throws a warning, \code{FALSE} emits a message.}
 }
 \value{
 A SessionManifest object

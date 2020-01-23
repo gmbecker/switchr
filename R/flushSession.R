@@ -38,6 +38,10 @@ switchrDontUnload = function(value, add=TRUE) {
 }
 
 .dodepsourselves = function(pkg, av = available.packages(contrib.url(defaultRepos())), incl_pkgs = TRUE) {
+    ## XXX should it always be?
+    if(nrow(av) == 0)
+        av = installed.packages()
+
     deps = .innerdodeps(pkg, av)
     done = pkg
     remaining = deps

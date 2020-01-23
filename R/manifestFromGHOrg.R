@@ -3,14 +3,12 @@ getWithCache = function(url, env = ghcaches) {
     cleanurl = gsub("[^[:alnum:]]", "", url)
     if(exists(cleanurl, env))
         return(get(cleanurl, env))
-    stopifnot(requireNamespace2("RCurl"))
     res = RCurl::getURL(url, .opts = list(useragent="switchr-r-package", ssl.verifypeer=FALSE), header = TRUE)
     assign(cleanurl, res, envir = env)
     res
 }
 
 makeSearchURL = function(org, coreurl = "https://api.github.com") {
-    stopifnot(requireNamespace2("RCurl"))
     paste0(coreurl, "/search/code?per_page=100&q=", RCurl::curlPercentEncode("filename:DESCRIPTION"), "+", RCurl::curlPercentEncode("org:"), org)
 }
 
@@ -18,10 +16,7 @@ makeSearchURL = function(org, coreurl = "https://api.github.com") {
 globalVariables("fromJSON")
 getOrgSummary = function(orgname, coreurl = "https://api.github.com") {
                                         #url = paste(coreurl, "orgs", orgname, "repos?per_page=100", sep ="/")
-    if(!requireNamespace2("RJSONIO") || !requireNamespace2("RCurl"))
-        stop("This function requires there RJSONIO package or another package which provides a 'fromJSON' function")
- 
-    url = makeSearchURL(orgname, coreurl)
+     url = makeSearchURL(orgname, coreurl)
     cat(url, "\n")
     res = getWithCache(url, ghcaches)
     attr(res, "apiurl") = url

@@ -1,4 +1,4 @@
-##' Create a manifest of Bioc SVN locations
+##' DEPCRECATED - Create a manifest of Bioc SVN locations
 ##' @param bioc_vers A version number for a bioc release, or \code{"devel"} to
 ##' for the current devel trunk
 ##' @param software_only logical. Should only software packages be
@@ -10,15 +10,10 @@
 ##' manifest can be used to work from a local, working checkout of a
 ##' set of inter-dependent Bioconductor packages.
 ##' @seealso \code{\link{lazyRepo}}
-##' @examples
-##' ## wrapped in try because it fails on some finnicky build systems
-##' bman = try(BiocSVNManifest())
-##' bman
-##' \dontrun{
-##' repo = lazyRepo("rtracklayer", bman)
-##' }
 ##' @export
 BiocSVNManifest = function(bioc_vers = "devel", software_only = TRUE) {
+    .Deprecated("Bioconductor is no longer based in SVN. Returning empty manifest")
+    return(PkgManifest())
 
     rpackBase = makeBiocSVNURL("", bioc_vers)
     svnres =    system2("svn", args = c("ls", rpackBase,

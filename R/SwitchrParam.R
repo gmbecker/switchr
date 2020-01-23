@@ -21,10 +21,7 @@
 SwitchrParam = function(logfun = function(...) NULL, shell_init= character(),
     archive_timing = 2, archive_retries=2, dl_method, shell_timing = 1) {
     if(missing(dl_method)) {
-        if(requireNamespace2("RCurl"))
-            dl_method = "curl"
-        else
-            dl_method = "auto"
+        dl_method = "curl"
     }
     
     new("SwitchrParam", logfun = logfun, shell_init = shell_init,

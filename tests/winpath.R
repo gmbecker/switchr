@@ -1,6 +1,7 @@
 library(switchr)
-if(getOption("repos")["CRAN"] == "@CRAN@")
-    chooseCRANmirror(ind=1L)
+## if(getOption("repos")["CRAN"] == "@CRAN@")
+##     chooseCRANmirror(ind=1L)
+graceful_inet(TRUE)
 checkUrlRoundtrip = function(pth) {
     pth = switchr:::normalizePath2(pth)
     furl = switchr:::makeFileURL(pth)
@@ -50,8 +51,10 @@ sman = SessionManifest(man)
 stopifnot(nrow(manifest_df(sman)) == 0 && nrow(versions_df(sman)) == 0)
 
 ## make sure bioc version stuff works
+isFALSE = function(x) identical(x, FALSE)
 thing = switchr:::develVers
-stopifnot(is(thing, "character"))
+if(!isFALSE(graceful_inet())) ## absent forced failure bioc urls shoould work...
+    stopifnot(is(thing, "character"))
 
 #stopifnot(nrow(available.packages(contrib.url(switchr:::highestBiocVers())))>0)
 
@@ -86,7 +89,12 @@ dfile = file.path(pkgdir, "DESCRIPTION")
 
 test_ghupdate_dirty = function() {
     ghsource = makeSource("https://github.com/gmbecker/gRAN", type = "git", scm_auth=list(), branch = "master", name = "GRANBase")
-    res = makePkgDir("GRANBase", ghsource, dir, FALSE, param = param)
+    res = switchr:::inet_handlers(makePkgDir("GRANBase", ghsource, dir, FALSE, param = param))
+    if(is(res, "error")) {
+        message("skipping github update test due to connectivity issues")
+        return(TRUE)
+    }
+ 
     oldwd = getwd()
     on.exit(setwd(oldwd))
     setwd(pkgdir)
@@ -106,7 +114,13 @@ test_ghupdate_dirty = function() {
 
 test_ghupdate_branch = function() {
     ghsourcebr = makeSource("https://github.com/gmbecker/gRAN", type = "git", scm_auth=list(), branch = "API_refactor", name = "GRANBase")
-    res = makePkgDir("GRANBase", ghsourcebr, dir, FALSE)
+
+    res = switchr:::inet_handlers(makePkgDir("GRANBase", ghsourcebr, dir, FALSE))
+    if(is(res, "error")) {
+        message("skipping github update test due to connectivity issues")
+        return(TRUE)
+    }
+
     oldwd = setwd(pkgdir)
     on.exit(setwd(oldwd))
     system2("git", args = c("checkout master"))
@@ -178,23 +192,23 @@ if(switchr:::haveGit()) {
 
 
 
-test_.grabdeps = function() {
-    desc = read.dcf(system.file("DESCRIPTION", package="switchr"))
-    deps = switchr:::.grabdeps(desc, FALSE)
-    deps2 = switchr:::.grabdeps(desc, TRUE)
-    if(!identical(sort(deps), sort(c("RCurl", "RJSONIO", "methods", "tools" ))))
-        stop("deps returned non-zero for switchr with suggests=FALSE")
-    if( length(deps2) != 5 || length(union(deps2, c("BiocInstaller", "RCurl", "methods", "RJSONIO", "tools"))) != 5)
-        stop("Didn't get BiocIntaller, RCurl, and RJSONIO for deps of switchr including suggests, got ", paste(sort(deps2), collapse=", ") )
-    avl = available.packages("http://cran.rstudio.com/src/contrib")
-    deps3 = switchr:::.grabdeps(avl["switchr", , drop=FALSE], FALSE)
-    deps4 = switchr:::.grabdeps(avl["switchr", , drop=FALSE], TRUE)
- #   if(!identical(deps, deps3) || !identical(deps2, deps4))
-  #      stop(".grabdeps did not give the same behavior for consuming available pkgs matrix and description file")
+## test_.grabdeps = function() {
+##     desc = read.dcf(system.file("DESCRIPTION", package="switchr"))
+##     deps = switchr:::.grabdeps(desc, FALSE)
+##     deps2 = switchr:::.grabdeps(desc, TRUE)
+##     if(!identical(sort(deps), sort(c("RCurl", "RJSONIO", "methods", "tools" ))))
+##         stop("deps returned non-zero for switchr with suggests=FALSE")
+##     if( length(deps2) != 5 || length(union(deps2, c("BiocInstaller", "RCurl", "methods", "RJSONIO", "tools"))) != 5)
+##         stop("Didn't get BiocIntaller, RCurl, and RJSONIO for deps of switchr including suggests, got ", paste(sort(deps2), collapse=", ") )
+##     avl = available.packages("http://cran.rstudio.com/src/contrib")
+##     deps3 = switchr:::.grabdeps(avl["switchr", , drop=FALSE], FALSE)
+##     deps4 = switchr:::.grabdeps(avl["switchr", , drop=FALSE], TRUE)
+##  #   if(!identical(deps, deps3) || !identical(deps2, deps4))
+##   #      stop(".grabdeps did not give the same behavior for consuming available pkgs matrix and description file")
         
-    TRUE
+##     TRUE
     
-}
+## }
 
 #test_.grabdeps()
 

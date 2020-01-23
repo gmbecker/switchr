@@ -1,17 +1,6 @@
-if(exists("globalVariables")) {
-    globalVariables("biocinstallRepos", "switchr", TRUE)
-    globalVariables("biocinstallname", "switchr", TRUE)
-}
-
-biocinstallname = "BiocInstaller"
+        
 
 
-biocrepostmpl = c("http://bioconductor.org/packages/%%%%/bioc" ,
-    "http://bioconductor.org/packages/%%%%/data/annotation" ,
-    "http://bioconductor.org/packages/%%%%/data/experiment" ,
-              "http://bioconductor.org/packages/%%%%/extra" )
-
-dev_vers_aliases = c("dev", "devel", "trunk", "master")
 
 ## using closures for state/"activeBinding" style behavior here because
 ## reading the yaml file may fail on installation
@@ -25,9 +14,9 @@ doyamlsetup = function() {
         
         con = url("http://bioconductor.org/config.yaml")
         on.exit(close(con))
-        yaml = try(readLines(con))
-        if(is(yaml, "try-error")) {
-            warning("Unable to read http://bioconductor.org/config.yaml. Bioconductor version information may be unavailable or out-of-date")
+        yaml = inet_handlers(readLines(con))
+        if(is(yaml, "error")) {
+            return(NULL)
         } else {
             yamlval <<- yaml
             if(initial) {
@@ -46,13 +35,15 @@ doyamlsetup = function() {
 ## can't require yaml since that package is very new, switchr
 ## can't afford any new (or even newish) dependencies!
 
-getBiocYaml = doyamlsetup()
+## in zzz.R as delayed assign now.
+##getBiocYaml = doyamlsetup()
 
 getBiocReposFromRVers = function() {
     myyaml = getBiocYaml()
     biocvers = getBiocvrFromRvr(myyaml)
     reps = gsub("%%%%", biocvers, biocrepostmpl)
-    if(!url.exists(reps[4])) ## extra repo isn't on newer repos
+    exst = inet_handlers(url.exists(reps[4]))
+    if(!is(exst, "error") && !exst) ## extra repo isn't on newer repos
         reps = reps[-4]
     reps
 }
@@ -74,11 +65,9 @@ getMultilineYamlField = function(yaml = getBiocYaml(), field) {
 getBiocvrFromRvr = function(yaml  = getBiocYaml(), Rvers, first = TRUE) {
     if(missing(Rvers))
         Rvers = paste(R.version$major, gsub("(.*)\\..*", "\\1", R.version$minor), sep=".")
-    ## ln = grep("^r_ver_for_bioc_ver:", yaml)
-    ## lnends = grep("^[^[:space:]]", yaml)
-    ## lnend = min(lnends[lnends > ln])
-    ## mylines = yaml[seq(ln+1, lnend-1)]
-    ## mylines = cleanem(mylines)
+    if(is.null(yaml))
+        return(NULL)
+    
     mylines = getMultilineYamlField(yaml, "r_ver_for_bioc_ver")
     mymatty = do.call(rbind, strsplit(mylines, ":"))
     matches = which(mymatty[,2] == Rvers)
@@ -91,6 +80,8 @@ getBiocvrFromRvr = function(yaml  = getBiocYaml(), Rvers, first = TRUE) {
 
 getBiocDevelVr = function() {
     yaml = getBiocYaml()
+    if(is.null(yaml))
+        return(NULL)
     develln = grep("^devel_version:",yaml)
     develvr = gsub('.*:.*"(.*)".*', "\\1", yaml[develln])
     develvr
@@ -98,6 +89,8 @@ getBiocDevelVr = function() {
 
 getBiocReleaseVr = function() {
     yaml = getBiocYaml()
+    if(is.null(yaml))
+        return(NULL)
     develln = grep("^release_version:",yaml)
     develvr = gsub('.*:.*"(.*)".*', "\\1", yaml[develln])
     develvr
@@ -108,8 +101,8 @@ getBiocReleaseVr = function() {
 ## devel repo, if called for, I think.
 highestBiocVers = function() biocReposFromVers(getBiocDevelVr())
 
-
-develVers = getBiocDevelVr()
+## in zzz.R as delayed assign now.
+##develVers = getBiocDevelVr()
 
 isCurrentDevelVr = function(vr, yaml) {
     develvr = getBiocDevelVr()
@@ -122,11 +115,13 @@ cleanem = function(lines) {
     lines = gsub('[" \\t]', "", lines)
     lines
 }
-    
-defaultBiocRepos = tryCatch(getBiocReposFromRVers(), error = function(e) {
-                                warning("Unable to access http://bioconductor.org/config.yaml. This installation won't have a baked-in default set of Bioc Repositories. You may want to try reinstalling. switchr will attempt to determine default Bioc repos when the package is loaded.")
-                                NULL
-                            })
+
+## in zzz.R as delayed assign now.
+
+## defaultBiocRepos = tryCatch(getBiocReposFromRVers(), error = function(e) {
+##                                 warning("Unable to access http://bioconductor.org/config.yaml. This installation won't have a baked-in default set of Bioc Repositories. You may want to try reinstalling. switchr will attempt to determine default Bioc repos when the package is loaded.")
+##                                 NULL
+##                             })
 
 
 biocreposfactory = function() {
@@ -145,11 +140,12 @@ biocBaseRepos = biocreposfactory()
 ##highestVs = c(9, 14, 2)
 allBiocReleases = function(includeDev = FALSE) {
     yaml = getBiocYaml()
+    if(is.null(yaml)) {
+        warning2("Unable to access bioconductor yaml")
+        return(NULL)
+    }
     mylines = getMultilineYamlField(yaml, "release_dates")
     ret = gsub("(.*):.*", "\\1", mylines)
-    ## ret = names(yaml.load(paste(getBiocYaml(),
-    ##                             collapse = "\n")
-    ##                       )$release_dates)
     if(includeDev)
         ret = c(ret, getBiocDevelVr())
     ret
@@ -165,10 +161,15 @@ biocVersAsGitBr = function(vers) {
 
 decrBiocVersion = function(biocVers) {
 
-    if(biocVers == "1.0")
+    if(biocVers == "1.0") {
+        warning("Unable to decrement Bioconductor version below 1.0")
         return(NULL)
-    
+    }
     allvers = allBiocReleases(includeDev = TRUE)
+    if(is.null(allvers)) {
+        warning2("Bioconductor functionality doesn't appear to be working right now. Connectivity problem?")
+        return(NULL)
+    }
     ind = which(allvers == biocVers)
     if(length(ind) == 0)
         stop(sprintf("invalid bioc version? %s", biocVers))
@@ -184,7 +185,6 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
     pieces = strsplit(repos, vers, fixed=TRUE)
     newvers = decrBiocVersion(vers)
     if(is.null(newvers)) {
-        warning("Cannot decrement bioc repo version below 1.0")
         return(NULL)
     }
     sapply(pieces, function(x) paste0(x, collapse = newvers))
@@ -194,8 +194,13 @@ biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
 biocReposFromVers = function(vers = develVers) {
     if(beforeBiocInstaller()) {
-        if(!exists("biocinstallRepos"))
-            source("http://bioconductor.org/biocLite.R")
+        if(!exists("biocinstallRepos")) {
+            res =try(source("http://bioconductor.org/biocLite.R"))
+            if(is(res, "try-error")) {
+                warning2("Unable to source biocLite.R. Connectivity problem?")
+                return(NULL)
+            }
+        }
         repos = biocinstallRepos()
         repos = repos[grepl("bioconductor.org", repos)]
     } else {
@@ -217,4 +222,83 @@ getRemoteBranches = function(dir = ".") {
     res
 }    
 
+
+
+sneakyreqpkg = function(pkg, quietly = FALSE) {
+    req = tryCatch(get("requireNamespace"), error = identity)
+    if(is(req, "error"))
+        req = get("require")
     
+    req(pkg, quietly = quietly)
+}
+
+    
+
+getBiocRepos = function() {
+    ## this sucks but I can't afford the dependency on 3.5.x+ that comes
+    ## with BiocManager :(
+    if(sneakyreqpkg("BiocManager", quietly = TRUE)) { 
+        bioc = inet_handlers(get("repositories", asNamespace("BiocManager"))())
+    } else if(sneakyreqpkg("BiocInstaller", quietly = TRUE)) {
+        bcrepofun = get("biocinstallRepos", envir = asNamespace("BiocInstaller")) 
+        bioc = bcrepofun()
+    } else if(beforeBiocInstaller()) {
+        if(!exists("biocinstallRepos"))
+            source("http://bioconductor.org/biocLite.R")
+        bioc = biocinstallRepos()
+    } else {
+        if(is.null(defaultBiocRepos)) {
+            bioc = tryCatch(getBiocReposFromRVers(), function(e) character())
+            if(length(bioc) == 0)
+                warning("Unable to determine Bioc repositories. They will not be included in the set of default dependency repos")
+        } else
+            bioc = defaultBiocRepos
+    }
+    if(is(bioc, "error")) 
+        return(character())
+
+    if (anyNA(bioc))  {
+        warning("Attempt to determine default Bioconductor repos returned one or more NAs. These will be omitted from the set of default repositories.")
+        bioc = bioc[!is.na(bioc)]
+    }
+    bioc
+}
+
+
+
+
+##' defaultRepos
+##'
+##' Get default repositories for use as dependency repos and within
+##' install_packages
+##'
+##' @return A character vector of package repository urls
+##' @export
+##' @importFrom utils chooseCRANmirror
+defaultRepos = function() {
+    bioc = getBiocRepos()
+    optrepos = getOption("repos")
+    if(is.na(optrepos["CRAN"]) || optrepos["CRAN"] == "@CRAN@") {
+        ## if bioc has a cranmirror (which it should)
+        if(any(grepl("cran", bioc, ignore.case=TRUE))) 
+            optrepos = optrepos[!grepl("CRAN", names(optrepos))]
+        else {
+
+            if(interactive())
+                chooseCRANmirror()
+            else{
+                message("Switchr needs a default CRAN mirror set via R options. Using the cloud mirror. This happens only when no CRAN mirror is selected *and* the BiocInstaller package is not installed.")
+                chooseCRANmirror(ind= 1L)
+            }
+            optrepos = getOption("repos")
+        }
+    } else if (!is.null(names(bioc))) 
+          bioc = bioc[!names(bioc) == "CRAN"]
+    
+    granrepos = NULL
+    if(exists("defaultGRANURL")) 
+        granrepos = get("defaultGRANURL")()
+    repos = unique(c(granrepos, optrepos, bioc))
+    repos
+}
+

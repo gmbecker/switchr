@@ -8,7 +8,6 @@ crandburl = "http://crandb.r-pkg.org/"
 ##' @param vers The version of R to create a manifest for
 ##' @param curr_avail The output from available.packages(). Used to identify
 ##' whether the necessary version is in the CRAN archive or normal repository
-##' 
 ##' @return A SessionManifest object
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
@@ -23,14 +22,16 @@ crandburl = "http://crandb.r-pkg.org/"
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
-    if(!requireNamespace2("RJSONIO") || !requireNamespace2("RCurl"))
-        stop("This function requires there RJSONIO package or another package which provides a 'fromJSON' function")
     
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
     con = url(url)
-    resp = suppressWarnings(readLines(con))
+    resp = inet_handlers(readLines(con))
     close(con)
-    cont = RJSONIO::fromJSON(resp)
+    if(is.null(resp) || is(resp, "error")) {
+        message("Connectivity problem when accessing crandb url ", url)
+        return(SessionManifest(PkgManifest()))
+    }
+    cont = fromJSON(resp)
     tb_urls = buildTarURLs(cont, curr_avail)
     man = PkgManifest(name = names(cont), url = tb_urls, type = "tarball",
                 dep_repos = character())
@@ -64,6 +65,7 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 ##' should be counted.
 ##' @param delay Number of seconds to delay between successive REST calls
 ##' to the crandb database. Defaults to 1 second
+##' @param erronfail how should connection errors be handled. \code{TRUE} (the default) throws an error, \code{NA} throws a warning, \code{FALSE} emits a message.
 ##' @return A SessionManifest object
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
@@ -84,15 +86,22 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 
 
 cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
-    cur_avail = available.packages(), verbose = FALSE, suggests = c("direct", "none"),
-    delay = 1) {
-    requireNamespace2("RJSONIO")
+                               cur_avail = available.packages(),
+                               verbose = FALSE,
+                               suggests = c("direct", "none"),
+                               delay = 1,
+                               erronfail = TRUE
+    ) {
     suggests = match.arg(suggests)
     
     urlpkg = paste0(crandburl, pkg, "/all")
     con = url(urlpkg)
-    resp = suppressWarnings(readLines(con))
+    resp = inet_handlers(readLines(con))
     close(con)
+    if(is.null(resp) || is(resp, "error")) {
+        message("Connectivity problem when trying to access crandb url ", urlpkg)
+        return(SessionManifest(PkgManifest()))
+    }
     cont = as.list(RJSONIO::fromJSON(resp))
     cont2 = cont[["versions"]][[vers]]
     tl = do.call(c, lapply(cont$timeline, as.Date))
@@ -105,11 +114,11 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     
     sugneeded = if(suggests == "direct") cont2$Suggests else NULL
     deps = names(c(cont2$Depends, cont2$Imports, sugneeded))
-    cnt =1
+    cnt = 1L
     versneeded = vers
     names(versneeded) = pkg
     i = 1
-    while(i <= length(deps)) {
+    while(i <= length(deps) && cnt < 10L) {
         deps = deps[!deps %in% c("R", basepkgs)]
         tmpkg = deps[i]
         if(verbose)
@@ -117,8 +126,13 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
                         tmpkg ))
         urlpkg = paste0(crandburl, tmpkg, "/all")
         con = url(urlpkg)
-        resp = suppressWarnings(readLines(con))
+        resp = inet_handlers(readLines(con))
         close(con)
+        if(is.null(resp) || is(resp, "error")) {
+            cnt = cnt + 1L
+            Sys.sleep(2*delay)
+            next
+        }
         depcont = as.list(RJSONIO::fromJSON(resp))
         if(!identical(names(depcont), c("error", "reason"))) {
             tl = do.call(c, lapply(depcont$timeline, as.Date))
@@ -138,8 +152,18 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
             warning(paste("Package", tmpkg, "does not appear to be a CRAN package"))
         
         i = i + 1
-    }
         
+    }
+
+    if(cnt == 10L) {
+        msg = "failed contacting crandb 10 times while attempting to resolve recursive dependencies. Unable to build complete manifest."
+        if(graceful_inet())
+            message(msg)
+        else if(erronfail)
+            stop(msg)
+        else
+            warning(msg)
+    }        
     pkgurls = buildTarURLs(versneeded, cur_avail)
     man = PkgManifest(name = names(versneeded), url = pkgurls, type = "tarball",
                 dep_repos = character())

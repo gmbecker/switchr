@@ -2,7 +2,7 @@
 % Please edit documentation in R/biocManifest.R
 \name{BiocSVNManifest}
 \alias{BiocSVNManifest}
-\title{Create a manifest of Bioc SVN locations}
+\title{DEPCRECATED - Create a manifest of Bioc SVN locations}
 \usage{
 BiocSVNManifest(bioc_vers = "devel", software_only = TRUE)
 }
@@ -19,20 +19,12 @@ packages found in the specified bioc repositories, as well
 as those listed in \code{not_in_repo}
 }
 \description{
-Create a manifest of Bioc SVN locations
+DEPCRECATED - Create a manifest of Bioc SVN locations
 }
 \details{
 In combination with the \code{lazyRepo} function, this
 manifest can be used to work from a local, working checkout of a
 set of inter-dependent Bioconductor packages.
-}
-\examples{
-## wrapped in try because it fails on some finnicky build systems
-bman = try(BiocSVNManifest())
-bman
-\dontrun{
-repo = lazyRepo("rtracklayer", bman)
-}
 }
 \seealso{
 \code{\link{lazyRepo}}

@@ -96,19 +96,8 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 chtype = "repourl"
                 
             } else if (chtype == "manifesturl") {
-                if(requireNamespace2("RCurl")) {
-                    seed = strsplit(RCurl::getURL(seed), "\n")[[1]]
-
-                } else {
-                    seed2 = tryCatch(readLines(seed), error = function(e) e)
-                    if(is(seed2, "error"))
-                        stop("Unable to access gist due to https URL. Please install RCurl or use an R version that has libcurl built in.")
-                    seed = seed2
-                }
-                    
+                seed = strsplit(RCurl::getURL(seed), "\n")[[1]]
                 chtype = "manifesttxt"
-                
-                
             }
             if (chtype == "manifesttxt") {
                 con = textConnection(seed)
@@ -268,7 +257,8 @@ getStringType = function(str) {
     ## https://www.stats.ox.ac.uk/pub/RWin/garbage redirects to the oxford stats homepage,
     ## thus "succeeds"
     
-    if (url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))        
+    if (grepl("(cran|cloud.r-project.org)", str, ignore.case=TRUE) ||
+        url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))       
       return("repourl")
     else if(url.exists(paste0(str, "/PACKAGES.gz")))
         return("contriburl")

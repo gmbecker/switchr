@@ -41,11 +41,16 @@ an R session.
 For safety within this vignette, we set the base \verb@switchr@
 directory (the directory under which \verb@switchr@ libraries will be
 used) to a temporary directory.
-
 <<results=hide,eval=TRUE >>=
 library(switchr)
 switchrBaseDir(file.path(tempdir(), ".switchr"))
-options(width=40, repos = c(CRAN="http://cran.rstudio.com"))
+reps = options("repos")[[1]]
+options(width=40)
+if(reps["CRAN"] == "@CRAN@") {
+    reps["CRAN"] = "https://cloud.r-project.org"
+    options(repos = reps)
+}
+graceful_inet(TRUE)
 @
 
 

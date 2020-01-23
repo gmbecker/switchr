@@ -37,8 +37,7 @@ list.dirs = function(path = ".", full.names = TRUE, recursive = TRUE) {
 
 
 url.exists = function(x, ...) {
-    if(requireNamespace2("RCurl") &&
-       !is(try(RCurl::url.exists, silent = TRUE), "try-error"))
+    if(!is(try(RCurl::url.exists, silent = TRUE), "try-error"))
         RCurl::url.exists(x, ...)
     else {
         con = url(x)
