@@ -75,13 +75,16 @@ intr <- interactive()
 if(!intr){
 oldlp <- .libPaths()
 .libPaths(tail(oldlp, 1))
+oldgi <- graceful_inet(TRUE)
 }
 }
 man = libManifest()
 man
 \dontshow{
-if(!intr)
+if(!intr) {
   .libPaths(oldlp)
+  graceful_inet(oldgi)
+}
 }
 \dontrun{
 man2 = libManifest("myotherlib")

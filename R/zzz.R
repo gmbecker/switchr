@@ -1,7 +1,7 @@
 .domessage = function(msg) message(msg)
 .onLoad = function(libname, pkgname) {
     ns = asNamespace(pkgname)
-
+    ##graceful_inet(TRUE, TRUE)
     delayedAssign("BiocRelease", tryCatch(BiocVers(getBiocReleaseVr()),
                                           error = function(x) {
                                        NULL
@@ -10,7 +10,7 @@
                   assign.env = ns)
     delayedAssign("develVers",  tryCatch(getBiocDevelVr(),
                                         error = function(x) {
-                                   NULL
+                                   character()
                                }
                                    ), eval.env = ns,
                   assign.env = ns)
@@ -30,7 +30,7 @@
 
     delayedAssign("defaultBiocRepos", tryCatch(getBiocReposFromRVers(),
                                         error = function(x) {
-                                   NULL
+                                   character()
                                }
                                    ), eval.env = ns,
                   assign.env = ns)

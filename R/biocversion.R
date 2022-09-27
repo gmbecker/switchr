@@ -1,4 +1,4 @@
-        
+
 
 
 
@@ -11,10 +11,11 @@ doyamlsetup = function() {
     fun = function() {
         if(!is.null(yamlval) && !initial && !stale)
             return(yamlval)
-        
+
         con = url("http://bioconductor.org/config.yaml")
         on.exit(close(con))
-        yaml = inet_handlers(readLines(con))
+        yaml = tryCatch(readLines(con), error=function(e) NULL,
+                        warning = function(w) invokeRestart("muffleWarning"))
         if(is(yaml, "error")) {
             return(NULL)
         } else {
@@ -60,21 +61,21 @@ getMultilineYamlField = function(yaml = getBiocYaml(), field) {
     mylines = cleanem(mylines)
     mylines
 }
-    
+
 
 getBiocvrFromRvr = function(yaml  = getBiocYaml(), Rvers, first = TRUE) {
     if(missing(Rvers))
         Rvers = paste(R.version$major, gsub("(.*)\\..*", "\\1", R.version$minor), sep=".")
     if(is.null(yaml))
         return(NULL)
-    
+
     mylines = getMultilineYamlField(yaml, "r_ver_for_bioc_ver")
     mymatty = do.call(rbind, strsplit(mylines, ":"))
     matches = which(mymatty[,2] == Rvers)
     if(all(is.na(matches))) {
         return(getBiocDevelVr())
     }
-    
+
     if(first)
         row = min(matches)
     else
@@ -197,6 +198,8 @@ decrBiocRepo = function(repos, vers = biocVersFromRepo(repos)) {
 biocVersFromRepo = function(repos) gsub(".*/([0-9][^/]*)/.*", "\\1", repos[1])
 
 biocReposFromVers = function(vers = develVers) {
+    if(length(vers) == 0)
+        return(character())
     if(beforeBiocInstaller()) {
         if(!exists("biocinstallRepos")) {
             res =try(source("http://bioconductor.org/biocLite.R"))
@@ -208,7 +211,7 @@ biocReposFromVers = function(vers = develVers) {
         repos = biocinstallRepos()
         repos = repos[grepl("bioconductor.org", repos)]
     } else {
-        
+
         repos = biocBaseRepos()
         repos = repos[grep("BioC", names(repos))]
     }
@@ -216,7 +219,7 @@ biocReposFromVers = function(vers = develVers) {
     bef= gsub("(.*/)[0-9][^/]*/.*", "\\1", repos)
     af = gsub(".*/[0-9][^/]*(/.*)", "\\1", repos)
     paste0(bef, vers, af)
-}    
+}
 
 getRemoteBranches = function(dir = ".") {
 
@@ -224,7 +227,7 @@ getRemoteBranches = function(dir = ".") {
     res = res[!grepl("HEAD ->", res)]
     res = gsub(".*origin/(.*)", "\\1", res)
     res
-}    
+}
 
 
 
@@ -232,33 +235,33 @@ sneakyreqpkg = function(pkg, quietly = FALSE) {
     req = tryCatch(get("requireNamespace"), error = identity)
     if(is(req, "error"))
         req = get("require")
-    
+
     req(pkg, quietly = quietly)
 }
 
-    
+
 
 getBiocRepos = function() {
     ## this sucks but I can't afford the dependency on 3.5.x+ that comes
     ## with BiocManager :(
-    if(sneakyreqpkg("BiocManager", quietly = TRUE)) { 
-        bioc = inet_handlers(get("repositories", asNamespace("BiocManager"))())
+    if(sneakyreqpkg("BiocManager", quietly = TRUE)) {
+        bioc = inet_handlers(suppressWarnings(get("repositories", asNamespace("BiocManager"))()))
     } else if(sneakyreqpkg("BiocInstaller", quietly = TRUE)) {
-        bcrepofun = get("biocinstallRepos", envir = asNamespace("BiocInstaller")) 
-        bioc = bcrepofun()
+        bcrepofun = get("biocinstallRepos", envir = asNamespace("BiocInstaller"))
+        bioc = inet_handlers(suppressWarnings(bcrepofun()))
     } else if(beforeBiocInstaller()) {
         if(!exists("biocinstallRepos"))
-            source("http://bioconductor.org/biocLite.R")
+            inet_handlers(source("http://bioconductor.org/biocLite.R"))
         bioc = biocinstallRepos()
     } else {
-        if(is.null(defaultBiocRepos)) {
+        if(length(defaultBiocRepos) == 0) {
             bioc = tryCatch(getBiocReposFromRVers(), function(e) character())
             if(length(bioc) == 0)
                 warning("Unable to determine Bioc repositories. They will not be included in the set of default dependency repos")
         } else
             bioc = defaultBiocRepos
     }
-    if(is(bioc, "error")) 
+    if(is(bioc, "error") || length(bioc) == 0)
         return(character())
 
     if (anyNA(bioc))  {
@@ -284,7 +287,7 @@ defaultRepos = function() {
     optrepos = getOption("repos")
     if(is.na(optrepos["CRAN"]) || optrepos["CRAN"] == "@CRAN@") {
         ## if bioc has a cranmirror (which it should)
-        if(any(grepl("cran", bioc, ignore.case=TRUE))) 
+        if(length(bioc) > 0 && any(grepl("cran", bioc, ignore.case=TRUE)))
             optrepos = optrepos[!grepl("CRAN", names(optrepos))]
         else {
 
@@ -296,11 +299,11 @@ defaultRepos = function() {
             }
             optrepos = getOption("repos")
         }
-    } else if (!is.null(names(bioc))) 
+    } else if (length(bioc) > 0 && !is.null(names(bioc)))
           bioc = bioc[!names(bioc) == "CRAN"]
-    
+
     granrepos = NULL
-    if(exists("defaultGRANURL")) 
+    if(exists("defaultGRANURL"))
         granrepos = get("defaultGRANURL")()
     repos = unique(c(granrepos, optrepos, bioc))
     repos

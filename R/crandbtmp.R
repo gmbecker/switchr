@@ -12,7 +12,7 @@ crandburl = "http://crandb.r-pkg.org/"
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
 ##'
-##' Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01 
+##' Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01
 ##' @author Gabriel Becker
 ##' @examples
 ##' \dontrun{
@@ -22,7 +22,7 @@ crandburl = "http://crandb.r-pkg.org/"
 ## Eventually replace with crandb but it has lots of deps and seems broken now
 ##' @export
 rVersionManifest = function(vers, curr_avail = available.packages()) {
-    
+
     url = paste("http://crandb.r-pkg.org/-/release/", vers, sep="")
     con = url(url)
     resp = inet_handlers(readLines(con))
@@ -70,7 +70,7 @@ rVersionManifest = function(vers, curr_avail = available.packages()) {
 ##' @references "Gabor Csardi" (2014). crandb: Query the unofficial CRAN metadata
 ##'  database. R package version 1.0.0. https://github.com/metacran/crandb
 ##'
-##' Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01 
+##' Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01
 ##' @note Some packages retain the same version on CRAN for long periods of
 ##' time. The cohort in the manifest represents a gross proxy for the cohort
 ##' used in conjunction within an analysis which used a the \code{vers} version
@@ -93,7 +93,7 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
                                erronfail = TRUE
     ) {
     suggests = match.arg(suggests)
-    
+
     urlpkg = paste0(crandburl, pkg, "/all")
     con = url(urlpkg)
     resp = inet_handlers(readLines(con))
@@ -105,13 +105,13 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
     cont = as.list(RJSONIO::fromJSON(resp))
     cont2 = cont[["versions"]][[vers]]
     tl = do.call(c, lapply(cont$timeline, as.Date))
-    
+
     vdate = tl[vers]
     if(earliest)
         date = vdate
     else
         date = tl[min(which(tl > vdate))]-1
-    
+
     sugneeded = if(suggests == "direct") cont2$Suggests else NULL
     deps = names(c(cont2$Depends, cont2$Imports, sugneeded))
     cnt = 1L
@@ -150,38 +150,38 @@ cranPkgVersManifest = function(pkg, vers, earliest = TRUE,
             Sys.sleep(delay)
         } else
             warning(paste("Package", tmpkg, "does not appear to be a CRAN package"))
-        
+
         i = i + 1
-        
+
     }
 
     if(cnt == 10L) {
         msg = "failed contacting crandb 10 times while attempting to resolve recursive dependencies. Unable to build complete manifest."
-        if(graceful_inet())
+        if(graceful_inet_on() && !silent_inet())
             message(msg)
         else if(erronfail)
             stop(msg)
         else
             warning(msg)
-    }        
+    }
     pkgurls = buildTarURLs(versneeded, cur_avail)
     man = PkgManifest(name = names(versneeded), url = pkgurls, type = "tarball",
                 dep_repos = character())
     SessionManifest(man, versions = data.frame(name = names(versneeded), version = versneeded,
                                                stringsAsFactors = FALSE))
-    
+
 }
 
 
 buildTarURLs = function(pkgvers, avail) {
-    
+
     stillthere = which(names(pkgvers) %in% avail[,"Package"])
     currentpkgs = avail[names(pkgvers)[stillthere], "Version"] == pkgvers[stillthere]
-    
-    
+
+
     iscurrent = rep(FALSE, times=length(pkgvers))
     iscurrent[stillthere[currentpkgs]] = TRUE
-    
+
     baseurl = ifelse(iscurrent, "http://cran.rstudio.com/src/contrib",
         paste("http://cran.r-project.org/src/contrib/Archive", names(pkgvers), sep="/")
         )
