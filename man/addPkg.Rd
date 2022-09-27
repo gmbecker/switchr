@@ -9,17 +9,32 @@
 \alias{addPkg,SessionManifest}
 \title{addPkg}
 \usage{
-addPkg(x, ..., rows = makeManifest(...), versions = data.frame(name =
-  manifest_df(rows)$name, version = NA_character_, stringsAsFactors =
-  FALSE), replace = FALSE)
+addPkg(
+  x,
+  ...,
+  rows = makeManifest(...),
+  versions = data.frame(name = manifest_df(rows)$name, version = NA_character_,
+    stringsAsFactors = FALSE),
+  replace = FALSE
+)
 
-\S4method{addPkg}{PkgManifest}(x, ..., rows = makeManifest(...),
-  versions = data.frame(name = manifest_df(rows)$name, version =
-  NA_character_, stringsAsFactors = FALSE), replace = FALSE)
+\S4method{addPkg}{PkgManifest}(
+  x,
+  ...,
+  rows = makeManifest(...),
+  versions = data.frame(name = manifest_df(rows)$name, version = NA_character_,
+    stringsAsFactors = FALSE),
+  replace = FALSE
+)
 
-\S4method{addPkg}{SessionManifest}(x, ..., rows = makeManifest(...),
-  versions = data.frame(name = manifest_df(rows)$name, version =
-  NA_character_, stringsAsFactors = FALSE), replace = FALSE)
+\S4method{addPkg}{SessionManifest}(
+  x,
+  ...,
+  rows = makeManifest(...),
+  versions = data.frame(name = manifest_df(rows)$name, version = NA_character_,
+    stringsAsFactors = FALSE),
+  replace = FALSE
+)
 }
 \arguments{
 \item{x}{A manifest or manifest-associate objec tto add the pkg 2}

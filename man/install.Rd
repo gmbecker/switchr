@@ -17,20 +17,15 @@
 \usage{
 install_packages(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 
-\S4method{install_packages}{character,character}(pkgs, repos,
-  versions = NULL, verbose = FALSE, ...)
+\S4method{install_packages}{character,character}(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 
-\S4method{install_packages}{character,missing}(pkgs, repos,
-  versions = NULL, verbose = FALSE, ...)
+\S4method{install_packages}{character,missing}(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 
-\S4method{install_packages}{SessionManifest,ANY}(pkgs, repos,
-  versions = NULL, verbose = FALSE, ...)
+\S4method{install_packages}{SessionManifest,ANY}(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 
-\S4method{install_packages}{character,SessionManifest}(pkgs, repos,
-  versions = NULL, verbose = FALSE, ...)
+\S4method{install_packages}{character,SessionManifest}(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 
-\S4method{install_packages}{character,PkgManifest}(pkgs, repos,
-  versions = NULL, verbose = FALSE, ...)
+\S4method{install_packages}{character,PkgManifest}(pkgs, repos, versions = NULL, verbose = FALSE, ...)
 }
 \arguments{
 \item{pkgs}{The names of the packages to install}

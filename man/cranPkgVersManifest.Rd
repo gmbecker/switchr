@@ -4,9 +4,16 @@
 \alias{cranPkgVersManifest}
 \title{cranPkgVersManifest}
 \usage{
-cranPkgVersManifest(pkg, vers, earliest = TRUE,
-  cur_avail = available.packages(), verbose = FALSE,
-  suggests = c("direct", "none"), delay = 1, erronfail = TRUE)
+cranPkgVersManifest(
+  pkg,
+  vers,
+  earliest = TRUE,
+  cur_avail = available.packages(),
+  verbose = FALSE,
+  suggests = c("direct", "none"),
+  delay = 1,
+  erronfail = TRUE
+)
 }
 \arguments{
 \item{pkg}{The package on which to base the generated manifest}

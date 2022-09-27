@@ -4,8 +4,15 @@
 \alias{makeLibraryCtx}
 \title{makeLibraryCtx}
 \usage{
-makeLibraryCtx(name, seed = NULL, pkgs = NULL, exclude.site = TRUE,
-  contains, rvers = NULL, verbose = FALSE)
+makeLibraryCtx(
+  name,
+  seed = NULL,
+  pkgs = NULL,
+  exclude.site = TRUE,
+  contains,
+  rvers = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{name}{The name for the library}

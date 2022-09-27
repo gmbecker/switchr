@@ -47,12 +47,12 @@ Renvs= new.env()
 ##' \dontrun{
 ##' switchTo("mynewlibrary")
 ##' switchBack()
-##' 
+##'
 ##' fdman = GithubManifest("gmbecker/fastdigest")
 ##' switchTo("fastdigestlib", seed = fdman)
 ##' }
 ##' @export
-##' @references Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01 
+##' @references Becker G, Barr C, Gentleman R, Lawrence M; Enhancing Reproducibility and Collaboration via Management of R Package Cohorts. Journal of Statistical Software, 81(1). 2017. doi: 10.18637/jss.v082.i01
 ##' @docType methods
 ##' @rdname switchTo
 setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
@@ -66,10 +66,10 @@ setGeneric("switchTo", function(name, seed = NULL, reverting = FALSE,
 setMethod("switchTo", c(name = "character", seed = "character"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
                    exclude.site = TRUE, ...) {
-        
-    
+
+
     ## At this point seed is guaranteed to be a repo url
-    
+
     if(ignoreRVersion)
         rvers = NULL
     else
@@ -83,18 +83,18 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 seed = readLines(seed)
                 chtype = getStringType(seed)
             }
-            
+
             if(chtype == "sessioninfo") {
                 ## we have session info output
                 ##XXX need to make sure double use of ... is safe!
                 seed2 = makeSeedMan(parseSessionInfoString(seed))
                 sr = lazyRepo(seed2, ...)
-                
-                
+
+
                 seed = if(grepl("file://", sr)) sr else makeFileURL(sr)
                 seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
                 chtype = "repourl"
-                
+
             } else if (chtype == "manifesturl") {
                 seed = strsplit(RCurl::getURL(seed), "\n")[[1]]
                 chtype = "manifesttxt"
@@ -106,23 +106,23 @@ setMethod("switchTo", c(name = "character", seed = "character"),
                 close(con)
                 on.exit(NULL)
 
-                
+
                 sr = lazyRepo(seed2, ...)
                 seed = if(grepl("file://", sr)) sr else makeFileURL(sr)
                 seed = gsub("(/|\\\\)src(/|\\\\)contrib.*", "", seed)
-                
+
                 chtype = "repourl"
             }
-            
+
             if(grepl("(repo|contrib)", chtype)) {
                 seed = mapply(repoFromString, str = seed, type = chtype)
                 chtype = "repourl"
             }
-            
+
             if(chtype != "repourl") {
                 stop("We should have a repository by this point. This shouldn't happen. Contact the maintainers")
             }
-            
+
             cenv = makeLibraryCtx(name = name, seed = seed,
                                   exclude.site = exclude.site,  ...)
         } else {
@@ -141,7 +141,7 @@ repoFromString = function(str, type) {
            repourl = str,
            contriburl = gsub("/(src|bin/windows|bin/macosx|bin/macos).*", "", str))
 }
-           
+
 
 ##' @rdname switchTo
 ##' @aliases switchTo,character,SwitchrCtx
@@ -149,7 +149,7 @@ repoFromString = function(str, type) {
 setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
                    exclude.site= TRUE, ...) {
-              
+
               if(ignoreRVersion)
                   rvers = NULL
               else
@@ -162,7 +162,7 @@ setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
               cenv = makeLibraryCtx(name = name, seed = NULL,
                   exclude.site = seed@exclude.site,
                   ...)
-              
+
               ## copy existing library contents to the new one
               dirs = list.dirs(file.path(switchrBaseDir(), seed@name), recursive = FALSE)
 
@@ -179,7 +179,7 @@ setMethod("switchTo", c(name = "character", seed= "SwitchrCtx"),
 setMethod("switchTo", c("character", "missing"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
                    exclude.site = TRUE, ...) {
-              
+
     if(ignoreRVersion)
         rvers = NULL
     else
@@ -207,7 +207,7 @@ getStringType = function(str) {
         return("sessioninfo")
     if(grepl("^# R manifest", str[1]))
         return("manifesttxt")
-    
+
     if(length(str) > 1) {
         ret = unique(sapply(str, getStringType))
         if(length(ret)  > 1)
@@ -215,13 +215,13 @@ getStringType = function(str) {
         return(ret)
     }
 
-    
+
     if(grepl("file://", str)) {
         isfilurl = TRUE
         str = fileFromFileURL(str)
     } else
         isfilurl = FALSE
-    
+
     if(file.exists(str)) {
         if( !file.exists(file.path(str, ".")))
             ret = "file"
@@ -233,7 +233,7 @@ getStringType = function(str) {
                 ret = "repodir"
             else
                 ret = "manifestdir"
-            
+
         }
         if(!is.null(ret)) {
             if(ret != "file" && isfilurl)
@@ -243,7 +243,7 @@ getStringType = function(str) {
     } else if (isfilurl) { # file doesn't exist, but its a file url
         stop("file urls to non-existent files are not allowed as seeds/repos")
     }
-                                     
+
     ## gist urls have a weird thing where if you put *any* valid url
     ## after a gist raw link that works you get the same contents
     ## rather than 404, so the check for PACKAGES.gz isn't safe
@@ -256,15 +256,17 @@ getStringType = function(str) {
 
     ## https://www.stats.ox.ac.uk/pub/RWin/garbage redirects to the oxford stats homepage,
     ## thus "succeeds"
-    
+
     if (grepl("(cran|cloud.r-project.org)", str, ignore.case=TRUE) ||
-        url.exists(paste0(str, "/src/contrib/PACKAGES.gz")))       
+        url.exists(paste0(str, "/src/contrib/PACKAGES.gz")) ||
+        url.exists(paste0(str, "/src/contrib/PACKAGES")))
       return("repourl")
-    else if(url.exists(paste0(str, "/PACKAGES.gz")))
+    else if(url.exists(paste0(str, "/PACKAGES.gz")) ||
+            url.exists(paste0(str, "/PACKAGES")))
         return("contriburl")
     else if (url.exists(str))
         return("manifesturl")
-    
+
     stop("Unidentifiable string:", str)
 }
 
@@ -285,7 +287,7 @@ setMethod("switchTo", c(name = "SwitchrCtx", seed = "ANY"),
             flushSession()
 
         .libPaths2(library_paths(name), name@exclude.site)
-        
+
          if(!reverting) {
 #            attachedPkgs(Renvs$stack[[length(Renvs$stack)]]) = atched
              Renvs$stack = c(name, Renvs$stack)
@@ -311,7 +313,7 @@ setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, s
     if(missing(name)) {
         name = seed@default_name
     }
-        
+
     switchTo(seed = seed@repos, name = name, pkgs = seed@pkgs,
              exclude.site = exclude.site, ...)
 })
@@ -323,7 +325,7 @@ setMethod("switchTo", c(name = "character", seed="RepoSubset"), function(name, s
 setMethod("switchTo", c("character", seed = "PkgManifest"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
                    exclude.site = TRUE, ...) {
-    
+
     if(ignoreRVersion)
         rvers = NULL
     else
@@ -339,7 +341,7 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
     ## oldlp = .libPaths()
     ## .libPaths2(library_paths(cenv), cenv@exclude.site)
     ## on.exit(.libPaths2(oldlp))
-    
+
     ## install_packages(manifest_df(seed)$name, seed, lib = library_paths(cenv)[1])
     ## cenv = update_pkgs_list(cenv)
     ## .libPaths2(oldlp)
@@ -354,7 +356,7 @@ setMethod("switchTo", c("character", seed = "PkgManifest"),
 setMethod("switchTo", c("character", seed = "SessionManifest"),
           function(name, seed, reverting = FALSE, ignoreRVersion = FALSE,
                    exclude.site = TRUE, ...) {
-              
+
     if(ignoreRVersion)
         rvers = NULL
     else
@@ -367,9 +369,9 @@ setMethod("switchTo", c("character", seed = "SessionManifest"),
     cenv = makeLibraryCtx(name = name, seed = seed, #NULL,
                           exclude.site = exclude.site,
                           ...)
-    
-    
-    
+
+
+
 #    install_packages(pkgs = seed, lib = library_paths(cenv)[1])
     cenv = update_pkgs_list(cenv)
     switchTo(cenv)
@@ -428,7 +430,7 @@ switchBack = function() {
 ##' Display the computing environment currently in use. If switchTo has not been
 ##' called, a new SwitchrCtx object describing the current environment is
 ##' created.
-##' @export   
+##' @export
 currentCompEnv = function() {
             if(is.null(Renvs$stack)) {
                 lp = .libPaths()
@@ -458,7 +460,7 @@ currentCompEnv = function() {
     fun = .libPaths
     lst = list()
     lst$.Library.site = if(exclude.site) character() else .Library.site
-    
+
     environment(fun) = list2env(lst,
                    parent = environment(.libPaths))
     fun(fulllp)

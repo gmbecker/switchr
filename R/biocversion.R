@@ -71,6 +71,10 @@ getBiocvrFromRvr = function(yaml  = getBiocYaml(), Rvers, first = TRUE) {
     mylines = getMultilineYamlField(yaml, "r_ver_for_bioc_ver")
     mymatty = do.call(rbind, strsplit(mylines, ":"))
     matches = which(mymatty[,2] == Rvers)
+    if(all(is.na(matches))) {
+        return(getBiocDevelVr())
+    }
+    
     if(first)
         row = min(matches)
     else

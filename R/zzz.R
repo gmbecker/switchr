@@ -4,29 +4,38 @@
 
     delayedAssign("BiocRelease", tryCatch(BiocVers(getBiocReleaseVr()),
                                           error = function(x) {
-                                     
-                                     .domessage("Unable to populate the Bi ocRelease object")
-                                     NULL
+                                       NULL
                                  }),
                   eval.env = ns,
                   assign.env = ns)
-    delayedAssign("develVers",  getBiocDevelVr(),
-                  assign.env = ns)
-    
-    delayedAssign("BiocDevel", tryCatch(BiocVers(getBiocDevelVr()),
+    delayedAssign("develVers",  tryCatch(getBiocDevelVr(),
                                         error = function(x) {
-                                   .domessage("Unable to populate the BiocDevel object")
                                    NULL
                                }
                                    ), eval.env = ns,
                   assign.env = ns)
-    delayedAssign("getBiocYaml", doyamlsetup(),
+
+    delayedAssign("BiocDevel", tryCatch(BiocVers(getBiocDevelVr()),
+                                        error = function(x) {
+                                   NULL
+                               }
+                                   ), eval.env = ns,
+                  assign.env = ns)
+    delayedAssign("getBiocYaml",  tryCatch(doyamlsetup(),
+                                        error = function(x) {
+                                   NULL
+                               }
+                                   ), eval.env = ns,
                   assign.env = ns)
 
-    delayedAssign("defaultBiocRepos", getBiocReposFromRVers(), 
+    delayedAssign("defaultBiocRepos", tryCatch(getBiocReposFromRVers(),
+                                        error = function(x) {
+                                   NULL
+                               }
+                                   ), eval.env = ns,
                   assign.env = ns)
 
-    
+
     namespaceExport(ns, c("BiocRelease", "BiocDevel"))
 }
 

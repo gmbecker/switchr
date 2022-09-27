@@ -5,8 +5,12 @@
 \alias{PkgManifest-class}
 \title{PkgManifest}
 \usage{
-PkgManifest(manifest = ManifestRow(...), dep_repos = defaultRepos(),
-  ..., dl_method)
+PkgManifest(
+  manifest = ManifestRow(...),
+  dep_repos = defaultRepos(),
+  ...,
+  dl_method
+)
 }
 \arguments{
 \item{manifest}{The manifest (data.frame) of packages and their locations}

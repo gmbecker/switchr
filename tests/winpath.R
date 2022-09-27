@@ -15,7 +15,7 @@ checkUrlRoundtrip = function(pth) {
 checkUrlRoundtrip(getwd())
 checkUrlRoundtrip(tempdir())
 if(switchr:::isWindows())
-    checkUrlRoundtrip("\\\\laptop\\My Documents\\")
+    checkUrlRoundtrip("\\\\localhost\\c$")
 
 ## regreossion test to ensure that package dependencies
 ## are added to the dontunload list when a package
@@ -94,12 +94,12 @@ test_ghupdate_dirty = function() {
         message("skipping github update test due to connectivity issues")
         return(TRUE)
     }
- 
+
     oldwd = getwd()
     on.exit(setwd(oldwd))
     setwd(pkgdir)
     oldD = readLines(dfile)
-    
+
     writeLines("lol", con = dfile)
     newD = readLines(dfile)
     upd1 = switchr:::updateGit(pkgdir, ghsource, param)
@@ -107,7 +107,7 @@ test_ghupdate_dirty = function() {
     if(newD != newD2)
         stop( "Local changes not preserved during updateGit call from within correct branch")
     system("git checkout -f DESCRIPTION")
-    
+
     TRUE
 }
 
@@ -124,7 +124,7 @@ test_ghupdate_branch = function() {
     oldwd = setwd(pkgdir)
     on.exit(setwd(oldwd))
     system2("git", args = c("checkout master"))
-    
+
     upd2 = switchr:::updateGit(pkgdir, ghsourcebr, param)
     if(!upd2)
         stop("Update of source checkout when currently on different branch failed")
@@ -137,21 +137,21 @@ test_ghupdate_branch = function() {
     system("git checkout -f DESCRIPTION")
     TRUE
 }
-    
 
-        
-        
-if(switchr:::haveGit()) {    
+
+
+
+if(switchr:::haveGit()) {
     ## with clean/non-existent directory
     test_ghupdate_dirty()
-    
+
     ## updating existing directory
     test_ghupdate_dirty()
 
     test_ghupdate_branch()
 
 }
-    
+
 
 
 
@@ -166,7 +166,7 @@ if(switchr:::haveGit()) {
 ##     biocman2 <- BiocSVNManifest(software_only=FALSE)
 ##     if(nrow(manifest_df(biocman)) >= nrow(manifest_df(biocman2)) - 100) #at time of writing there are ~300 experimental data packages
 ##         stop("BiocSVNManifest does not appear to have including experimental data packages properly")
-    
+
 ##     TRUE
 ## }
 
@@ -179,13 +179,13 @@ if(switchr:::haveGit()) {
 ##     pkgdir2 = normalizePath2(file.path(dir, "Biobase"), mustWork = FALSE)
 ##     unlink(pkgdir2, recursive=TRUE)
 ##     dfile2 = file.path(pkgdir2, "DESCRIPTION")
-    
+
 ##     svnsrc = switchr:::sourceFromManifest("Biobase", biocman)
 ##     res = makePkgDir("Biobase", svnsrc, dir, FALSE)
 ##     if(!file.exists(dfile2))
 ##         stop("SVN checkout test does not appear to have worked")
 ## }
-        
+
 ## if(switchr:::haveSVN() && !is(biocman, "error") && nrow(biocman) > 0) {
 ##     test_svncheckout()
 ## }
@@ -205,21 +205,21 @@ if(switchr:::haveGit()) {
 ##     deps4 = switchr:::.grabdeps(avl["switchr", , drop=FALSE], TRUE)
 ##  #   if(!identical(deps, deps3) || !identical(deps2, deps4))
 ##   #      stop(".grabdeps did not give the same behavior for consuming available pkgs matrix and description file")
-        
+
 ##     TRUE
-    
+
 ## }
 
 #test_.grabdeps()
 
-    
+
 ## Test replace argument to addPkg
 
 test_addReplace = function() {
 
     man = makeManifest(name = c("switchr", "ggplot2"),
                    type="cran")
-    
+
     man2 = addPkg(man,
                   name = "fastdigest",
                   url = "http://github.com/gmbecker/fastdigest",
@@ -243,13 +243,13 @@ test_addReplace = function() {
                   url = "fake",
                   replace=TRUE)
     man4df = manifest_df(man4)
-    
+
     if(nrow(man4) != 4 ||
        man4df$url[man4df$name == "fastdigest"] != "fake")
         stop("Replace argument in addPkgs failed with mixed replace and new rows")
-       
+
     TRUE
-       
+
 }
 
 test_addReplace()

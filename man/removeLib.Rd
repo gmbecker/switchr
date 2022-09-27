@@ -4,8 +4,7 @@
 \alias{removeLib}
 \title{removeLib}
 \usage{
-removeLib(name = NULL, repos = NULL, compEnv = NULL,
-  fromStack = FALSE)
+removeLib(name = NULL, repos = NULL, compEnv = NULL, fromStack = FALSE)
 }
 \arguments{
 \item{name}{The name of the switchr library to remove}

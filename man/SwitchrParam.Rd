@@ -6,9 +6,14 @@
 \alias{SwitchrParam}
 \title{SwitchrParam}
 \usage{
-SwitchrParam(logfun = function(...) NULL, shell_init = character(),
-  archive_timing = 2, archive_retries = 2, dl_method,
-  shell_timing = 1)
+SwitchrParam(
+  logfun = function(...) NULL,
+  shell_init = character(),
+  archive_timing = 2,
+  archive_retries = 2,
+  dl_method,
+  shell_timing = 1
+)
 }
 \arguments{
 \item{logfun}{The function to be called to write to logs}

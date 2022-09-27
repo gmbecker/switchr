@@ -21,32 +21,86 @@
 \alias{makePkgDir,ANY,LocalSource}
 \title{makePkgDir}
 \usage{
-makePkgDir(name, source, path, latest_only, param = SwitchrParam(),
-  forceRefresh = FALSE)
+makePkgDir(
+  name,
+  source,
+  path,
+  latest_only,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,SVNSource}(name, source, path,
-  latest_only = FALSE, param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,SVNSource}(
+  name,
+  source,
+  path,
+  latest_only = FALSE,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,GithubSource}(name, source, path,
-  latest_only = FALSE, param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,GithubSource}(
+  name,
+  source,
+  path,
+  latest_only = FALSE,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,GitSource}(name, source, path,
-  latest_only = FALSE, param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,GitSource}(
+  name,
+  source,
+  path,
+  latest_only = FALSE,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,ANY}(name, source, path, latest_only,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,ANY}(
+  name,
+  source,
+  path,
+  latest_only,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,CRANSource}(name, source, path, latest_only,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,CRANSource}(
+  name,
+  source,
+  path,
+  latest_only,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,BiocSource}(name, source, path, latest_only,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,BiocSource}(
+  name,
+  source,
+  path,
+  latest_only,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,TarballSource}(name, source, path, latest_only,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,TarballSource}(
+  name,
+  source,
+  path,
+  latest_only,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 
-\S4method{makePkgDir}{ANY,LocalSource}(name, source, path, latest_only,
-  param = SwitchrParam(), forceRefresh = FALSE)
+\S4method{makePkgDir}{ANY,LocalSource}(
+  name,
+  source,
+  path,
+  latest_only,
+  param = SwitchrParam(),
+  forceRefresh = FALSE
+)
 }
 \arguments{
 \item{name}{The package}

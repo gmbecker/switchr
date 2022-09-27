@@ -4,10 +4,15 @@
 \alias{makePkgCheckout}
 \title{Create a checkout of a package and all it's dependencies from a manifest}
 \usage{
-makePkgCheckout(pkgs, pkg_manifest, dir, get_suggests = c("none",
-  "first", "all"), param = SwitchrParam(),
+makePkgCheckout(
+  pkgs,
+  pkg_manifest,
+  dir,
+  get_suggests = c("none", "first", "all"),
+  param = SwitchrParam(),
   scm_auths = list(bioconductor = c("readonly", "readonly")),
-  repos = defaultRepos())
+  repos = defaultRepos()
+)
 }
 \arguments{
 \item{pkgs}{character - The packages you will be working on}

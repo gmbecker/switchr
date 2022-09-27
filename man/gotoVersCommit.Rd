@@ -15,17 +15,13 @@
 \usage{
 gotoVersCommit(dir, src, version, param = SwitchrParam())
 
-\S4method{gotoVersCommit}{character,SVNSource}(dir, src, version,
-  param = SwitchrParam())
+\S4method{gotoVersCommit}{character,SVNSource}(dir, src, version, param = SwitchrParam())
 
-\S4method{gotoVersCommit}{character,CRANSource}(dir, src, version,
-  param = SwitchrParam())
+\S4method{gotoVersCommit}{character,CRANSource}(dir, src, version, param = SwitchrParam())
 
-\S4method{gotoVersCommit}{character,BiocSource}(dir, src, version,
-  param = SwitchrParam())
+\S4method{gotoVersCommit}{character,BiocSource}(dir, src, version, param = SwitchrParam())
 
-\S4method{gotoVersCommit}{character,GitSource}(dir, src, version,
-  param = SwitchrParam())
+\S4method{gotoVersCommit}{character,GitSource}(dir, src, version, param = SwitchrParam())
 }
 \arguments{
 \item{dir}{Directory}

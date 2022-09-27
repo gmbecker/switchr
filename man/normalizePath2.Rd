@@ -4,8 +4,7 @@
 \alias{normalizePath2}
 \title{normalizePath2}
 \usage{
-normalizePath2(path, follow.symlinks = FALSE, winslash = "\\\\",
-  mustWork = NA)
+normalizePath2(path, follow.symlinks = FALSE, winslash = "\\\\", mustWork = NA)
 }
 \arguments{
 \item{path}{The path to normalize}

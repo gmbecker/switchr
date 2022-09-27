@@ -4,8 +4,14 @@
 \alias{locatePkgVersion}
 \title{locatePkgVersion}
 \usage{
-locatePkgVersion(name, version, pkg_manifest, param = SwitchrParam(),
-  dir = notrack(repo), repo = NULL)
+locatePkgVersion(
+  name,
+  version,
+  pkg_manifest,
+  param = SwitchrParam(),
+  dir = notrack(repo),
+  repo = NULL
+)
 }
 \arguments{
 \item{name}{package name}

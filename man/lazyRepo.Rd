@@ -13,35 +13,70 @@
 \alias{lazyRepo,character,PkgManifest}
 \title{lazyRepo}
 \usage{
-lazyRepo(pkgs, pkg_manifest, versions = rep(NA, times = length(pkgs)),
-  dir = tempdir(), rep_path = file.path(dir, "repo"),
-  get_suggests = FALSE, verbose = FALSE,
+lazyRepo(
+  pkgs,
+  pkg_manifest,
+  versions = rep(NA, times = length(pkgs)),
+  dir = tempdir(),
+  rep_path = file.path(dir, "repo"),
+  get_suggests = FALSE,
+  verbose = FALSE,
   scm_auths = list(bioconductor = c("readonly", "readonly")),
-  param = SwitchrParam(), force_refresh = FALSE)
+  param = SwitchrParam(),
+  force_refresh = FALSE
+)
 
-\S4method{lazyRepo}{SessionManifest,ANY}(pkgs, pkg_manifest,
-  versions = rep(NA, times = length(pkgs)), dir = tempdir(),
-  rep_path = file.path(dir, "repo"), get_suggests = FALSE,
-  verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
+\S4method{lazyRepo}{SessionManifest,ANY}(
+  pkgs,
+  pkg_manifest,
+  versions = rep(NA, times = length(pkgs)),
+  dir = tempdir(),
+  rep_path = file.path(dir, "repo"),
+  get_suggests = FALSE,
+  verbose = FALSE,
+  scm_auths = list(bioconductor = c("readonly", "readonly")),
+  param = SwitchrParam(),
+  force_refresh = FALSE
+)
 
-\S4method{lazyRepo}{PkgManifest,ANY}(pkgs, pkg_manifest,
-  versions = rep(NA, times = length(pkgs)), dir = tempdir(),
-  rep_path = file.path(dir, "repo"), get_suggests = FALSE,
-  verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
+\S4method{lazyRepo}{PkgManifest,ANY}(
+  pkgs,
+  pkg_manifest,
+  versions = rep(NA, times = length(pkgs)),
+  dir = tempdir(),
+  rep_path = file.path(dir, "repo"),
+  get_suggests = FALSE,
+  verbose = FALSE,
+  scm_auths = list(bioconductor = c("readonly", "readonly")),
+  param = SwitchrParam(),
+  force_refresh = FALSE
+)
 
-\S4method{lazyRepo}{character,SessionManifest}(pkgs, pkg_manifest,
-  versions = rep(NA, times = length(pkgs)), dir = tempdir(),
-  rep_path = file.path(dir, "repo"), get_suggests = FALSE,
-  verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
+\S4method{lazyRepo}{character,SessionManifest}(
+  pkgs,
+  pkg_manifest,
+  versions = rep(NA, times = length(pkgs)),
+  dir = tempdir(),
+  rep_path = file.path(dir, "repo"),
+  get_suggests = FALSE,
+  verbose = FALSE,
+  scm_auths = list(bioconductor = c("readonly", "readonly")),
+  param = SwitchrParam(),
+  force_refresh = FALSE
+)
 
-\S4method{lazyRepo}{character,PkgManifest}(pkgs, pkg_manifest,
-  versions = rep(NA, times = length(pkgs)), dir = tempdir(),
-  rep_path = file.path(dir, "repo"), get_suggests = FALSE,
-  verbose = FALSE, scm_auths = list(bioconductor = c("readonly",
-  "readonly")), param = SwitchrParam(), force_refresh = FALSE)
+\S4method{lazyRepo}{character,PkgManifest}(
+  pkgs,
+  pkg_manifest,
+  versions = rep(NA, times = length(pkgs)),
+  dir = tempdir(),
+  rep_path = file.path(dir, "repo"),
+  get_suggests = FALSE,
+  verbose = FALSE,
+  scm_auths = list(bioconductor = c("readonly", "readonly")),
+  param = SwitchrParam(),
+  force_refresh = FALSE
+)
 }
 \arguments{
 \item{pkgs}{The packages to install}

@@ -11,21 +11,37 @@
 \alias{libManifest,SwitchrCtx}
 \title{libManifest}
 \usage{
-libManifest(lib = currentCompEnv(), record_versions = TRUE,
+libManifest(
+  lib = currentCompEnv(),
+  record_versions = TRUE,
   known_manifest = makeManifest(dep_repos = repos),
-  repos = defaultRepos(), ...)
+  repos = defaultRepos(),
+  ...
+)
 
-\S4method{libManifest}{missing}(lib = currentCompEnv(),
-  record_versions = TRUE, known_manifest = makeManifest(dep_repos =
-  repos), repos = defaultRepos(), ...)
+\S4method{libManifest}{missing}(
+  lib = currentCompEnv(),
+  record_versions = TRUE,
+  known_manifest = makeManifest(dep_repos = repos),
+  repos = defaultRepos(),
+  ...
+)
 
-\S4method{libManifest}{character}(lib = currentCompEnv(),
-  record_versions = TRUE, known_manifest = makeManifest(dep_repos =
-  repos), repos = defaultRepos(), ...)
+\S4method{libManifest}{character}(
+  lib = currentCompEnv(),
+  record_versions = TRUE,
+  known_manifest = makeManifest(dep_repos = repos),
+  repos = defaultRepos(),
+  ...
+)
 
-\S4method{libManifest}{SwitchrCtx}(lib = currentCompEnv(),
-  record_versions = TRUE, known_manifest = makeManifest(dep_repos =
-  repos), repos = defaultRepos(), ...)
+\S4method{libManifest}{SwitchrCtx}(
+  lib = currentCompEnv(),
+  record_versions = TRUE,
+  known_manifest = makeManifest(dep_repos = repos),
+  repos = defaultRepos(),
+  ...
+)
 }
 \arguments{
 \item{lib}{A SwitchrCtx object, or the name of a switchr library. Defaults
@@ -54,8 +70,19 @@ base packages, as they are part of R and not installable in the
 traditional sense.
 }
 \examples{
+\dontshow{
+intr <- interactive()
+if(!intr){
+oldlp <- .libPaths()
+.libPaths(tail(oldlp, 1))
+}
+}
 man = libManifest()
 man
+\dontshow{
+if(!intr)
+  .libPaths(oldlp)
+}
 \dontrun{
 man2 = libManifest("myotherlib")
 man2

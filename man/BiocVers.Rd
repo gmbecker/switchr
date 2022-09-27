@@ -4,8 +4,11 @@
 \alias{BiocVers}
 \title{BiocVers}
 \usage{
-BiocVers(version = getBiocReleaseVr(), name = paste("BioC", version,
-  sep = "_"), repos = biocReposForVers(version))
+BiocVers(
+  version = getBiocReleaseVr(),
+  name = paste("BioC", version, sep = "_"),
+  repos = biocReposForVers(version)
+)
 }
 \arguments{
 \item{version}{The version of Bioconductor}

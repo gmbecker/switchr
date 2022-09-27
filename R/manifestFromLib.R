@@ -11,7 +11,7 @@
 ##' @param repos A vector of traditional package repositories. Used when imputing
 ##' location information for packages not installed via
 ##' \code{\link{install_packages}}
-##' 
+##'
 ##' @param \dots currently unused
 ##' @docType methods
 ##' @rdname libManifest
@@ -19,8 +19,19 @@
 ##' base packages, as they are part of R and not installable in the
 ##' traditional sense.
 ##' @examples
+##' \dontshow{
+##' intr <- interactive()
+##' if(!intr){
+##' oldlp <- .libPaths()
+##' .libPaths(tail(oldlp, 1))
+##' }
+##' }
 ##' man = libManifest()
 ##' man
+##' \dontshow{
+##' if(!intr)
+##'   .libPaths(oldlp)
+##' }
 ##' \dontrun{
 ##' man2 = libManifest("myotherlib")
 ##' man2
@@ -90,8 +101,8 @@ setMethod("libManifest", "SwitchrCtx",
               instpkgs = installed.packages(libp,
                                             noCache=TRUE)[,"Package"]
               instpkgs = instpkgs[!duplicated(instpkgs)]
-              instpkgs = instpkgs[!instpkgs %in% basepkgs] 
-              
+              instpkgs = instpkgs[!instpkgs %in% basepkgs]
+
               res = lapply(instpkgs,
                   function(x, fields) {
                       dcf =  tryCatch(read.dcf(system.file("DESCRIPTION",
@@ -163,7 +174,7 @@ setMethod("libManifest", "SwitchrCtx",
     manifest_df(manifest) = df
     manifest
 }
-           
+
 .findIt = function(pkg, repos, avl = available.packages(contrib.url(repos))) {
     if(pkg == "switchr") {
         ret = ManifestRow(name = pkg,
@@ -171,7 +182,7 @@ setMethod("libManifest", "SwitchrCtx",
             branch = "master")
         return(ret)
     } else
-            
+
         ret = ManifestRow(name = pkg)
     avl = as.data.frame(avl,
         stringsAsFactors = FALSE)
@@ -180,7 +191,7 @@ setMethod("libManifest", "SwitchrCtx",
         ret$type = .detectType(ret$url)
         ret$branch = "trunk"
     }
-        
+
     ret
 }
 
@@ -233,13 +244,13 @@ setMethod("makeSeedMan", "sessionInfo", function(x, known_manifest = PkgManifest
 ##' @rdname makeSeedMan
 ##' @aliases makeSeedMan,parsedSessionInfo
 setMethod("makeSeedMan", "parsedSessionInfo", function(x, known_manifest = PkgManifest(), ...) {
-   
+
     sinfopkginfo = rbind(x@attached, x@loaded)
     sinfopkginfo = sinfopkginfo[!sinfopkginfo[,"Package"] %in% basepkgs,]
     sinfopkginfo = as.data.frame(sinfopkginfo, stringsAsFactors = FALSE)
     names(sinfopkginfo) = c("name", "version")
     makeSeedMan(sinfopkginfo, known_manifest = known_manifest, ...)
-    
+
 
 
 })
@@ -250,11 +261,11 @@ setMethod("makeSeedMan", "data.frame", function(x, known_manifest = PkgManifest(
     ensureCRANmirror(1L)
     stopifnot(all(c("name", "version") %in% names(x)))
 
-    x = x[!(x$name %in% basepkgs),] 
-    
+    x = x[!(x$name %in% basepkgs),]
+
     mani = PkgManifest(name = x[,"name"],
                        dep_repos  = dep_repos(known_manifest))
-    
+
     haveany = nrow(manifest_df(mani)) > 0
     if(haveany)
         mani = .findThem(mani, known_manifest)

@@ -4,7 +4,9 @@
 \name{switchDeps}
 \alias{switchDeps}
 \title{switchrDeps}
-\format{An object of class \code{character} of length 20.}
+\format{
+An object of class \code{character} of length 20.
+}
 \usage{
 switchDeps
 }

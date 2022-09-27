@@ -1,5 +1,5 @@
 
-                  
+
 
 
 emptyManifest = data.frame(name = character(),
@@ -11,13 +11,13 @@ emptyManifest = data.frame(name = character(),
     extra = character(),
     stringsAsFactors = FALSE
     )
-    
+
 
 ##'ManifestRow
 ##'
 ##' Create one or more rows of a manifest data.frame
 ##'
-##' @param name name of the package. 
+##' @param name name of the package.
 ##' @param url location of the package sources
 ##' @param type type of location (svn, git, local, etc)
 ##' @param branch name of the branch to use to build the package
@@ -39,9 +39,9 @@ ManifestRow = function(name,
 
     if(missing(name) || length(name) == 0)
         return(emptyManifest)
-    if( is.na(type) && !is.na(url))
-        type = .inferType(url)
-    if(is.na(branch) && !is.na(type))
+    if( any(nd_type_infer <- is.na(type) & !is.na(url)))
+        type[nd_type_infer] = .inferType(url[nd_type_infer])
+    if(any(is.na(branch) & !is.na(type)))
         branch = .inferDefaultBranch(branch, type)
     data.frame(name = name, url = url, type = type,
            branch = branch, subdir = subdir, extra = extra,
@@ -52,7 +52,7 @@ ManifestRow = function(name,
 
 
 ##' Manifest constructor
-##' 
+##'
 ##' Create a package manifest
 ##' @param ... Vectors containing package information. Passed to \code{\link{ManifestRow}}
 ##' @param dep_repos The dependency repos for the package.
@@ -87,7 +87,7 @@ makeManifest = function(..., dep_repos = defaultRepos()) {
 ##' ghman = GithubManifest("gmbecker/switchr", "hadley/devtools")
 ##' ghman
 ##'
-##' 
+##'
 ##' @export
 GithubManifest = function( ..., pkgrepos) {
 
@@ -104,15 +104,15 @@ GithubManifest = function( ..., pkgrepos) {
         inds = nchar(vecnms) > 0
         nms[inds] = vecnms[inds]
     }
-        
+
     res = makeManifest(url = sapply(args, const_git_url), subdir = vec_get(args, "subdir"),
              type = "git", branch = vec_get(args, "ref"), name = nms)
     as(res, "GithubPkgManifest")
 }
- 
 
 
-        
+
+
 gitregex = "^(git:.*|http{0,1}://(www.){0,1}(github|bitbucket)\\.com.*|.*\\.git)$"
 
 vec_get = function(lst, ind)
@@ -128,12 +128,17 @@ vec_get = function(lst, ind)
 }
 
 .inferDefaultBranch= function(branch, type) {
-    switch(type,
-           git = "master",
-           svn = "trunk",
-           NA_character_)
+    na_brchs <- is.na(branch)
+    branch[na_brchs] <- vapply(type[na_brchs],
+                               function(tp) {
+        switch(tp,
+               git = "master",
+               svn = "trunk",
+               NA_character_)
+    }, "")
+    branch
 }
-           
+
 
 const_git_url = function(args) {
     ret = "http://github.com/"
@@ -173,7 +178,7 @@ parse_git_repo <- function(path) {
         params$subdir = "."
 
     params <- params[sapply(params, nchar) > 0]
-  
+
     params
 }
 

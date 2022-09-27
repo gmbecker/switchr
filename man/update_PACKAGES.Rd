@@ -4,10 +4,20 @@
 \alias{update_PACKAGES}
 \title{update existing package repository}
 \usage{
-update_PACKAGES(dir = ".", fields = NULL, type = c("source",
-  "mac.binary", "win.binary"), verbose = dryrun, unpacked = FALSE,
-  subdirs = FALSE, latestOnly = TRUE, addFiles = FALSE,
-  strict = TRUE, dryrun = FALSE, logfun = message, ...)
+update_PACKAGES(
+  dir = ".",
+  fields = NULL,
+  type = c("source", "mac.binary", "win.binary"),
+  verbose = dryrun,
+  unpacked = FALSE,
+  subdirs = FALSE,
+  latestOnly = TRUE,
+  addFiles = FALSE,
+  strict = TRUE,
+  dryrun = FALSE,
+  logfun = message,
+  ...
+)
 }
 \arguments{
 \item{dir}{See \code{write_PACKAGES}}

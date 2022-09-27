@@ -15,17 +15,13 @@
 \usage{
 publishManifest(manifest, dest = "./pkg_manifest.rman", ...)
 
-\S4method{publishManifest}{PkgManifest,character}(manifest,
-  dest = "./pkg_manifest.rman", ...)
+\S4method{publishManifest}{PkgManifest,character}(manifest, dest = "./pkg_manifest.rman", ...)
 
-\S4method{publishManifest}{SessionManifest,character}(manifest,
-  dest = "./pkg_manifest.rman", ...)
+\S4method{publishManifest}{SessionManifest,character}(manifest, dest = "./pkg_manifest.rman", ...)
 
-\S4method{publishManifest}{missing,ANY}(manifest,
-  dest = "./pkg_manifest.rman", ...)
+\S4method{publishManifest}{missing,ANY}(manifest, dest = "./pkg_manifest.rman", ...)
 
-\S4method{publishManifest}{SwitchrCtx,ANY}(manifest,
-  dest = "./pkg_manifest.rman", ...)
+\S4method{publishManifest}{SwitchrCtx,ANY}(manifest, dest = "./pkg_manifest.rman", ...)
 }
 \arguments{
 \item{manifest}{The object to save as a serialized package or session
