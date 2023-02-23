@@ -39,21 +39,21 @@ Bugfixes
 	* Reordered NEWS to be most-recent-first
 
 
-Changes to version 0.9.27 (2016-02-09)
+Changes in version 0.9.27 (2016-02-09)
 -------------------------
 
 Minor API changes
-        * export .libPaths2
+    * export .libPaths2
 
 
-Changes to version 0.9.26 (2016-02-09)
+Changes in version 0.9.26 (2016-02-09)
 -------------------------
 
 Bugfixes
 	* fix bug in updateSVN when user/password are not specified
 
 
-Changes to version 0.9.25 (2015-11-17)
+Changes in version 0.9.25 (2015-11-17)
 -------------------------
 
 Bugfixes
@@ -63,7 +63,7 @@ Bugfixes
 	* Make download method defaults more robust (on systems without wget)
 
 
-Changes to version 0.9.23 (2015-11-17)
+Changes in version 0.9.23 (2015-11-17)
 -------------------------
 
 Bugfixes
@@ -72,7 +72,7 @@ Bugfixes
 	* Fix code in findSVNRev to use new system_w_init api
 
 
-Changes to version 0.9.21 (2015-10-20)
+Changes in version 0.9.21 (2015-10-20)
 -------------------------
 
 API Changes
@@ -93,10 +93,10 @@ Miscellaneous
 	  BiocSVNManifest
 
 
-Changes to version 0.9.19 (2015-08-16)
+Changes in version 0.9.19 (2015-08-16)
 -------------------------
 
-Minor API changes
+API changes
         * makeManifest() constructor now normalizes path for local packages in
 	  manifest
 
@@ -104,7 +104,7 @@ Miscellaneous
 	* disable git-based tests on build systems that don't have git installed
 
 
-Changes to version 0.9.18 (2015-04-08)
+Changes in version 0.9.18 (2015-04-08)
 -------------------------
 
 Bugfixes
@@ -112,18 +112,18 @@ Bugfixes
 	* fix documentation
 
 
-Changes to version 0.9.17 (2015-07-29)
+Changes in version 0.9.17 (2015-07-29)
 -------------------------
 
 Bugfixes
 	* fix problems related to git checkouts that were breaking tests (and
 	  functionality) in Windows
 
-Minor API Changes
+API Changes
         * Add mustWork argument to normalizePath2, passthrough on Windows
 
 
-Changes to version 0.9.16 (2015-07-28)
+Changes in version 0.9.16 (2015-07-28)
 -------------------------
 
 API Changes
@@ -135,7 +135,7 @@ Bugfixes
 	* fix typo in git command
 	* findPkgDir no longer takes a repo argument, which was unused.
 
-Changes to version 0.9.14 (2015-07-16)
+Changes in version 0.9.14 (2015-07-16)
 -------------------------
 
 Bugfixes
@@ -190,7 +190,7 @@ Bugfixes
 Changes in version 0.9.8
 ------------------
 
-Minor API changes
+API changes
   * SessionManifest now defaults to defining a cohort of 0 specified package
     versions on top of the specified package manifest
   * Added head and tail methods for PkgManifest and SessionManifest objects

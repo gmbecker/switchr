@@ -22,7 +22,7 @@ if(switchr:::isWindows())
 ## is specified
 bef = switchrDontUnload()
 af = switchrDontUnload("knitr")
-stopifnot(all(c("stringr", "stringi", "magrittr") %in% af))
+stopifnot(all(tools::package_dependencies("knitr", recursive = TRUE)[[1]] %in% af))
 
 
 ## regression test for unnecessary (and expensive)

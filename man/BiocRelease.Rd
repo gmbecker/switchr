@@ -5,7 +5,7 @@
 \alias{BiocRelease}
 \title{BiocRelease}
 \format{
-An object of class \code{NULL} of length 0.
+An object of class \code{RepoSubset} of length 1.
 }
 \usage{
 BiocRelease
