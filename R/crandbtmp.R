@@ -183,7 +183,7 @@ buildTarURLs = function(pkgvers, avail) {
     iscurrent[stillthere[currentpkgs]] = TRUE
 
     baseurl = ifelse(iscurrent, "http://cran.rstudio.com/src/contrib",
-        paste("http://cran.r-project.org/src/contrib/Archive", names(pkgvers), sep="/")
+        paste(.cran_path(), "src/contrib/Archive", names(pkgvers), sep="/")
         )
     tarnames = paste0(names(pkgvers), "_", pkgvers, ".tar.gz")
     cranurls = paste(baseurl, tarnames, sep = "/")

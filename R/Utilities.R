@@ -1,4 +1,8 @@
 
+.cran_path <- function() {
+  getOption("switchr_cran_mirror", "http://cran.r-project.org")
+}
+
 ## defaults to src
 
 .getExt = function(repourl = "./src/contrib", regex = FALSE) {
