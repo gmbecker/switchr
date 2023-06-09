@@ -37,5 +37,5 @@ known_manifest and official repositories.}
 makeSeedMan
 }
 \examples{
-man = makeSeedMan()
+\dontrun{man = makeSeedMan()}
 }

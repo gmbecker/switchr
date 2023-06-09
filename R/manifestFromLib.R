@@ -216,7 +216,7 @@ setMethod("libManifest", "SwitchrCtx",
 ##' known_manifest and official repositories.
 ##' @param ... Currently unused.
 ##' @examples
-##' man = makeSeedMan()
+##' \dontrun{man = makeSeedMan()}
 ##' @export
 ##' @docType methods
 ##' @rdname makeSeedMan

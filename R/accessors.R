@@ -185,7 +185,6 @@ setMethod("dep_repos<-", "SessionManifest", function(x, value) {
 
 
 ##' @title Get or set the manifest associated with an object
-##' 
 ##'
 ##' @description Get or set manifest associated with an object
 ##'
