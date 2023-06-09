@@ -23,4 +23,5 @@ SystemRequirements: git, svn
 License: Artistic-2.0
 URL: https://github.com/gmbecker/switchr
 BugReports: https://github.com/gmbecker/switchr/issues
+Encoding: UTF-8
 RoxygenNote: 7.2.3

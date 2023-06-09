@@ -34,7 +34,7 @@ iscurrent = rep(FALSE, times=length(vers))
 iscurrent[stillthere[currentpkgs]] = TRUE
 
 baseurl = ifelse(iscurrent, "http://cran.rstudio.com/src/contrib",
-    paste("http://cran.r-project.org/src/contrib/Archive", names(vers), sep="/")
+    paste(.cran_path(), "src/contrib/Archive", names(vers), sep="/")
     )
 cranurls = paste(baseurl, tarnames, sep = "/")
 

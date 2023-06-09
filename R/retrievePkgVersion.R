@@ -86,7 +86,7 @@ findPkgVersionInCRAN = function(name, version, param = SwitchrParam(), dir)
     
     tarname = paste0(name, "_", version, ".tar.gz")
     
-    cranurl = paste("http://cran.r-project.org/src/contrib/Archive", name, tarname, sep = "/")
+    cranurl = paste(.cran_path(), "src/contrib/Archive", name, tarname, sep = "/")
     
     
     if(!file.exists(destpath))
